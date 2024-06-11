@@ -5,14 +5,4 @@ const withNextra = require('nextra')({
   themeConfig: './theme.config.jsx',
 });
 
-module.exports = withNextra({
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/nextjs',
-        permanent: true,
-      },
-    ];
-  },
-});
+module.exports = withNextra({});
