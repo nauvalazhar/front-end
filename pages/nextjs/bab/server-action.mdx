@@ -1,0 +1,535 @@
+import { Image } from '@/components/image';
+
+# Server Action
+
+Selain memiliki fitur *data fetching*, Next juga menyediakan fitur Server Action yang memungkinkan kita untuk menangani *form action*. Dalam penjelasan paling sederhana, dengan Server Action kita dapat membuat sebuah fungsi yang nantinya dieksekusi ketika suatu form di-*submit*. Fungsi tersebut dapat kita isi dengan suatu aksi, seperti menyimpan data ke *database* atau mungkin melakukan *cache revalidation*.
+
+## Membuat Server Action
+
+Anggaplah kita hendak membuat sebuah *form* untuk menambahkan *post* baru ke fail *data/db.json* yang kita punya. Untuk itu, kita dapat membuat sebuah halaman baru di fail *app/dashboard/posts/create/page.tsx*. Kita dapat membuat sebuah *form* di dalamnya:
+
+```tsx filename="app/dashboard/posts/create/page.tsx"
+export default function CreatePost() {  
+  return (  
+    <section className="border border-white p-8">  
+      <h1 className="text-2xl">Create Post</h1>  
+  
+      <form>  
+        <fieldset>  
+          <label htmlFor="title" className="block">  
+            Title  
+          </label>  
+          <input type="text" id="title" name="title" className="text-black" required />  
+        </fieldset>  
+      
+        <fieldset>  
+          <label htmlFor="body" className="block">  
+            Body  
+          </label>  
+          <textarea  
+            id="body"  
+            name="body"  
+            className="text-black"  
+            required  
+           ></textarea>  
+        </fieldset>  
+      
+        <button type="submit" className="bg-blue-500 p-2">  
+          Create Post  
+        </button>  
+      </form>  
+   </section>  
+  );  
+}
+```
+
+Kini kita memiliki sebuah *form* seperti ini:
+
+<Image src="/next-js-pragmatis-server-action/HwRU45LEw4QB5EQqHZfk4g.webp" alt="Form create post" />
+
+Berikutnya adalah bagaimana kita menerima *input* yang diisi oleh pengguna dan memprosesnya untuk disimpan ke dalam fail *data/db.json*. Di sini fitur Server Action berperan. Kita dapat membuat sebuah Server Action seperti ini:
+
+```tsx {2-6}
+export default function CreatePost() {  
+  async function create(formData: FormData) {  
+    'use server';  
+  
+    console.log(formData.get('title'));  
+  }  
+  
+  ...  
+}
+```
+
+Kita perlu menandai fungsi tersebut dengan *directive* `'use server';` untuk menjadikannya Server Action.
+
+Fungsi tersebut dapat kita *bind* ke *prop* `action` elemen *form* sebelumnya:
+
+```tsx /create/
+   <form action={create}>
+```
+
+Sekarang kita dapat mengujinya dengan memasukkan teks ke dalam kolom judul dan *submit form* tersebut di *browser*. Untuk melihat hasilnya, kita dapat kembali ke *terminal*:
+
+<Image src="/next-js-pragmatis-server-action/QjEC00M9HS53hdyAYHmVMA.webp" alt="Hasil dari submit form" />
+
+Setiap Server Action memiliki sebuah *parameter* `FormData` yang dapat kita gunakan untuk menerima nilai kolom *input* dari *form* yang diisikan oleh pengguna. Pada kode sebelumnya, kita dapat menggunakan *method* `get` untuk mendapatkan nilainya:
+
+```tsx {4-5}
+ async function create(formData: FormData) {  
+   'use server';  
+    
+   const title = formData.get('title') as string;  
+   const body = formData.get('body') as string;  
+ }
+```
+
+Sampai sini kita sudah membuat sebuah Server Action untuk menerima *input* dari suatu *form*.
+
+## Melakukan `fetch` di Server Action
+
+Kita sudah menerima nilai dari kolom di *form* sebelumnya, sekarang saatnya kita kirimkan nilai tersebut untuk dijadikan data *post* baru melalui fungsi `fetch`. Layanan *back-end* yang kita buat sebelumnya dengan *json-server* mendukung *method* POST untuk membuat data baru.
+
+Sebagai contoh, kita dapat melakukannya seperti ini:
+
+```tsx {7-13}
+ async function create(formData: FormData) {  
+   'use server';  
+  
+   const title = formData.get('title') as string;  
+   const body = formData.get('body') as string;  
+  
+   await fetch('http://localhost:3001/posts', {  
+     method: 'POST',  
+     body: JSON.stringify({title, body}),  
+     headers: {  
+       'Content-Type': 'application/json',  
+     },  
+   });  
+ }
+```
+
+Sekarang, apabila kita mengisi *form* dan men-*submit form* tersebut, nilai yang kita *input* akan menjadi data baru di fail *data/db.json*.
+
+<Image src="/next-js-pragmatis-server-action/56lTwyp3lXNQD8m7nELevA.webp" alt="Contoh input form data post baru" />
+
+Kita dapat membuka kembali fail *data/db.json* untuk membuktikannya.
+
+<Image src="/next-js-pragmatis-server-action/RV5CO92nBnBoDXHB-qmodA.webp" alt="Data post baru tersimpan di fail data/db.json" />
+
+Data *post* baru tersebut sama seperti yang kita *input* di *form*.
+
+Bila kita akses halaman */posts* pun data tersebut ada di sana:
+
+<Image src="/next-js-pragmatis-server-action/4kpkkaCH3Ip-GOCTqLEUkA.webp" alt="Data post baru muncul di halaman /posts" />
+
+Bila kita ingat kembali, kita menonaktifkan *cache* pada halaman tersebut dengan opsi `export const dynamic = ‘force-dynamic’;`, sehingga perubahan data *posts* bisa langsung terlihat.
+
+## Server Action di Fail Terpisah
+
+Sementara Server Action dapat dibuat dengan gaya *inline* seperti sebelumnya, kita juga dapat menaruhnya di dalam fail terpisah demi kerapihan kode. Untuk itu, kita dapat membuat sebuah fail *app/actions.ts*.
+
+Di dalam fail tersebut, kita dapat menaruh fungsi Server Action yang sebelumnya kita buat. Yang membedakan adalah kita perlu mengekspornya dan menaruh *directive* `'use server';` di baris paling atas fail tersebut seperti ini:
+
+```tsx filename="app/actions.ts"
+'use server';  
+  
+export async function create(formData: FormData) {  
+  const title = formData.get('title') as string;  
+  const body = formData.get('body') as string;  
+  
+  await fetch('http://localhost:3001/posts', {  
+    method: 'POST',  
+    body: JSON.stringify({title, body}),  
+    headers: {  
+     'Content-Type': 'application/json',  
+    },  
+  });  
+}
+```
+
+Dengan memberi *directive* `‘use server’;` di baris pertama *fail* tersebut, ini berarti semua fungsi di dalamnya akan dianggap sebagai Server Action.
+
+Kini kita dapat memperbarui fail *app/dashboard/posts/create/page.tsx* untuk mengimpor fungsi tersebut:
+
+```tsx filename="app/dashboard/posts/create/page.tsx" {1}
+import {create} from '@/app/actions';  
+  
+export default function CreatePost() {  
+  return (  
+    <section className="border border-white p-8">  
+      <h1 className="text-2xl">Create Post</h1>  
+      <form action={create}>  
+...
+```
+
+Sebagai catatan, kita juga dapat menggunakan nama fungsi yang lebih spesifik, seperti `createPost`, `createProduct`, dan sejenisnya untuk menghindari konflik dan memberikan konteks yang lebih jelas, sebab nantinya fail *app/actions.ts* tersebut dapat menaruh fungsi-fungsi untuk kebutuhan yang lain.
+
+## Menampilkan Loading
+
+Ketika kita men-*submit form* akan lebih baik bila terdapat informasi bahwa *form* tersebut sedang diproses. Umumnya, kita dapat menampilkan *loading spinner* atau hanya sekadar tulisan “Loading”. React memiliki *hook* `useFormStatus` yang dapat membantu kita melakukannya.
+
+Hal yang perlu kita ketahui sebelum menggunakan `useFormStatus` adalah *hook* tersebut hanya bekerja pada *client components* dan komponen tersebut harus berada di dalam elemen `<form>`.
+
+Bila kita lihat kode *form* sebelumnya, kita membuat *form* tersebut di dalam halaman yang secara bawaan adalah *server components*. Untuk itu kita perlu memisahkan elemen *form* tersebut menjadi *client components* terpisah di dalam fail *app/dashboard/posts/create/CreatePostForm.tsx*:
+
+```tsx filename="app/dashboard/posts/create/CreatePostForm.tsx"
+'use client';  
+  
+import {create} from '@/app/actions';  
+  
+export default function CreatePostForm() {  
+  return ...;  
+}
+```
+
+Kita dapat mengimpornya di dalam fail *app/dashboard/posts/create/page.tsx*:
+
+```tsx filename="app/dashboard/posts/create/page.tsx" {1,7}
+import CreatePostForm from './CreatePostForm';  
+  
+export default function CreatePost() {  
+  return (  
+    <section className="border border-white p-8">  
+      <h1 className="text-2xl">Create Post</h1>  
+      <CreatePostForm />  
+    </section>  
+  );  
+}
+```
+
+Sampai sini kita sudah memisahkan *form* menjadi *client component* terpisah.
+
+Sekarang, anggap saja kita hendak menampilkan tulisan “Creating …” dan menyembunyikan tombol *submit* saat *form* di-*submit*. Untuk melakukannya, kita perlu memisahkan lagi elemen `<button>` menjadi komponen terpisah di dalam fail yang sama seperti ini:
+
+```tsx filename="app/dashboard/posts/create/CreatePostForm.tsx" {9,14-20}
+'use client';  
+  
+import {create} from '@/app/actions';  
+  
+export default function CreatePostForm() {  
+  return (  
+    <form action={create}>  
+      ...  
+      <SubmitButton />  
+    </form>  
+  );  
+}  
+  
+function SubmitButton() {  
+  return (  
+    <button type="submit" className="bg-blue-500 p-2">  
+      Create Post  
+    </button>  
+  );  
+}
+```
+
+Hal ini perlu dilakukan karena *hook* `useFormStatus` hanya dapat bekerja bila komponen berada di dalam elemen `<form>`.
+
+Saatnya kita menggunakan *hook* `useFormStatus` di komponen `SubmitButton` seperti ini:
+
+```tsx filename="app/dashboard/posts/create/CreatePostForm.tsx" {4,9,11-13}
+'use client';  
+  
+import {create} from '@/app/actions';  
+import {useFormStatus} from 'react-dom';  
+  
+...  
+  
+function SubmitButton() {  
+  const {pending} = useFormStatus();  
+  
+  if (pending) {  
+    return <p>Creating ...</p>;  
+  }  
+  
+  return (  
+    <button type="submit" className="bg-blue-500 p-2">  
+      Create Post  
+    </button>  
+  );  
+}
+```
+
+Dengan demikian, elemen `<button>` akan disembunyikan dan tulisan “Creating …” akan muncul ketika *form* di-*submit* atau nilai `pending` adalah `true`. Semuanya akan kembali seperti semula ketika *form* sudah selesai di-*submit* atau nilai `pending` adalah `false`.
+
+## Mendapatkan Nilai Dari Server Action
+
+Pada banyak kasus, seringkali kita ingin mendapatkan nilai yang diberikan oleh Server Action, seperti pesan sukses, pesan galat, atau data spesifik lainnya. Sampai sejauh ini, kita belum memiliki jalan untuk mencapai itu, namun, React memiliki `useFormState` untuk membantu kita.
+
+Anggap saja setelah membuat data *post* baru, kita ingin menampilkan pesan sukses yang dikirim dari Server Action. Untuk mencapai ini, pertama-tama, kita perlu mengimpor dan menginisiasi `useFormState` di elemen *form* yang kita punya:
+
+```tsx filename="app/dashboard/posts/create/CreatePostForm.tsx" {4,6-8,11,14}
+'use client';  
+  
+import {create} from '@/app/actions';  
+import {useFormState, useFormStatus} from 'react-dom';  
+  
+const initialState = {  
+  message: '',  
+};  
+  
+export default function CreatePostForm() {  
+  const [state, formAction] = useFormState(create, initialState);  
+  
+  return (  
+    <form action={formAction}>  
+...
+```
+
+Ada beberapa hal yang kita lakukan pada kode di atas:
+
+-   Mengimpor `useFormState` dari *library* `react-dom`
+-   Mendefinisikan *variable* baru sebagai nilai bawaan `state`
+-   Menginisasi `useFormState` dengan Server Action sebagai argumen pertama dan `initialState` sebagai argumen kedua
+-   Mengubah nilai *prop* `action` pada elemen *form* menjadi `formAction` yang dihasilkan oleh `useFormState`
+
+Ketika kita menjadikan Server Action sebagai argumen `useFormState`, struktur fungsinya akan ikut berubah. *Parameter* pertama dari fungsi Server Action bukan lagi `FormData`, melainkan `prevState` yang berisi nilai yang dikembalikan oleh fungsi tersebut sebelumnya, sedangkan `FormData` berada di *parameter* kedua:
+
+```tsx filename="app/actions.ts" /prevData: any,/
+'use server';  
+  
+export async function create(prevData: any, formData: FormData) {  
+  ...  
+}
+```
+
+Untuk menampilkan pesan sukses saat data berhasil dibuat, kita dapat mengembalikan *object* di bawah fungsi `fetch` seperti ini:
+
+```tsx filename="app/actions.ts" {13-15}
+'use server';  
+  
+export type CreatePostResponse = {  
+  message: string;  
+};  
+  
+export async function create(  
+  prevData: CreatePostResponse,  
+  formData: FormData,  
+): Promise<CreatePostResponse> {  
+  ...  
+  
+  return {  
+    message: 'Post created successfully',  
+  };  
+}
+```
+
+Sekarang kita dapat menampilkan pesan tersebut di elemen *form*:
+
+```tsx filename="app/dashboard/posts/create/CreatePostForm.tsx" {15}
+'use client';  
+  
+import {create} from '@/app/actions';  
+import {useFormState, useFormStatus} from 'react-dom';  
+  
+const initialState = {  
+  message: '',  
+};  
+  
+export default function CreatePostForm() {  
+  const [state, formAction] = useFormState(create, initialState);  
+  
+  return (  
+    <form action={formAction}>  
+      {state.message ? <p>{state.message}</p> : null}  
+...
+```
+
+Seperti yang dapat dilihat bahwa struktur *object* `initialState` sama seperti *object* yang dihasilkan oleh Server Action, dengan demikian kita dapat memberikan *type* yang sama pada `initialState` seperti ini:
+
+```tsx filename="app/dashboard/posts/create/CreatePostForm.tsx" {6}
+'use client';  
+  
+import {type CreatePostResponse, create} from '@/app/actions';  
+import {useFormState, useFormStatus} from 'react-dom';  
+  
+const initialState: CreatePostResponse = {  
+  message: '',  
+};  
+  
+...
+```
+
+Kini apabila data *post* baru sudah dibuat, akan muncul pesan sukses di atas kolom *input.*
+
+Tidak terbatas pada kasus menampilkan pesan sukses saja, kita juga dapat menggunakan `useFormState` dan Server Action untuk menampilkan pesan galat validasi *form* atau mungkin data spesifik lainnya.
+
+## Server Action Pada Elemen Non-Form
+
+Kadangkala kita hendak melakukan suatu mutasi data yang dipicu oleh interaksi elemen non-*form* seperti tombol di luar *form* (bukan *submit*), misalnya. Anggaplah kita hendak membuat tombol “Clap” pada setiap data *post*, setiap diklik akan menambah nilai 1 pada kolom `clap` di data *post*. Untuk itu, pertama-tama, kita perlu menambah kolom `clap` dahulu:
+
+```json filename="data/db.json"
+{  
+ "posts": [  
+  {  
+   "id": "1",  
+   "title": "Tulisan 1",  
+   "body": "Lorem ipsum",  
+   "clap": 0  
+  },  
+  {  
+   "id": "2",  
+   "title": "Tulisan 2",  
+   "body": "Dolor sit amet (third update)",  
+   "clap": 0  
+  },  
+  {  
+   "id": "f4fc",  
+   "title": "Post dari form",  
+   "body": "Ini adalah post dari form dengan server action.",  
+   "clap": 0  
+  },  
+  {  
+   "id": "9ee6",  
+   "title": "Test state message",  
+   "body": "state state message konten",  
+   "clap": 0  
+  }  
+ ],  
+ "user": {  
+  "id": "1",  
+  "name": "John Doe"  
+ }  
+}
+```
+
+Saatnya kita buat sebuah komponen baru untuk tombol yang nantinya memicu mutasi tersebut. Kita dapat membuatnya di fail baru *app/posts/ClapButton.tsx*:
+
+```tsx filename="app/posts/ClapButton.tsx"
+'use client';  
+  
+import {useState} from 'react';  
+  
+export default function ClapButton({  
+  postId,  
+  clap,  
+}: {  
+  postId: string;  
+  clap: number;  
+}) {  
+  const [claps, setClaps] = useState(clap);  
+  
+  return <button>👏 ({claps})</button>;  
+}
+```
+
+Sementara kita buat dulu seperti itu strukturnya. Sekarang kita perlu memperbarui fail *app/posts/page.tsx* untuk melakukan beberapa perubahan. Pertama, kita perlu mengubah *type property* `id` menjadi `string` alih-alih `number` dan menambah *property* baru, yaitu `clap`:
+
+```tsx filename="app/posts/page.tsx" {2,5}
+type Post = {  
+  id: string;  
+  title: string;  
+  body: string;  
+  clap: number;  
+};
+
+...
+```
+
+Setelah itu, kita dapat menampilkan tombol *clap* di setiap data *post*:
+
+```tsx filename="app/posts/page.tsx" {1,14}
+import ClapButton from './ClapButton';
+
+...
+
+export default async function PostsPage() {  
+  const posts = await getPosts();  
+  
+  return (  
+    <section>  
+      {posts.map(post => (  
+        <article key={post.id}>  
+          <h2>{post.title}</h2>  
+          <p>{post.body}</p>  
+          <ClapButton postId={post.id} clap={post.clap} />  
+        </article>  
+      ))}  
+    </section>  
+  );  
+}
+```
+
+Saatnya membuat sebuah Server Action baru untuk melakukan mutasi data *clap* di fail *app/actions.ts* seperti ini:
+
+```tsx filename="app/actions.ts" {3-15}
+...
+
+export async function clapPost(postId: string, clap: number) {  
+  const updatedClap = clap + 1;  
+    
+  await fetch(`http://localhost:3001/posts/${postId}`, {  
+    method: 'PATCH',  
+    body: JSON.stringify({clap: updatedClap}),  
+    headers: {  
+      'Content-Type': 'application/json',  
+    },  
+  });  
+  
+  return updatedClap;  
+}
+```
+
+Fungsi Server Action tersebut akan melakukan mutasi pada data *post* berdasarkan `postId` untuk memperbarui nilai pada kolom `clap`.
+
+Kembali ke fail komponen `ClapButton` kita, saatnya membuat fungsi untuk menangani saat tombol diklik:
+
+```tsx filename="app/posts/ClapButton.tsx" {4,15-18,20}
+'use client';  
+  
+import {useState} from 'react';  
+import {clapPost} from '../actions';  
+  
+export default function ClapButton({  
+  postId,  
+  clap,  
+}: {  
+  postId: string;  
+  clap: number;  
+}) {  
+  const [claps, setClaps] = useState(clap);  
+  
+  async function handleClick() {  
+    const updatedClaps = await clapPost(postId, claps);  
+    setClaps(updatedClaps);  
+  }  
+  
+  return <button onClick={handleClick}>👏 ({claps})</button>;  
+}
+```
+
+Sekarang kita dapat mengujinya, apabila tombol “Clap” diklik, ia akan memicu proses mutasi kolom `clap` pada data *post* tersebut.
+
+Seperti yang telah kita pelajari bersama bahwa Server Action merupakan fungsi reguler yang dieksekusi di sisi *server* aplikasi Next kita. Kita dapat menggunakannya dengan elemen `form` atau langsung memanggilnya melalui *event handler* pada elemen non-*form* seperti tombol.
+
+Pada contoh kasus terakhir tadi, kita perlu mengirim nilai `clap` saat ini ke Server Action untuk ditambahkan 1, karena fungsi terebut tidak mengetahui nilai `clap` saat ini pada data *post* tersebut. Bila kita menggunakan akses *database* langsung tanpa layanan *back-end* eksternal seperti sekarang, kita dapat melakukannya kira-kira seperti ini:
+
+```tsx
+export async function clapPost(postId: string) {  
+  const post = await imaginaryDb.posts.find(postId);  
+  const updatedPost = await imaginaryDb.posts.update(postId, {  
+    clap: post.clap + 1,  
+  });  
+  
+  return updatedPost.clap;  
+}
+```
+
+Tentu, kode di atas hanya contoh yang dibuat-buat saja.
+
+Pada kasus lain, mungkin kita juga dapat menggunakan Server Action untuk melakukan *cache revalication* atau kasus yang lebih kreatif lainnya.
+
+## Rangkuman
+
+Pada bab ini kita sudah mempalajari beberapa hal:
+
+-   Next mengimplementasi fitur React Server Action yang membantu kita untuk menangani *form action* dan melakukan mutasi data
+-   Server Action merupakan fungsi yang reguler JavaScript yang dieksekusi di lingkungan *server* aplikasi Next
+-   *Directive* `'use server';` perlu dideklarasikan di bagian atas badan fungsi atau baris paling atas suatu fail untuk menandakan fungsi tersebut merupakan Server Action
+-   `useFormStatus` dapat digunakan untuk melacak progres *form*
+-   `useFormStatus` hanya dapat digunakan di *client component* dan komponen tersebut harus berada di dalam elemen `<form>`
+-   `useFormState` dapat digunakan untuk menerima data yang dikembalikan oleh fungsi Server Action
+-   Fungsi Server Action yang dijadikan argumen pada `useFormState` strukturnya berubah: *paramter* pertama adalah hasil data sebelumnya; *parameter* kedua adalah `FormData`
+-   Server Action dapat digunakan pada elemen non-*form* seperti tombol di luar elemen `<form>` melalui *event handler*

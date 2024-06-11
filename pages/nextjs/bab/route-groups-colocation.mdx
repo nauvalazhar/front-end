@@ -1,0 +1,187 @@
+import { Image } from '@/components/image';
+import { FileTree } from 'nextra/components';
+
+# Route Groups & Colocation
+
+Next tidak memiliki opini apapun terkait bagaimana kita mengelompokan fail-fail dan juga direktori dalam proyek kita. Sehingga tidak ada cara yang benar secara mutlak dalam mengatur struktur proyek Next. Kendati demikian, Next memiliki beberapa fitur yang dapat memudahkan kita dalam mengelompokan fail-fail dan juga direktori. Ini akan membuat proyek Next yang kita bangun menjadi tersusun rapih.
+
+## Route Groups
+
+Next memiliki fitur Route Groups yang memungkinkan kita untuk mengelompokan beberapa halaman di dalam satu direktori yang sama tanpa memengaruhi *path* URL. Dengan fitur ini kita dapat membuat sebuah direktori dengan konvensi *(direktori)* dan menaruh beberapa halaman di dalamnya. Ini bermanfaat untuk pengorganisasian halaman dan juga membagikan *layout* yang sama.
+
+Sebagai contoh, anggap saja kita memiliki halaman *login* dan *register*. Kedua halaman ini memiliki *layout* yang sama, sehingga kita dapat membuat sebuah fail *layout.tsx* dan menaruhnya di dalam sebuah direktori *route groups* dengan konvensi *(direktori),* misal *app/(auth)/layout.tsx*:
+
+```tsx filename="app/(auth)/layout.tsx"
+type AuthLayoutProps = {  
+  children: React.ReactNode;  
+};  
+  
+export default function AuthLayout({ children }: AuthLayoutProps) {  
+  return (  
+    <div>  
+      <p>Layout Auth</p>  
+      {children}  
+    </div>  
+  );  
+}
+```
+
+Di dalam direktori *app/(auth)* tersebut, kita dapat membuat beberapa halaman, misal *login*:
+
+```tsx filename="app/(auth)/login/page.tsx"
+export default function Page() {  
+  return <div>Login Page</div>  
+}
+```
+
+Juga kita bisa membuat halaman lainnya, misal *register*:
+
+```tsx filename="app/(auth)/register/page.tsx"
+export default function Page() {  
+  return <div>Register Page</div>  
+}
+```
+
+Dengan demikian kita memiliki struktur direktori dan fail seperti berikut:
+
+<FileTree>
+  <FileTree.Folder name="app" defaultOpen>
+    <FileTree.Folder name="(auth)" defaultOpen>
+      <FileTree.File name="layout.tsx" />
+      <FileTree.Folder name="login" defaultOpen>
+        <FileTree.File name="page.tsx" />
+      </FileTree.Folder>
+      <FileTree.Folder name="register" defaultOpen>
+        <FileTree.File name="page.tsx" />
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+Bila kita akses alamat lokal [*http://localhost:3000/login*](http://localhost:3000/login), kita akan melihat tampilan seperti berikut:
+
+<Image src="/next-js-pragmatis-route-groups-colocation/XoXQ6rRquQeyjp-QRuTpxQ.webp" alt="Halaman login dengan route groups" />
+
+Begitu juga dengan halaman *register*:
+
+<Image src="/next-js-pragmatis-route-groups-colocation/UvRtD8sNi75CY68gSZtZAw.webp" alt="Halaman reigster dengan route groups" />
+
+Kedua halaman *login* dan *register* berbagi *layout.tsx* yang sama dan keduanya dapat diakses tanpa *prefix /auth*. Hal ini dikarenakan konvensi *(direktori)* merupakan sebuah fitur *route groups* yang tidak akan menambah *path* pada halaman di dalamnya. Fitur ini sangat bermanfaat untuk pengorganisasian *route* dan juga berbagi *layout* yang sama.
+
+## Colocation
+
+Seperti yang disebutkan di awal, Next tidak memiliki opini terkait struktur direktori dan fail proyek kita. Sehingga kita dapat dengan bebas membuat struktur apapun sesuai keinginan.
+
+Secara bawaan, kita dapat dengan aman menaruh fail apapun di dalam folder *app,* seperti fail komponen atau fail CSS. Kendati direktori *app* digunakan sebagai *router*, namun, yang membuat suatu direktori menjadi sebuah halaman adalah adanya fail *page.tsx* dan *route.ts* (kita akan bahas di bab terkait). Apabila tidak ada kedua fail tersebut, maka akan menjadi direktori reguler saja.
+
+Anggap saja kita memiliki struktur direktori dan fail seperti berikut:
+
+<FileTree>
+  <FileTree.Folder name="app" defaultOpen>
+    <FileTree.Folder name="dashboard" defaultOpen>
+      <FileTree.File name="layout.tsx" />
+      <FileTree.File name="page.tsx" />
+      <FileTree.Folder name="posts" />
+      <FileTree.Folder name="products" defaultOpen>
+        <FileTree.File name="page.tsx" />
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+Pada struktur di atas, hanya terdapat dua halaman saja, yaitu halaman dengan segmen */dashboard* dan */dashboard/products*. Karena keduanya memiliki fail *page.tsx*. Sedangkan untuk direktori *app/posts* tidak akan dianggap sebagai suatu halaman dan artinya tidak dapat diakses secara publik. Ini berarti kita dapat dengan aman menaruh fail-fail apapun di dalamnya tanpa khawatir terekspos ke publik, misal menaruh fail komponen-komponen:
+
+<FileTree>
+  <FileTree.Folder name="app" defaultOpen>
+    <FileTree.Folder name="dashboard" defaultOpen>
+      <FileTree.Folder name="components">
+        <FileTree.File name="Button.tsx" />
+        <FileTree.File name="Text.tsx" />
+      </FileTree.Folder>
+      <FileTree.File name="layout.tsx" />
+      <FileTree.File name="page.tsx" />
+      <FileTree.Folder name="posts" />
+      <FileTree.Folder name="products" defaultOpen>
+        <FileTree.File name="page.tsx" />
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+Sebagai alternatif, Next juga memiliki fitur direktori privat dengan konvensi *underscore*:
+
+<FileTree>
+  <FileTree.Folder name="app" defaultOpen>
+    <FileTree.Folder name="dashboard" defaultOpen>
+      <FileTree.Folder name="_components" defaultOpen>
+        <FileTree.File name="Button.tsx" />
+        <FileTree.File name="Text.tsx" />
+      </FileTree.Folder>
+      <FileTree.File name="layout.tsx" />
+      <FileTree.File name="page.tsx" />
+      <FileTree.Folder name="posts" />
+      <FileTree.Folder name="_products" defaultOpen>
+        <FileTree.File name="page.tsx" />
+      </FileTree.Folder>
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+Pada contoh di atas, kini halaman */dashboard/products* tidak lagi dapat diakses, sebab sudah dianggap sebagai direktori privat.
+
+### Praktik Umum
+
+Setiap orang memiliki preferensinya masing-masing dalam mengelompokan direktori dan fail proyek mereka, sehingga tidak ada benar dan salah dalam hal ini. Namun, saya akan memberikan referensi terkait ini yang mungkin akan memberikan inspirasi atau gambaran bagaimana umumnya orang-orang melakukan ini di proyek Next mereka.
+
+Bila kita membuka kembail fail *tailwind.config.ts,* di dalamnya terdapat *path* di dalam *content* seperti ini:
+
+```tsx filename="tailwind.config.ts" {4-8}
+import type { Config } from "tailwindcss";  
+  
+const config: Config = {  
+  content: [  
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",  
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",  
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",  
+  ],  
+  theme: {  
+    extend: {  
+      backgroundImage: {  
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",  
+        "gradient-conic":  
+          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",  
+      },  
+    },  
+  },  
+  plugins: [],  
+};  
+export default config;
+```
+
+Seperti yang dapat kita lihat, di dalamnya terdapat *path* yang mengarah ke direktori *components*. Ini merupakan praktik umum, biasanya orang-orang menggunakan direktori ini untuk menyimpan fail komponen yang dapat digunakan ulang, seperti *button, text,* atau *alert*. Direktori ini sejajar dengan direktori *app* yang hidup di *root* direktori proyek Next kita:
+
+<FileTree>
+  <FileTree.Folder name="belajar-next-esensial" defaultOpen>
+    <FileTree.Folder name="app" />
+    <FileTree.Folder name="components" />
+    <FileTree.Folder name="node_modules" />
+    <FileTree.Folder name="public" />
+    <FileTree.File name="README.md" />
+    <FileTree.File name="next-env.d.ts" />
+    <FileTree.File name="next.config.mjs" />
+  </FileTree.Folder>
+</FileTree>
+
+Dengan menggunakan konvensi ini, kita dapat dengan aman menggunakan *class-class* Tailwind di dalam direktori *components*.
+
+Selain itu, kita juga dapat membuat direktori lain untuk kepentingan yang lebih spesifik. Misal, kita dapat menggunakan direktori dengan nama *lib* untuk menaruh fail-fail fungsi abstrak atau juga dapat menggunakan nama alternatif seperti *utils*. Sementara untuk penyimpanan *state management* kita dapat menggunakan nama seperti *stores*. Hal ini tidak dibatasi oleh *framework*, kita dapat dengan bebas menggunakan nama-nama yang mungkin dianggap lebih masuk akal.
+
+## Rangkuman
+
+Dalam bab ini kita sudah mempelajari beberapa hal:
+
+-   Next memiliki fitur *route groups* untuk pengelompokan halaman dan berbagi *layout* yang sama
+-   Fitur *route groups* dapat diaktifkan dengan konvensi *(direktori)*
+-   Kita dapat dengan aman menaruh fail apapun di dalam direktori *app*
+-   Suatu direktori hanya dianggap sebagai halaman bila terdapat fail *page.tsx* atau *route.ts* di dalamnya
+-   Kita dapat dengan bebas menggunakan nama-nama direktori yang dianggap masuk akal untuk mengelompokan fail-fail di dalam proyek Next kita

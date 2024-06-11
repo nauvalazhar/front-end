@@ -1,0 +1,91 @@
+import { FileTree } from 'nextra/components';
+
+# Konvensi
+
+Berikut ini adalah konvensi tipografi yang digunakan dalam materi belajar ini:
+
+## Italic
+
+*italic* digunakan untuk menekankan suatu kata atau frasa, merujuk pada istilah
+  asing, penamaan fail dan direktori, dan penulisan URL dan *path*. Sebagai contoh:
+
+- *framework*, *library*
+- *page.tsx*, *route.ts*
+- *app/dashboard*, *app/products/[…slug]*
+- *path /products/segmen-1/segmen-2*
+- *http://localhost:3001/posts*
+
+## Monospace
+
+`monospace` digunakan untuk merujuk bagian kode, seperti nama fungsi, variabel,
+  konstanta, dan nilai literal. Sebagai contoh:
+
+- `fetch()`, `useState()`
+- `const`, `let`, `export`
+- `true`, `false`, `null`
+- `Component`, `<Component />`
+
+## Blok Kode
+
+Kode yang lebih panjang atau berdiri sendiri akan ditampilkan dalam blok kode.
+  Blok kode digunakan untuk menunjukkan contoh kode, hasil keluaran, dan
+  tampilan *terminal*. Sebagai contoh:
+
+```tsx
+export default function Component() {
+
+}
+```
+
+Kebanyakan blok kode akan memiliki nama fail.
+  Sebagai contoh:
+
+```tsx filename="app/home/page.tsx"
+export default function Home() {
+
+}
+```
+
+Beberapa blok kode akan memiliki baris yang disorot.
+  Sebagai contoh:
+
+```tsx filename="app/home/page.tsx" {2}
+export default function Home() {
+    return <h1>Hello, world!</h1>;
+}
+```
+
+Beberapa blok kode lainnya yang masih dalam konteks yang sama akan menggunakan
+  blok kode yang sama tanpa nama fail.
+  Sebagai contoh:
+
+```tsx
+export default function Home() {
+    return <h1>Hello, world!</h1>;
+}
+```
+
+## Blok Kutipan
+
+Teks yang merupakan informasi tambahan, penjelasan, atau catatan akan
+  ditampilkan dalam blok kutipan. Blok kutipan digunakan untuk menyoroti
+  informasi tambahan yang tidak terkait langsung dengan konten utama.
+  Sebagai contoh:
+
+> Informasi tambahan, penjelasan, atau catatan.
+
+## Pohon Direktori
+
+Pohon direktori digunakan untuk menunjukkan struktur direktori dan fail.
+  Sebagai contoh:
+
+<FileTree>
+    <FileTree.Folder name="app" defaultOpen>
+        <FileTree.Folder name="home" defaultOpen>
+        <FileTree.File name="page.tsx" />
+        </FileTree.Folder>
+        <FileTree.Folder name="dashboard" defaultOpen>
+        <FileTree.File name="page.tsx" />
+        </FileTree.Folder>
+    </FileTree.Folder>
+</FileTree>

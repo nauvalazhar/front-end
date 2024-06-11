@@ -1,0 +1,278 @@
+import { Image } from '@/components/image';
+
+# Pages, Layouts & Navigation
+
+Next memiliki fitur *file-system routing* yang memungkinkan kita membuat suatu *route* atau halaman berdasarkan direktori dan fail. Tidak perlu menulis konfigurasi apapun, kita hanya perlu membuat sebuah fail di dalam direktori tertentu sesuai konvensi Next.
+
+Sebelumnya kita sudah mempelajari bahwa proyek Next memiliki satu halaman bawaan, yaitu halaman *index* yang berada di *app/page.tsx*. Struktur fail tersebut merupakan konvensi dari Next. Karena kita membuat fail *page.tsx* di dalam *root* direktori *app/*, maka fail tersebut akan diterjemahkan sebagai halaman *index* yang dapat diakses dengan alamat lokal [*http://localhost:3000/*](http://localhost:3000/) atau URL tanpa jalur apapun. Tentu saja kita dapat membuat halaman yang lain sesuai kebutuhan, dan kita dapat melakukannya dengan konvensi yang sama.
+
+## Pages
+
+Anggap saja kita hendak membuat halaman *about,* untuk melakukannya kita dapat membuat sebuah direktori dengan nama *about* di dalam *app* dan di dalamnya buat sebuah fail *page.tsx* yang berisi komponen React:
+
+```tsx filename="app/about/page.tsx"
+export default function About() {  
+  return <h1>About</h1>;  
+}
+```
+
+> Selain *.tsx*, kita dapat menggunakan ekstensi lain seperti *.js* atau *.jsx*. Namun, karena kita menggunakan TypeScript, maka kita perlu menggunakan ekstensi *.tsx*.
+
+Halaman tersebut dapat kita akses dengan alamat lokal [*http://localhost:3000/about*](http://localhost:3000/about).
+
+Sebuah direktori hanya akan dianggap sebuah *route* atau halaman ketika terdapat fail *page.tsx, page.js,* atau *page.jsx* di dalamnya. Apabila tidak ada, maka direktori tersebut tidak dapat diakses secara publik, dalam kata lain hanya sebagai direktori reguler saja, bukan *route*.
+
+### Struktur URL
+
+Bagian yang datang setelah nama *domain* disebut dengan *path*, dalam alamat [*http://localhost:3000/about*](http://localhost:3000/about) adalah “*/about*”; bagian dari *path* yang dipisah dengan tanda / (garis miring) disebut dengan segmen, dalam hal ini juga adalah “*/about*”. Dalam contoh lain, bila terdapat alamat seperti [*http://localhost:3000/dashboard/producs,*](http://localhost:3000/dashboard/producs,) maka terdapat dua segmen, yaitu “*/dashboard*” dan “*/products*” dalam satu *path*.
+
+### Server Components
+
+Seperti yang kita pelajari sebelumnya, setiap komponen React yang kita buat di Next akan dianggap sebagai *server components* secara bawaan. Kita dapat mengubahnya menjadi *client components* dengan *directive* `'use client';`. Namun, praktik ini tidak direkomendasikan, kecuali kita memiliki suatu kasus yang tertentu.
+
+Memberikan *directive* `'use client';` di dalam sebuah fail *page.tsx* artinya mengubah seluruh halaman tersebut menjadi *client components.* Seperti yang kita bahas sebelumnya, *client components* dapat digunakan untuk bagian interaktif saja. Ini berarti apabila kita membutuhkan komponen interaktif di satu halaman, kita dapat membuat *client components* baru terpisah dan mengimpornya ke halaman tersebut, sama seperti saat kita membuat komponen *dropdown* sebelumnya:
+
+```tsx filename="app/about/page.tsx"
+import Dropdown from '@/app/Dropdown';  
+  
+export default function About() {  
+  return (  
+    <section>  
+      <h1>About</h1>  
+      <Dropdown />  
+    </section>  
+  );  
+}
+```
+
+Komponen *dropdown* tersebut hanya contoh sederhana saja, pada kasus nyata kita dapat membuat komponen interaktif yang lain, seperti *carousel, modal,* atau mungkin yang lebih kompleks lainnya. Namun, esensinya tetap sampai bahwa untuk membuat bagian komponen interaktif di satu halaman, kita dapat membuatnya di komponen terpisah, alih-alih mengubah seluruh halaman menjadi *client components*.
+
+Bila satu halaman diubah menjadi *client components*, ini berarti kita tidak dapat menggunakan fitur-fitur yang seharusnya dapat kita gunakan di *server components*, seperti *streaming,* atau *data fetching* di *server*. Tentu saja kita boleh mengubahnya menjadi *client components* apabila kita benar-benar tahu alasannya.
+
+### Nesting Pages
+
+Pada kasus nyata, kita dapat membuat banyak halaman, termasuk halaman dengan prefiks yang sama. Misal, kita membuat *dashboard*, biasanya halaman-halaman di dalamnya memiliki prefiks yang sama, seperti */dashboard/products*, */dashboard/settings*, atau */dashboard/posts,* ketiganya memiliki prefiks yang sama, yaitu */dashboard/*.
+
+Next memungkinkan kita untuk membuat struktur halaman semacam itu dengan melakukan *nesting pages*. Ini berarti kita membuat sebuah halaman di dalam direktori halaman lain. Sebagai contoh, mari kita buat halaman *dashboard* di dalam fail *app/dashboard/page.tsx*:
+
+```tsx filename="app/dashboard/page.tsx"
+export default function Dashboard() {  
+  return <h1>Dashboard</h1>;  
+}
+```
+
+Sampai sini, halaman tersebut dapat diakses dengan alamat lokal [*http://localhost:3000/dashboard*](http://localhost:3000/dashboard). Kita juga dapat membuat halaman lain di dalamnya, seperti halaman produk di dalam fail *app/dashboard/products/page.tsx*:
+
+```tsx filename="app/dashboard/products/page.tsx"
+export default function DashboardProducts() {  
+  return <h1>Dashboard - Products</h1>;  
+}
+```
+
+Kita dapat mengakses halaman tersebut dengan alamat lokal [*http://localhost:3000/dashboard/products*](http://localhost:3000/dashboard/products).
+
+## Layouts
+
+Next memungkinkan kita berbagi UI untuk beberapa halaman dengan *layout*. Ini berarti setiap komponen yang kita taruh di dalam *layout* akan tampil juga di beberapa halaman yang berbeda. Secara bawaan, aplikasi Next yang kita buat ini sudah memiliki satu *layout* di *app/layout.tsx.*
+
+<Image src="/next-js-pragmatis-pages-layouts-navigation/OKjsP5MKYnNyCPqD_BDzRA.webp" alt="Isi fail app/layout.tsx" />
+
+Fail tersebut berisi beberapa bagian yang berbeda:
+
+### Styling
+
+Dalam *layout* bawaan ini, kita bisa melihat sebuah import fail *globals.css* yang berada di dalam direktori *app*. Fail ini berisi sebuah konfigurasi Tailwind bawaan aplikasi Next. Ketika kita impor fail ini di dalam *layout*, maka itu berarti semua halaman dapat menggunakan *styling* tersebut. Ini berarti setiap halaman yang kita buat nanti dapat menggunakan *class-class* Tailwind.
+
+### Font
+
+Next memiliki fitur optimisasi *font* melalui *next/font*. Kita dapat lihat terdapat sebuah impor fitur *next/font/google* yang berarti Next secara bawaan menggunakan *font* dari Google dan kita dapat memastikannya di baris berikutnya, yaitu `const inter …`. Google Font yang kita impor menggunakan *next/font/google*, tidak akan menambah *request* di *browser*.
+
+### Metadata
+
+Umumnya, kita dapat menaruh judul, deskripsi dan *meta tags* lainnya di dalam `<head>`. Di Next, kita dapat menaruhnya di dalam *metadata*. Kita hanya perlu mengekspor sebuah *object* dengan nama *metadata* di dalam *layout,* dan semua halaman akan memiliki informasi *metadata* yang sama. Ini mengapa halaman yang kita buat sebelumnya memiliki judul yang sama, yaitu “*Create Next App*”.
+
+### Component
+
+Untuk bagian-bagian sebelumnya, kita dapat bahas lebih rinci pada bab terkait lainnya. Untuk sekarang, kita dapat fokus pada bagian komponen saja dan bagaimana *layout* ini bekerja.
+
+Fail *app/layout.tsx* merupakan sebuah *layout* yang hidup di dalam *root* direktori *app,* dan maka dari itu disebut dengan *root layout*. Seperti yang bisa kita lihat bahwa fail ini berisi komponen dengan nama `RootLayout`:
+
+```tsx filename="app/layout.tsx"
+export default function RootLayout({  
+  children,  
+}: Readonly<{  
+  children: React.ReactNode;  
+}>) {  
+  return (  
+    <html lang="en">  
+      <body className={inter.className}>{children}</body>  
+    </html>  
+  );  
+}
+```
+
+Komponen ini terdiri dari dua elemen `html` dan `body` yang keduanya wajib ada di dalam *root layout*. Selain itu juga komponen ini menerima sebuah `children` *props* yang nantinya berisi halaman yang sedang di-*render,* karena komponen *layout* ini akan membungkus setiap halaman. Kira-kira gambarannya seperti ini:
+
+```tsx
+<Layout>  
+  <Page />  
+</Layout>
+```
+
+Dengan demikian, apabila kita menaruh sebuah elemen atau komponen di dalam bagian `body`, ini akan ditampilkan di semua halaman.
+
+Sebagai contoh, mari kita buat sebuah komponen baru *navbar* di dalam fail *app/Navbar.tsx* seperti ini:
+
+```tsx filename="app/Navbar.tsx"
+export default function Navbar() {  
+  return <nav>Navbar</nav>;  
+}
+```
+
+Sekarang kita dapat impor komponen tersebut ke dalam *app/layout.tsx* seperti ini:
+
+```tsx
+import Navbar from '@/app/Navbar';
+```
+
+Lalu menaruhnya di dalam `body`:
+
+```tsx {9}
+export default function RootLayout({  
+  children,  
+}: Readonly<{  
+  children: React.ReactNode;  
+}>) {  
+  return (  
+    <html lang="en">  
+      <body className={inter.className}>  
+        <Navbar />  
+        {children}  
+      </body>  
+    </html>  
+  );  
+}
+```
+
+Apabila kita lihat hasilnya di halaman *index*, maka elemen tersebut akan muncul di bagian atas halaman.
+
+<Image src="/next-js-pragmatis-pages-layouts-navigation/5kIe0qFigmVAewhEsKBIYA.webp" alt="Elemen navbar terlihat di halaman index" />
+
+Begitu juga bila kita akses halaman *about*, elemen *navbar* tersebut akan tetap muncul.
+
+<Image src="/next-js-pragmatis-pages-layouts-navigation/Vgv3D2juFPySSSIAOClMWw.webp" alt="Elemen navbar terlihat di halaman about" />
+
+Tentu saja secara teknis kita dapat mengimpor komponen *navbar* ini untuk setiap halaman secara manual, misal seperti ini di halaman *about*:
+
+```tsx filename="app/about/page.tsx" {1,6}
+import Navbar from '@/app/Navbar';  
+  
+export default function About() {  
+  return (  
+    <section>  
+      <Navbar />  
+      <h1>About</h1>  
+    </section>  
+  );  
+}
+```
+
+Hasilnya akan sama saja, yang membedakan adalah pendekatan di atas akan membuat komponen *navbar re-render* pada saat navigasi. Di sisi lain, komponen *layout* tidak akan *re-render,* ini berarti elemen dan komponen di dalamnya, seperti *navbar,* juga tidak akan *re-render*.
+
+Pada kasus nyata, komponen *layout* dapat berisi elemen dan komponen yang banyak, seperti *navbar, sidebar,* dan beserta *styling*-nya. Ketika melakukan *re-render layout* pada saat navigasi halaman, akan membuat perpindahannya menjadi berat. Fitur *layout* di Next dapat menghindarkan kita dari masalah semacam itu.
+
+### Nesting Layouts
+
+Selain *root layout*, kita dapat membuat *layout* tambahan untuk spesifik halaman saja. Misal, kita hendak membuat halaman *dashboard* yang memiliki tampilan yang berbeda, maka *nesting layout* dapat menjadi solusi.
+
+Sebelumnya kita sudah membuat halaman *dashboard* di dalam direktori *app/dashboard*. Sekarang kita dapat membuat fail *layout.tsx* di dalam direktori tersebut:
+
+```tsx filename="app/dashboard/layout.tsx"
+type DashboardLayoutProps = {  
+  children: React.ReactNode;  
+}  
+  
+export default function DashboardLayout({  
+  children,  
+}: DashboardLayoutProps) {  
+  return (  
+    <div>  
+      <aside>Sidebar</aside>  
+      {children}  
+    </div>  
+  );  
+}
+```
+
+Karena kita menggunakan TypeScript, kita dapat memberikan *type* pada *props* untuk komponen `DashboardLayout`. Pada *type* di atas, kita ingin memastikan bahwa `children` yang diterima di komponen `DashboardLayout` harus sesuai dengan `React.ReactNode`.
+
+Kali ini kita dapat mengabaikan elemen `html` dan `body` untuk *nesting layout*, karena kedua elemen tersebut hanya wajib untuk *root layout* saja.
+
+Sekarang, apabila kita akses halaman *dashboard* dengan alamat lokal [*http://localhost:3000/dashboard*](http://localhost:3000/dashboard), akan muncul elemen *navbar* dan juga *sidebar* di halaman tersebut. Begitu juga dengan halaman lain di dalam direktori *app/dahsboard*, akan memiliki *layout* yang sama.
+
+<Image src="/next-js-pragmatis-pages-layouts-navigation/eVAZvSkigpOn_Lptt0EH2w.webp" alt="Terdapat elemen navbar dan sidebar" />
+
+Hal ini menunjukkan bahwa *root layout* yang berisi komponen *navbar* diterapkan di semua halaman dan dalam hal ini termasuk halaman *about* dan halaman *dashboard*. Sementara untuk *nesting layout* yang berisi *sidebar* hanya diterapkan pada prefiks halaman atau satu direktori yang sama dan dalam hal ini adalah */dashboard*. Ini berarti ketika kita membuat halaman lain di dalam direktori *dashboard* (*nesting pages), layout dashboard* tersebut akan diterapkan juga.
+
+Kita dapat memastikannya lagi dengan mengakses halaman *about* atau halaman *index,* dan tidak akan ada elemen *sidebar* yang kita taruh di *dashboard layout*.
+
+<Image src="/next-js-pragmatis-pages-layouts-navigation/XDOyPJCWsI3aCGGFA_DDAw.webp" alt="Tidak ada elemen sidebar di halaman about" />
+
+Pada kasus nyata, ketika membuat aplikasi *full-stack* biasanya kita membuat dua *layout* yang berbeda untuk *landing page* atau halaman *marketing* dan juga untuk *dashboard* atau halaman aplikasi kita. Dalam hal ini kita dapat mengandalkan *root layout* dan *nesting layout*.
+
+## Navigation
+
+Sampai sini kita sudah mempelajari membuat halaman dan juga *layout*, sekarang kita akan membuat navigasi antar halaman. Secara fundamental kita dapat menggunakan elemen `<a>` untuk membuat tautan antar halaman dan dibantu dengan *attribute* `href`. Ketika pengguna mengklik tautan tersebut, mereka akan dibawa ke halaman tujuan dan akan terdapat *loading* atau *refresh* sebelum halaman baru muncul. Proses tersebut merupakan prilaku bawaan *browser*.
+
+Di Next, untuk melakukan navigasi halaman, kita dapat menggunakan komponen `<Link>`. Komponen ini memiliki struktur yang mirip dengan elemen `<a>` yang juga mendukung `href`. Yang membuat komponen ini spesial adalah ketika pengguna mengklik tautan, mereka akan dibawa ke halaman tujuan dan *tidak akan* terdapat *loading browser* atau *refresh* sebelum halaman baru muncul. Proses ini disebut dengan *client-side navigation*.
+
+Sebelumnya kita sudah membuat komponen *navbar*, kita dapat melakukan sedikit perubahan pada komponen tersebut untuk menaruh tautan ke halaman-halaman yang kita sudah buat sebelumnya. Di sini, kita dapat menaruh tautan ke halaman *index* dan juga *about*:
+
+```tsx filename="app/Navbar.tsx" {1,7-9}
+import Link from 'next/link';  
+  
+export default function Navbar() {  
+  return (  
+    <nav>  
+      Navbar:  
+      <Link href="/">Home</Link>  
+      {' | '}  
+      <Link href="/about">About</Link>  
+    </nav>  
+  );  
+}
+```
+
+Seperti yang bisa kita lihat bahwa penggunaan komponen `Link` mirip dengan elemen `<a>` di HTML.
+
+Bila kita lihat kembali di *browser*, sekarang seharusnya sudah terdapat dua tautan di komponen *navbar* dan kita dapat mengkliknya.
+
+<Image src="/next-js-pragmatis-pages-layouts-navigation/L5UK19KK5zbaAwQDFcVLTw.webp" alt="Tautan di komponen navbar" />
+
+Saat mengklik tautan tersebut, kita akan dibawa ke halaman baru, namun *browser* tidak melakukan *loading* atau *refresh* sama sekali. Perpindahannya hampir instan dan begitu cepat.
+
+### Bagaimana Navigasi Bekerja
+
+Pertama, setiap kali halaman berpindah, *browser* hanya akan memuat kode untuk halaman atau *route* tersebut saja berdasarkan segmennya. Ini berarti saat kita berpindah dari halaman *index* ke *about*, maka *browser* hanya akan memuat kode untuk segmen halaman *about* saja. Hal ini dapat dimungkinkan karena, di *server,* Next secara otomatis melakukan *code-splitting* atau memecah kode aplikasi menjadi *bundle* yang lebih kecil, sehingga dapat mengurangi data transfer dan juga waktu eksekusi.
+
+Kedua, di sisi *client*, Next akan melakukan yang disebut *prefetching*. Ketika komponen `Link` terlihat di *viewport* atau sederhananya terlihat oleh pengguna, Next akan memuat kode untuk halaman tersebut di balik layar. Sehingga ketika pengguna mengklik tautannya, kode untuk halaman tersebut sudah dimuat di balik layar, ini yang membuat perpindahan halamannya menjadi hampir instan. Hal ini hanya berlaku saat *production* bukan *development*.
+
+Ketiga, Next juga memiliki fitur Router Cache untuk melakukan *cache* setiap halaman di *browser*. Saat sebuah halaman dimuat, Next akan men-*cache* hasilnya yang merupakan React Server Components Payload (RSC Payload). Hasil *cache* tersebut akan digunakan kembali ketika pengguna mengunjungi halaman yang sama. Ini berarti saat pengguna mengunjungi halaman *about* pertama kali, Next akan men-*cache* hasilnya; saat pengguna mengunjungi halaman tersebut lagi, Next akan menampilkan hasil *cache* halaman tersebut, alih-alih membuat permintaan baru ke *server*. Hal ini terbukti ketika kita mengunjungi halaman yang sama untuk ke dua kalinya, halaman tersebut lebih cepat dimuat.
+
+Terakhir, Next hanya akan me-*render* perubahan pada segmen halaman saja di *browser,* sedangkan untuk bagian yang lain seperti *layout* akan dipertahankan. Ini berarti ketika pengguna berpindah dari halaman *index* ke halaman *about*, yang di-*render* hanya kontennya saja, *layout*-nya tetap dipertahankan atau tidak *re-render*. Hal ini disebut dengan *partial rendering* di Next.
+
+## Rangkuman
+
+Pada bab ini kita sudah mempelajari membuat halaman atau *route*, *layout*, dan juga navigasi:
+
+-   Untuk membuat halaman di Next, kita dapat menggunakan konvensi *app/nama-path/page.tsx*
+-   Nama direktori akan dijadikan sebagai nama segmen atau *path* halaman
+-   Next memungkinkan kita untuk melakukan *nesting pages* atau membuat halaman di dalam prefiks yang sama
+-   Untuk membagikan komponen yang sama untuk beberapa halaman, kita dapat menggunakan *layout*
+-   Next memiliki dua jenis *layout*: *root layout* dan *nesting layout*
+-   Kita wajib menulis elemen `<html>` dan `<body>` di dalam *root layout*, namun tidak di dalam *nesting layout*
+-   Untuk membuat navigasi, kita dapat menggunakan komponen `Link` milik Next
+-   Next melakukan *code-splitting* untuk setiap segmen halaman, sehingga hanya kode untuk halaman tersebut saja yang dimuat, ini dapat mengurangi data transfer dan waktu eksekusi
+-   Next melakukan *prefetching* saat komponen `Link` terlihat di *viewport*, artinya sebuah halaman sudah dimuat di balik layar, sehingga ketika pengguna mengklik tautan, halaman tersebut dimuat hampir instan
+-   Next men-*cache* halaman yang dikunjungi pengguna di dalam Router Cache, sehingga untuk kunjungan kedua, Next menampilkan hasil *cache* sebelumnya, alih-alih membuat permintaan baru ke *server*
+-   Next hanya melakukan *re-render* pada bagian segmen halaman saja, untuk bagian lain seperti *layout* tetap dipertahankan, tidak *re-render*

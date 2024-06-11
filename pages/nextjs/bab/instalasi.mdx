@@ -1,0 +1,205 @@
+import { Image } from '@/components/image';
+
+# Instalasi
+
+Setelah kita memahami apa itu Next dan apa saja yang dibutuhkan untuk memulai pengembangan dengan Next, sekarang kita akan memulai membuat sebuah proyek baru Next.
+
+## Membuat Proyek Baru Next
+
+Saatnya kita membuat sebuah proyek Next baru. Untuk membuat proyek Next, kita dapat menjalankan perintah berikut di *terminal*:
+
+```bash filename="terminal"
+npx create-next-app@latest
+```
+
+Seperti ini kira-kira saat kita menjalankan perintah di dalam *terminal:*
+
+<Image src="/next-js-pragmatis-pengenalan-dan-instalasi/tc72nXgI7GC3u47DLfsmnA.webp" alt="Menjalankan perintah di dalam terminal emulator" />
+
+Perintah tersebut terdiri dari dua bagian, yaitu `npx` dan `create-next-app@latest`. Penjelasannya sebagai berikut:
+
+-   **npx**: merupakan sebuah program Node.js untuk mengeksekusi paket npm. npm (Node Package Manager) merupakan sebuah alat pengelola paket (*package manager*) untuk proyek Node.js. npx sendiri pada dasarnya merupakan sebuah paket dan bagian dari npm.
+-   **create-next-app@latest**: merupakan sebuah paket npm untuk membuat proyek baru Next. Akhiran `@latest` maksudnya untuk mengambil versi terbaru dari paket tersebut.
+
+Secara sederhana, kita dapat memahami bahwa perintah tersebut bermaksud untuk mengeksekusi paket npm bernama `create-next-app` dengan pengeksekusi paket `npx` untuk membuat proyek baru Next.
+
+Kita akan sering berinteraksi dengan npm di materi ini, karena Next sendiri berjalan di atas *runtime* Node.js.
+
+Bila kita eksekusi perintah sebelumnya dengan menekan tombol *enter,* biasanya akan ada pesan konfirmasi yang menanyakan apakah kita ingin memasang paket yang sedang dijalankan.
+
+<Image src="/next-js-pragmatis-pengenalan-dan-instalasi/1abn63swOjyHV8vxOsTYOg.webp" alt="Konfirmasi instalasi paket npm create-next-app" />
+
+Untuk melanjutkan, kita dapat memasukkan `y` dan *enter* kembali, atau kita bisa langsung menekan tombol *enter* karena opsi `y` akan dipilih secara implisit oleh npx.
+
+Tahap berikutnya proses ini akan mengajukan beberapa pertanyaan terkait dengan penyiapan proyek Next baru yang akan kita buat:
+
+### **Nama Proyek**
+<Image src="/next-js-pragmatis-pengenalan-dan-instalasi/p_8eylpd7_9Q-Gi8Pvvxew.webp" alt="Penentuan nama proyek" />
+
+Untuk ini kita bisa beri nama *belajar-next-esensial* dan tekan *enter* lagi. Disarankan untuk menggunakan tanda hubung (-) sebagai pengganti karakter spasi, karena nama proyek ini juga akan digunakan sebagai nama direktori. Menggunakan format *nama-direktori* akan memudahkan kita melakukan navigasi di dalam *terminal* atau spesifiknya CLI (Command Line Interface).
+
+### **Opsi Menggunakan TypeScript**
+<Image src="/next-js-pragmatis-pengenalan-dan-instalasi/S_37Go9-5aES-wuI-8bJ5A.webp" alt="Opsi menggunakan TypeScript" />
+
+Kita dapat pilih *Yes* dan tekan *enter* untuk menggunakan TypeScript, sebab seperti yang sudah dijelaskan di bagian sebelumnya bahwa kita akan menggunakan TypeScript pada proyek ini.
+
+### Opsi Menggunakan ESLint
+<Image src="/next-js-pragmatis-pengenalan-dan-instalasi/maefUv9RoidkqelZLg6Fww.webp" alt="Opsi menggunakan ESLint" />
+
+ESLint merupakan alat untuk memeriksa kode JavaScript atau TypeScript yang kita tulis sesuai aturan atau tidak. Aturan-aturan tersebut bisa kita tentukan di dalam fail yang umumnya diberi nama *.eslintrc.json.* Next menyediakan aturan ESLint secara bawaan yang dapat kita gunakan di proyek Next ini.
+
+Kendati kita tidak membahas ESLint secara terperinci, namun merupakan praktik yang baik untuk menggunakan ESLint di proyek React kita atau spesifiknya dalam materi ini adalah Next. Jadi, kita dapat pilih *Yes* dan tekan *enter* lagi.
+
+### Opsi Menggunakan Tailwind
+<Image src="/next-js-pragmatis-pengenalan-dan-instalasi/WN9d46AtFjwuwIx63Feo9Q.webp" alt="Opsi menggunakan Tailwind" />
+
+Seperti yang sudah disebutkan sebelumnya bahwa kita akan menggunakan Tailwind sebagai teknik *styling* kita. Tailwind merupakan *framework* CSS dengan pendekatan *atomic*. Ini berarti Tailwind tidak memiliki komponen-komponen bawaan seperti Bootstrap, melainkan Tailwind memiliki sekumpulan *class* kecil yang dapat digabung untuk menciptakan suatu visual komponen tertentu. Kita dapat memilih *Yes* dan tekan tombol *enter*.
+
+### Opsi Menggunakan Direktori src
+<Image src="/next-js-pragmatis-pengenalan-dan-instalasi/uLzwWbolZCX82Rtx--Kt0w.webp" alt="Opsi direktori src" />
+
+Next memungkinkan kita untuk menggunakan struktur direktori alternatif, yaitu direktori *src.* Bila menggunakan direktori *src*, berarti kode aplikasi kita akan ditaruh di dalam direktori tersebut. Beberapa orang menyukai pola ini karena dapat memisahkan antara fail-fail kode aplikasi dan fail-fail kode konfigurasi yang biasanya hidup di dalam direktori *root.*
+
+Demi kesederhanaan, kita pilih *No* agar menggunakan struktur direktori bawaan saja.
+
+### Opsi Menggunakan App Router
+<Image src="/next-js-pragmatis-pengenalan-dan-instalasi/jVnuFdBalwMa4YmeiGINVg.webp" alt="Opsi fitur app router" />
+
+Next memiliki dua opsi *routing*, yaitu App Router dan Pages Router. App Router merupakan sistem *routing* baru milik Next yang mendukung beberapa fitur baru lainnya, seperti *server components*, *streaming*, dan *layouts*. Di sisi lain, Pages Router merupakan sistem *routing* lama milik Next yang masih dapat digunakan hingga saat ini.
+
+Untuk proyek baru sangat disarankan untuk menggunakan App Router karena kita dapat menggunakan fitur-fitur baru Next yang lain. Jadi, pilih *Yes* lagi untuk opsi ini.
+
+### Opsi Import Alias
+<Image src="/next-js-pragmatis-pengenalan-dan-instalasi/vmkVPcnTBibuxtFLTU7_Hg.webp" alt="Opsi import alias" />
+
+Konfigurasi bawaan Next menambahkan *import alias* dengan jalur `@/*`. Ini artinya kita dapat mengimpor fail di dalam kode JavaScript dengan jalur, sebagai contoh, *@/components/Navbar* , alih-alih menggunakan jalur relatif seperti *../components/Navbar*. Kita tidak perlu mengubah ini. Jadi, pilih *No* untuk opsi ini.
+
+### Proses Instalasi Dependencies
+<Image src="/next-js-pragmatis-pengenalan-dan-instalasi/LQJB7zdj0iwKhgfEP-l4nQ.webp" alt="Proses instalasi dependencies" />
+
+Bila kita sudah menjawab semua pertanyaan-pertanyaan sebelumnya, berikutnya Next akan mulai melakukan instalasi paket-paket *dependencies* yang diperlukan untuk proyek Next tersebut. Kita juga dapat melihat daftar *dependencies* yang kita gunakan di dalam fail *package.json*.
+
+Tunggu proses instalasi tersebut hingga selesai. Berapa lama proses ini berlangsung bergantung pada koneksi internet yang kita gunakan.
+
+<Image src="/next-js-pragmatis-pengenalan-dan-instalasi/1HBfTAYD8vIe0tSGpo0niQ.webp" alt="Proses instalasi dependencies selesai" />
+
+Bila sudah selesai, kita dapat masuk ke dalam direktori proyek Next tersebut dengan perintah `cd belajar-next-esensial` dan lihat isi direktorinya dengan perintah `ls`.
+
+<Image src="/next-js-pragmatis-pengenalan-dan-instalasi/M_FAGI_fBdJrWPDOigaj7g.webp" alt="Isi direktori proyek Next" />
+
+Selamat, sampai sini kita sudah berhasil membuat sebuah proyek Next baru! Pada bagian berikutnya kita akan membahas setiap fail dan direktori yang ada di dalam proyek aplikasi Next tersebut.
+
+## Menjalankan Development Server
+
+Bila kita hendak memulai pengembangan di dalam proyek Next, hal utama yang perlu kita lakukan adalah menjalankan *development server.* Kita dapat menjalankannya dengan perintah berikut:
+
+```bash filename="terminal"
+npm run dev
+```
+
+Kita akan melihat informasi alamat web lokal [*https://localhost:3000*](https://localhost:3000), dan beberapa informasi lainnya di *terminal*.
+
+<Image src="/next-js-pragmatis-pengenalan-dan-instalasi/RxxlsN15vs84cuXkeEaeFQ.webp" alt="Menjalankan development server" />
+
+Kita dapat mengakses alamat web tersebut untuk melihat pratinjaunya.
+
+<Image src="/next-js-pragmatis-pengenalan-dan-instalasi/Ecb3X1Jzjfhv04na9Soq9Q.webp" alt="Halaman pertama Next bawaan" />
+
+Halaman tersebut merupakan halaman bawaan dari Next. Tentu kita dapat mengubah-ubah halaman tersebut, dan kita memang akan melakukannya di bab berikutnya.
+
+Untuk menghentikan *developlment server*, kita dapat menekan kombinasi tombol *CTRL-C.*
+
+<Image src="/next-js-pragmatis-pengenalan-dan-instalasi/tvaZ2coUnLTTh7OqTKtAKw.webp" alt="Mengehntikan development server" />
+
+Sekarang kita sudah siap melangkah lebih jauh lagi!
+
+## Menambahkan Folder Ke Project
+
+Editor teks seperti Zed dan VS Code memungkinkan kita untuk menambah folder ke dalam proyek editor tersebut. Ini akan memudahkan kita dalam melakukan navigasi fail dan folder.
+
+Kita akan menambahkan direktori proyek Next kita ke editor. Di Zed, fitur ini dapat diakses dengan tombol kombinasi *CMD-SHIFT-P* dan ketika *“add folder”* untuk menemukan perintah *workspace: add folder to project*.
+
+<Image src="/next-js-pragmatis-pengenalan-dan-instalasi/R6jPrFnp4xUYjXYKn8Ejow.webp" alt="Menambahkan folder ke proyek" />
+
+Berikutnya kita dapat mencari direktori proyek Next sebelumnya kita buat dan tekan tombol *Open*, *OK,* atau semacamnya.
+
+Sekarang kita dapat melihat daftar fail dan direktori proyek Next tersebut di dalam editor teks kita.
+
+<Image src="/next-js-pragmatis-pengenalan-dan-instalasi/sEEeZCaQ-p1AcWp2Ul_q1Q.webp" alt="Daftar fail dan direktori di dalam editor teks" />
+
+Sekarang kita sudah bisa memulai eksplorasi proyek Next lebih jauh lagi.
+
+## Pengenalan Direktori dan Fail
+
+Proyek Next yang kita buat dengan *create-next-app* berisi beberapa fail dan direktori secara bawaan. Memahami peran masing-masin dari mereka akan memudahkan kita bekerja dengan Next.
+
+<Image src="/next-js-pragmatis-pengenalan-dan-instalasi/mtta8mfL-cjQR5sAoIXnKg.webp" alt="Struktur proyek Next" />
+
+Mari kita bahas satu per satu:
+
+### **.git**
+
+Direktori yang digenerasi oleh Git, alat Version Control System. Saat kita membuat proyek Next dengan *create-next-app*, proses tersebut juga akan secara otomatis membuat *repository* untuk proyek Next tersebut.
+
+### .next
+
+Direktori ini digenerasi oleh *compiler* Next, sebagai contoh saat kita menjalankan perintah `npm run dev`, direktori ini akan digenerasi. Berisi informasi terkait aplikasi kita yang digunakan secara internal oleh Next. Umumnya, kita tidak akan berinteraksi dengan direktori ini.
+
+### app
+
+Direktori ini bagian dari Next dan spesifiknya merupakan bagian dari App Router. Kita akan banyak berinteraksi dengan direktori ini karena di dalamnya kita dapat membuat *route, layout, styling* dan yang lainnya. Terdapat beberapa fail bawaan dan salah satunya adalah *page.tsx*, fail ini yang kita lihat sebelumnya saat mengakses alamat lokal aplikasi Next di *browser.*
+
+### **node_modules**
+
+Direktori ini bagian dari Node.js dan spesifiknya npm. Berisi banyak *dependencies* yang terinstal di dalam proyek Next kita. Kita juga tidak akan berinteraksi dengan direktori ini secara langsung, melainkan melalui program npm, seperti menambah atau menghapus paket *dependencies*.
+
+### public
+
+Direktori ini berisi fail-fail statis, seperti gambar atau video. Setiap fail yang kita taruh di sini akan tersedia secara publik dan kita dapat mengaksesnya dengan jalur */nama-file.ext.* Secara bawaan, Next memiliki menaruh dua fail logo, salah satunya bernama *vercel.svg*. Ini berarti kita dapat mengakses fail tersebut di lokal dengan jalur [*http://localhost:3000/vercel.svg*](http://localhost:3000/vercel.svg). Tentu, kita dapat menaruh fail-fail statis kita sendiri di sini nantinya.
+
+### .gitignore
+
+Fail ini bagian dari Git dan berisi daftar fail dan direktori yang tidak akan ikut diunggah ke *remote repository.*
+
+### next.config.mjs
+
+Fail ini bagian dari Next dan berisi konfigurasi-konfigurasi Next. Secara bawaan, tidak ada konfigurasi tertentu apapun. Namun, kita dapat menyesuaikan prilaku Next dengan menulis konfigurasi di dalamnya, seperti mengaktifkan atau mematikan suatu fitur tertentu.
+
+### postcss.config.js
+
+Fail ini bagian dari PostCSS dan berisi konfigurasi Tailwind. Tailwind sendiri berjalan di atas PostCSS, itu mengapa kita membutuhkan PostCSS.
+
+### .eslintrc.json
+
+Fail ini berisi aturan-aturan ESLint. Secara bawaan, Next menyediakan konfigurasi ESLint dengan nama *next/core-web-vitals*. Tentu, kita dapat mengatur aturan-aturan di dalam fail ini sesuai kebutuhan.
+
+### package-lock.json
+
+Fail ini bagian dari Node.js dan spesifiknya npm. Berisi rincian informasi terkait paket-paket dari *dependencies* yang kita gunakan di proyek Node.js dalam hal ini adalah Next.
+
+### package.json
+
+Fail ini bagian dari Node.js dan spesifiknya npm. Umumnya kita menulis sendiri isi konten di dalamnya, namun karena kita menggunakan *create-next-app* sehingga hal tersebut sudah dilakukan oleh Next. Kita dapat mengubah isi fail ini sesuai dengan kebutuhan kita, seperti menambah atau menghapus suatu *dependencies* atau menulis konfigurasi tertentu.
+
+### tsconfig.json
+
+Fail ini bagian dari TypeScript. Berisi konfigurasi TypeScript termasuk *import alias* yang pernah kita bahas sebelumnya pada saat proses instalasi proyek Next.
+
+### README.md
+
+Fail ini bagian dari Next. Berisi beberapa informasi dasar, seperti instruksi untuk menjalankan *development server* dan juga informasi sumber daya untuk mempelajari Next. Tentu, ditulis dalam format Markdown.
+
+### next-env.d.ts
+
+Fail ini bagian dari TypeScript. Berisi informasi *type* proyek Next, fail ini otomatis digenerasi di oleh Next dan setiap perubahan yang kita lakukan di dalamnya akan ditimpa dengan hasil generasi baru.
+
+### tailwind.config.ts
+
+Fail ini bagian dari Tailwind. Berisi konfigurasi Tailwind, kita dapat menyesuaikan konfigurasi di dalamnya sesuai kebutuhan, seperti mengubah palet warna atau mengubah jenis *font*.
+
+## Rangkuman
+
+Pada bab ini kita sudah membahas beberapa hal dasar dari Next:
+
+-   Untuk membuat aplikasi Next, kita perlu menjalankan perintah `npx create-next-app@latest`
+-   Untuk menjalankan *development server*, kita perlu menjalankan perintah `npm run dev` dan untuk menghentikannya kita dapat menggunakan kombinasi tombol *CTRL-C*

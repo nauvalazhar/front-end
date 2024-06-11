@@ -1,0 +1,32 @@
+{
+  "index": {
+    "type": "page",
+    "title": "belajarfrontend.org",
+    "display": "hidden",
+    "theme": {
+      "layout": "raw"
+    }
+  },
+  "nextjs": {
+    "type": "page",
+    "display": "hidden",
+    "title": "Next.js Esensial"
+  },
+  "pelajaran": {
+    "title": "Pelajaran",
+    "type": "menu",
+    "items": {
+      "nextjs": {
+        "title": "Next.js Esensial",
+        "href": "/nextjs"
+      }
+    }
+  },
+  "tentang": {
+    "title": "Tentang",
+    "type": "page",
+    "theme": {
+      "typesetting": "article"
+    }
+  }
+}

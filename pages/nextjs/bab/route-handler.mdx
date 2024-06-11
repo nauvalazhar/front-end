@@ -1,0 +1,156 @@
+import { Image } from '@/components/image';
+
+# Route Handler
+
+Pada versi Next yang lebih lawas, ia memiliki fitur API Routes yang dapat kita gunakan untuk melakukan *form handling* setara dengan yang kita telah pelajari di versi Next yang baru ini dengan Server Action. Sementara di fitur *app router* ini, terdapat fitur Route Handler yang setara dengan API Routes di versi lawas atau *pages router*.
+
+Hanya saja, karena keberadaan Server Action, banyak kasus dapat ditangani dengan fitur tersebut, seperti *form handling* contohnya. Namun terdapat beberapa kasus yang dapat kita atasi dengan Route Handler, salah satunya seperti membuat *webhook* untuk melakukan *cache revalidation* atau melakukan suatu aksi spesifik yang lain.
+
+Sebenarnya, kita sudah menggunakan fitur ini saat mempelajari bab *data fetching* untuk melakukan *cache revalidation*. Seperti yang sudah dijelaskan sebelumnya, tidak terbatas hanya pada *cache revalidation*, fitur ini juga kita dapat manfaatkan untuk kebutuhan yang lain, misal, *endpoint masking*. Jadi, alih-alih langsung melakukan permintaan dari *client components* ke layanan *back-end*, kita dapat melakukan permintan ke Route Handler, dan Route Handler yang akan melakukan permintaan ke layanan *back-end*. Dengan seperti itu, kita dapat mengurangi risiko data sensitif terekspos ke publik atau paling tidak URL layanan *back-end* tidak terlihat ke publik.
+
+## Route Handler Dasar
+
+Untuk membuat Route Handler, kita dapat membuat sebuah fail bernama *route.ts* atau *route.js* di dalam sebuah direktori, mirip seperti saat kita membuat halaman dengan *page.tsx*. Hanya saja, di dalam satu direktori tidak boleh ada *page.tsx* dan *route.ts,* karena akan menyebabkan konflik*.*
+
+Sebagai contoh, kita dapat membuat sebuah Route Handler dengan jalur */api/user* seperti ini:
+
+```tsx filename="app/api/user/route.ts"
+export async function GET() {  
+  return Response.json({  
+    message: 'This is /api/user route',  
+  });  
+}
+```
+
+Ketika kita akses dengan alamat lokal [*http://localhost:3000/api/user*](http://localhost:3000/api/user.) dan akan menampilkan respons JSON.
+
+<Image src="/next-js-pragmatis-route-handler/T5TviWWH76nJyJFGfUaJQA.webp" alt="Route Handler /api/user" />
+
+Seperti yang kita lihat, kita dapat menggunakan Web API Response standar. Tentu, selain itu, kita juga dapat menggunakan Web API Request untuk mendapatkan *detail* dari *request* yang datang.
+
+Sekarang, kita dapat menambahkan *parameter* `request: Request` pada fungsi `GET` tersebut:
+
+```tsx filename="app/api/user/route.ts" /request: Request/ {2}
+export async function GET(request: Request) {  
+  console.log(request.url);  
+  
+  return Response.json({  
+    message: 'This is /api/user route',  
+  });  
+}
+```
+
+Selain `url`, kita dapat mendapatkan data yang lain, tentunya.
+
+## Membuat Endpoint Masking
+
+Kadangkala kita ingin membuat permintaan ke layanan *back-end* dari *client components*. Masalahnya, di waktu yang sama kita tidak ingin mengekspos URL layanan *back-end* tersebut di *browser*. Untuk itu, kita dapat melakukan *endpoint masking* atau secara umum adalah *proxy*. Ini teknik sederhana untuk meneruskan permintaan dari *client* ke layanan *back-end* sesungguhnya melalui Route Handler.
+
+Sebagai contoh, kita dapat membuat sebuah halaman baru di *app/masking/page.tsx*:
+
+```tsx filename="app/masking/page.tsx"
+export default function MaskingPage() {  
+  return (  
+    <section>  
+      <p>Masking page</p>  
+    </section>  
+  );  
+}
+```
+
+Kita buat seperti itu untuk sementara.
+
+Sekarang kita akan membuat fail baru di *app/masking/ClientRequest.tsx*:
+
+```tsx filename="app/masking/ClientRequest.tsx"
+'use client';  
+  
+import {useEffect, useState} from 'react';  
+  
+export default function ClientRequest() {  
+  const [user, setUser] = useState(null);  
+  
+  useEffect(() => {  
+    fetch('/api/user')  
+     .then(res => res.json())  
+     .then(data => setUser(data));  
+  }, []);  
+  
+  if (!user) {  
+    return <div>Requesting...</div>;  
+  }  
+  
+ return (  
+   <div>  
+     <h1>Client request to /api/user</h1>  
+     <p>{JSON.stringify(user)}</p>  
+   </div>  
+  );  
+}
+```
+
+Kode di atas merupakan pendekatan umum yang sering digunakan untuk melakukan permintaan HTTP di aplikasi React.
+
+Mari kita buka kembali fail *app/api/user/route.ts.* Di dalam fail tersebut, kita akan melakukan permintaan data ke layanan back-end:
+
+```tsx filename="app/api/user/route.ts" {2-5}
+export async function GET(request: Request) {  
+  const res = await fetch('http://localhost:3001/user');  
+  const result = await res.json();  
+  
+  return Response.json(result);  
+}
+```
+
+Kini kita bisa tampilkan komponen `ClientRequest` di halaman */masking*:
+
+```tsx filename="app/masking/page.tsx" {1,6}
+import ClientRequest from './ClientRequest';  
+  
+export default function MaskingPage() {  
+  return (  
+    <section>  
+      <ClientRequest />  
+    </section>  
+  );  
+}
+```
+
+Bila kita akses halaman */masking* di *browser*, itu akan menampilkan data *user* yang diminta ke Route Handler dengan jalur */api/user*.
+
+<Image src="/next-js-pragmatis-route-handler/6jdCcSJmpfWltVKJO1nHog.webp" alt="Melakukan permintaan data ke Route Handler" />
+
+Dengan seperti ini, *browser* tidak mengetahui *endpoint* sesungguhnya untuk mendapatkan data *user* tersebut.
+
+## Method Lain Pada Route Handler
+
+Kita sudah membuat Route Handler sebelumnya, bila kita lihat kembali kode tersebut, terdapat ekspor fungsi dengan nama `GET`. Nama tersebut sama dengan *method* di HTTP, sehingga bukan hanya GET, kita juga dapat menggunakan beberapa *method* lain yang didukung oleh Next:
+
+-   GET
+-   POST
+-   PUT
+-   PATCH
+-   DELETE
+-   HEAD
+-   OPTIONS
+
+Sebagai contoh untuk *method* `POST`:
+
+```tsx
+export async function POST() {  
+  return Respons.json({  
+    message: 'This is a POST Route Handler',  
+  });  
+}
+```
+
+Tentu, kita dapat menyesuaikannya dengan kebutuhan.
+
+## Rangkuman
+
+Pada bab ini kita sudah membahas beberapa hal:
+
+-   Next memiliki fitur Route Handler untuk membuat *custom request handler*
+-   Route Handler setara dengan API Routes di *pages router*
+-   Route Handler berguna untuk beberapa kasus, seperti *cache revalidation*, *webhook,* atau *endpoint masking*
+-   Selain GET, Next juga mendukung beberapa *method* yang lain, seperti `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, dan `OPTIONS`

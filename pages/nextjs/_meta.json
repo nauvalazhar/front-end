@@ -1,0 +1,22 @@
+{
+  "index": "Pengantar",
+  "-- Prolog": {
+    "type": "separator",
+    "title": "Prolog"
+  },
+  "tentang-penulis": "",
+  "tentang-kredibel": "",
+  "terima-kasih": "",
+  "konvensi": "",
+  "-- Pelajaran": {
+    "type": "separator",
+    "title": "Pelajaran"
+  },
+  "bab": "Bab",
+  "-- Penutup": {
+    "type": "separator",
+    "title": "Penutup"
+  },
+  "penutup": "Penutup",
+  "tautan": "Tautan Bermanfaat"
+}

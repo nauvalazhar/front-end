@@ -1,0 +1,253 @@
+import { Image } from '@/components/image';
+
+# Image
+
+Secara mendasar kita dapat menampilkan gambar di web dengan *tag* `<img>` dan memberikan jalur ke fail gambar yang hendak ditampilkan. Kita dapat melakukan hal serupa di Next. Namun, Next memiliki komponen khusus untuk menampilkan gambar, yaitu komponen *Image*.
+
+Gambar yang ditampilkan dengan komponen tersebut akan dioptimisasi oleh Next, seperti agar menghindari *layout shift*, optimisasi ukuran fail, hingga *lazy loading* agar gambar ditampilkan ketika akan memasuki *viewport.*
+
+## Menggunakan Komponen Image
+
+Terdapat beberapa metode untuk menampilkan gambar dengan komponen *Image* di Next, yang paling mendasar adalah dengan menggunakan metode *static import*. Dengan metode ini kita dapat mengimpor fail gambar lokal di dalam fail JSX secara langsung dan menggunakannya di komponen *Image*.
+
+Sebagai contoh, kita dapat menampilkan gambar logo Next yang sudah ada di dalam direktori *public* secara bawan:
+
+<Image src="/next-js-pragmatis-image/LXfyydQWzEdB868Gpuv15Q.webp" alt="Isi dari direktori public" />
+
+Mari kita tampilkan gambar tersebut di halaman *index*, kita dapat menghapus semua elemen di dalam fail *app/page.tsx* terlebih dahulu hingga menyisakan struktur seperti ini:
+
+```tsx filename="app/page.tsx"
+import Image from 'next/image';  
+  
+export default function Home() {  
+  return (  
+      
+  );  
+}
+```
+
+Kini kita dapat menampilkan gambar logo Next seperti ini:
+
+```tsx filename="app/page.tsx" {2,5}
+import Image from 'next/image';  
+import logoNext from '@/public/next.svg';  
+  
+export default function Home() {  
+  return <Image src={logoNext} alt="Logo Next" className="invert" />;  
+}
+```
+
+Karena logo Next memiliki warna yang sama dengan warna latar, maka kita dapat memberikan *class* `invert` untuk membalikan warna logonya.
+
+<Image src="/next-js-pragmatis-image/Ycqf0zqvuTC48Jm23PxLjw.webp" alt="Menampilkan logo Next" />
+
+Bila kita menggunakan metode *static import* ini, Next akan secara otomatis menentukan lebar dan tinggi dari gambar tersebut. Kendati demikian, kita dapat mengatur lebar dan tinggi gambar melalui *props* `width` dan `height`. Sebagai contoh mengatur lebar gambar dengan `width`:
+
+```tsx filename="app/page.tsx" /width={200}/
+import Image from 'next/image';  
+import logoNext from '@/public/next.svg';  
+  
+export default function Home() {  
+  return (  
+    <Image src={logoNext} alt="Logo Next" className="invert" width={200} />  
+  );  
+}
+```
+
+Apabila kita *inspect* komponen tersebut akan menghasilkan struktur DOM seperti berikut:
+
+<Image src="/next-js-pragmatis-image/OQoJSTsUiTh5qw3PsoWzpQ.webp" alt="Hasil struktur DOM komponen Image Next" />
+
+Bukan hanya secara otomatis menentukan tinggi gambar, ia juga secara otomatis memberikan *native lazy loading* melalui `loading="lazy"`, ini akan membuat gambar hanya akan dimuat ketika memasuki *viewport*. Kita dapat menguji ini dengan memberikan elemen kosong agar gambar tersebut turun ke bawah hingga tidak terlihat di *viewport*:
+
+```tsx filename="app/page.tsx" {6,7,9}
+import Image from 'next/image';  
+import logoNext from '@/public/next.svg';  
+  
+export default function Home() {  
+  return (  
+    <>  
+      <div className="h-[2000px]" />  
+      <Image src={logoNext} alt="Logo Next" className="invert" width={200} />  
+    </>  
+  );  
+}
+```
+
+Saat pertama kali halaman dimuat, posisi *scroll* masih berada di atas dan kita dapat memastikan gambar belum di muat melalui *tab network* di *dev tools*:
+
+<Image src="/next-js-pragmatis-image/uM-3DMjBjfjz3QKs9CT_DA.webp" alt="Gambar masih belum dimuat" />
+
+Apabila kita men-*scroll* halaman ke bawah hingga gambar terlihat di *viewport,* maka gambar akan mulai dimuat oleh *browser*:
+
+<Image src="/next-js-pragmatis-image/VHOJZF39DY7NxbtMmZhdkg.webp" alt="Gambar dimuat ketika muncul di viewport" />
+
+Prilaku antara *browser* Chrome dan Firefox agak sedikit beda dalam hal memuat gambar *lazy load.* Chrome menampilkan gambar lebih awal kendati gambar masih agak jauh terlihat dari *viewport,* sedangkan Firefox memuat gambar ketika *scroll* mendekati gambar.
+
+## Memprioritaskan Gambar
+
+Secara bawaan gambar yang ditampilkan dengan komponen *Image* akan secara otomatis menggunakan fitur *lazy loading*, ini artinya gambar akan ditampilkan hanya ketika memasuki *viewport*. Dalam beberapa kasus, kita mungkin hendak memprioritaskan gambar agar dimuat sesegera mungkin, seperti gambar yang besar, misalnya. Untuk itu, kita dapat menggunakan *props* `priority`:
+
+```tsx filename="app/page.tsx" /priority/
+import Image from 'next/image';  
+import logoNext from '@/public/next.svg';  
+  
+export default function Home() {  
+  return (  
+    <>  
+      <div className="h-[2000px]" />  
+      <Image  
+        src={logoNext}  
+        alt="Logo Next"  
+        className="invert"  
+        width={200}  
+        priority  
+      />  
+    </>  
+  );  
+}
+```
+
+Dengan seperti ini, terlepas apakah gambar terlihat di *viewport* atau tidak, *browser* akan memuat gambar sesegera mungkin.
+
+## Menampilkan Gambar Eksternal
+
+Metode menampilkan gambar dengan *static import* hanya berlaku untuk gambar lokal atau gambar yang berada di dalam proyek yang sama. Apabila lokasi gambar berada di luar proyek, seperti berada di suatu *cloud storage* atau mungkin CMS (Content Management System), kita dapat menampilkannya seperti menampilkan gambar dengan `<img>`.
+
+```tsx filename="app/page.tsx"
+import Image from 'next/image';  
+  
+export default function Home() {  
+  return (  
+    <Image  
+      src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=1000"  
+      alt="Gambar Kucing"  
+    />  
+  );  
+}
+```
+
+Bila kita akses halaman *index* sekarang, akan muncul sebuah galat:
+
+<Image src="/next-js-pragmatis-image/FfZYhtAHhIhTMjEaqxbltQ.webp" alt="Galat karena width dan height wajib" />
+
+Ketika kita menampilkan gambar dengan metode seperti ini, atau bukan *static import*, kita perlu menentukan lebar dan tinggi gambar tersebut secara manual.
+
+```tsx filename="app/page.tsx" {8-9}
+import Image from 'next/image';  
+  
+export default function Home() {  
+  return (  
+    <Image  
+      src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=1000"  
+      alt="Gambar Kucing"  
+      width={1000}  
+      height={700}  
+    />  
+  );  
+}
+```
+
+Sekarang, apabila kita buka kembali halaman *index*, galatnya kini berbeda:
+
+<Image src="/next-js-pragmatis-image/CzBQeWxJXHMX3sKLJE2q2w.webp" alt="Galat saat menampilkan gambar eksternal" />
+
+Untuk mengatasi ini, kita perlu memberitahu Next bahwa *hostname* dari gambar tersebut aman. Kita dapat melakukannya dengan menulis konfigurasi di fail *next.config.mjs*:
+
+```tsx filename="next.config.mjs" {3-5}
+/** @type {import('next').NextConfig} */  
+const nextConfig = {  
+  images: {  
+    domains: ['images.unsplash.com'],  
+  },  
+};  
+  
+export default nextConfig;
+```
+
+Kini gambar berhasil ditampilkan:
+
+<Image src="/next-js-pragmatis-image/Hy7X2ydXciozE1059_H5rg.webp" alt="Menampilkan gambar eksternal" />
+
+Selain itu, kita juga dapat menampilkan gambar lokal dengan metode yang sama, seperti ini:
+
+```tsx filename="app/page.tsx" {6}
+import Image from 'next/image';  
+  
+export default function Home() {  
+  return (  
+    <Image  
+      src="/next.svg"  
+      alt="Logo Next"  
+      width={1000}  
+      height={700}  
+      className="invert"  
+    />  
+  );  
+}
+```
+
+Kendati demikian, bila kita menampilkan gambar lokal, lebih baik menggunakan *static import,* karena Next akan secara otomatis menentukan lebar dan tinggi gambar.
+
+## Gambar Tanpa Lebar dan Tinggi
+
+Pada kasus nyata, seringkali kita tidak tahu ukuran dimensi suatu gambar yang hendak ditampilkan, seperti gambar dari CMS salah satunya. Sehingga kita ingin gambar tersebut mengikut lebar dan tinggi sebuah *container.* Untuk kasus semacam ini, kita dapat menggunakan *props* `fill` di komponen *Image*.
+
+```tsx filename="app/page.tsx" /fill/
+import Image from 'next/image';  
+  
+export default function Home() {  
+  return (  
+    <div className="relative w-72 h-40">  
+      <Image  
+        src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=1000"  
+        alt="Gambar Kucing"  
+        fill  
+      />  
+    </div>  
+  );  
+}
+```
+
+Ketika kita menggunakan `fill`, elemen gambar tersebut akan memiliki posisi `absolute`, sehingga kita perlu membungkusnya dengan sebuah elemen yang memiliki posisi `relative`. Hal ini bertujuan, agar gambar diposisikan di dalam *container* tersebut, alih-alih di *viewport*.
+
+Kini hasilnya seperti berikut:
+
+<Image src="/next-js-pragmatis-image/joMZh3AB8dZdA67DMI2GKA.webp" alt="Gambar dengan props `fill`" />
+
+Lebar dan tinggi gambar mengikuti lebar dan tinggi *container* `div` dengan posisi `relative` tersebut. Ketika kita menggunakan `fill`, umumnya kita perlu mengkombinasikannya dengan `object-fit` CSS. Hal ini bertujuan untuk mengatur bagaimana gambar mengisi ruang elemen tersebut:
+
+```tsx filename="app/page.tsx" {10}
+import Image from 'next/image';  
+  
+export default function Home() {  
+  return (  
+    <div className="relative w-72 h-40">  
+      <Image  
+        src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=1000"  
+        alt="Gambar Kucing"  
+        fill  
+        className="object-cover"  
+      />  
+    </div>  
+  );  
+}
+```
+
+Dengan memberikan `object-cover`, kini gambar akan dipotong agar menyesuaikan ukuran *container*-nya.
+
+<Image src="/next-js-pragmatis-image/djwDReWUYHb2ec8i_-SPGQ.webp" alt="Gambar tidak lagi dipaksa hingga menjadi pipih" />
+
+Seperti yang bisa dilihat, gambar terlihat lebih baik dari sebelumnya.
+
+## Rangkuman
+
+Kita sudah mempelajari beberapa hal di bab ini:
+
+-   Komponen *Image* untuk menampilkan gambar di Next
+-   Gambar lokal dapat diimpor langsung ke dalam JSX dengan *static import*
+-   Next akan secara otomatis menentukan lebar dan tinggi gambar ketika menggunakan *static import*
+-   Gambar eksternal dapat ditampilkan seperti pada elemen `<img>`
+-   Konfigurasi diperlukan untuk memberitahu Next bahwa *hostname* dari gambar eskternal aman
+-   Lebar dan tinggi gambar perlu diatur secara manual ketika menampilkan gambar eksternal
+-   Untuk gambar yang tidak diketahui lebar dan tingginya, dapat menggunakan `fill` untuk mengikuti dimensi *container*

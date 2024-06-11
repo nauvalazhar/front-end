@@ -1,0 +1,17 @@
+article figure {
+  margin: 20px 0;
+  text-align: center;
+  img {
+    margin: 0 auto;
+  }
+  figcaption {
+    margin-top: 5px;
+    font-size: 14px;
+    font-style: italic;
+  }
+}
+
+.nextra-filetree {
+  display: flex;
+  justify-content: center;
+}

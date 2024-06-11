@@ -1,0 +1,128 @@
+import { Image } from '@/components/image';
+
+# Streaming
+
+Saat membangun aplikasi *front-end* yang kompleks, seringkali terdapat beberapa bagian yang cukup lama untuk ditampilkan. Hal ini dapat disebabkan oleh beberapa hal, seperti proses *data fetching* yang lama, atau karena kalkulasi yang berat. Umumnya, dalam situasi semacam itu kita sebagai pengembang dapat menampilkan *loading,* entah sekadar animasi *spinner* atau mungkin yang lebih niat seperti *loading skeleton*.
+
+Next mengadopsi fitur React yang dapat membantu kita dalam situasi semacam ini, yaitu fitur Streaming. Fitur tersebut dibangung di atas fitur React Suspense, memungkinkan kita untuk menampilkan beberapa bagian dari halaman sesegera mungkin tanpa harus menunggu bagian yang lain selesai di-*render.* Selama bagian yang lain masih dalam proses *render* oleh Next, kita dapat menampilkan tampilan *loading* di bagian tersebut atau di tingkat halaman.
+
+## Streaming di Tingkat Halaman
+
+Kita dapat menggunakan fitur *streaming* di tingkat halaman dengan membuat sebuah fail *loading.tsx* di dalam direktori yang sama halaman tersebut. Anggap saja kita hendak menampilkan *loading* di halaman */posts*, kita dapat membuat fail *loading.tsx* di direktori *app/posts*:
+
+```tsx filename="app/posts/loading.tsx"
+export default function Loading() {  
+  return <div>Loading</div>;  
+}
+```
+
+Bila kita akses kembali halaman */posts*, kita tidak dapat begitu melihat bedanya atau tidak terlihat tampilan *loading* tersebut. Untuk itu, kita dapat melakukan simulasi jaringan yang lambat pada halaman tersebut. Buka kembali fail *app/posts/page.tsx,* tambahkan bagian `setTimeout` sebelum pemanggilan fungsi `fetch`:
+
+```tsx filename="app/posts/page.tsx" {3}
+async function getPosts(): Promise<Post[]> {  
+  // simulate a slow network  
+  await new Promise(resolve => setTimeout(resolve, 1000));  
+  
+...
+```
+
+Dengan demikian, apabila kita akses kembali halaman */posts*, kita akan melihat tampilan *loading* sebelum data *posts* ditampilkan.
+
+<Image src="/next-js-pragmatis-streaming/Tx34L-32M9Ou4nM315XTjQ.webp" alt="Tampilan loading terlihat sebelum halaman menampilkan data posts" />
+
+Tampilan *loading* tersebut adalah yang kita buat pada fail *app/posts/loading.tsx*.
+
+Seperti yang kita lihat di halaman tersebut, kendati data masih dalam proses *fetch*, bagian halaman yang lain sudah dapat di-*render*, sehingga pengguna tidak perlu menunggu seluruh bagian halaman selesai di-*render* untuk melihat halaman tersebut. Dengan seperti itu, pengguna bisa langsung berinteraksi dengan bagian yang lain sementara bagian yang lain halaman tersebut masih dalam proses *render*.
+
+Pada kasus nyata, fitur *streaming* sangat berguna pada kasus seperti saat kita membangun halaman produk yang memiliki bagian ulasan atau halaman *single post* yang memiliki bagian komentar. Bagian ulasan atau komentar ini dapat di-*stream*, sehingga halaman tersebut tidak perlu menunggu bagian tersebut selesai di-*render*. Untuk itu, kita akan bahas di bagian berikutnya mengenai *streaming* di komponen yang spesifik.
+
+## Streaming Komponen Spesifik
+
+Pada pembahasan ini kita akan membuat contoh yang dibuat-buat, yaitu membuat komponen komentar di halaman *app/posts/[id]/page.tsx*. Pertama-tama, kita akan membuat komponen komentarnya terlebih dahulu. Buat sebuah fail baru di jalur *app/posts/[id]/Comments.tsx*:
+
+```tsx filename="app/posts/[id]/Comments.tsx"
+async function getComments() {  
+  // fake API call  
+  await new Promise(resolve => setTimeout(resolve, 2000));  
+}  
+  
+export default async function Comments() {  
+  await getComments();  
+  
+  return (  
+    <section>  
+      <h2>Comments</h2>  
+      <p>This is just a placeholder for the comments section.</p>  
+    </section>  
+  );  
+}
+```
+
+Sekarang buka kembali fail *app/posts/[id]/page.tsx* untuk mengimpor dan menampilkan komponen `Comments`:
+
+```tsx filename="app/posts/[id]/page.tsx" {1,16}
+import Comments from './Comments';  
+  
+...  
+  
+export default async function SinglePost({  
+  params: {id},  
+}: {  
+  params: {id: string};  
+}) {  
+  const post = await getPost(id);  
+  
+  return (  
+    <section>  
+      <h1 className="text-xl font-semibold">{post.title}</h1>  
+      <p>{post.body}</p>  
+      <Comments />  
+    </section>  
+  );  
+}
+```
+
+Bila kita kembali ke halaman */posts* dan pergi ke salah satu *post* dengan mengklik tombol “*Read More*”, halaman tersebut akan menampilkan *loading* yang sama dengan halaman */posts,* sebelum halaman tersebut menampilkan data *post* dan komponen `Comments`.
+
+<Image src="/next-js-pragmatis-streaming/4_ADk1fCAMDJShnfJ7kDDQ.webp" alt="Tampilan loading yang sama dengan /posts" />
+
+Hal ini disebabkan fail *loading.tsx* juga berlaku pada halaman di bawah direktori yang sama, dalam hal ini halaman *app/posts/[slug]/page.tsx* juga berada di dalam direktori yang sama dengan *app/posts/page.tsx*. Ini bagus, tapi ini bukan yang kita mau. Sebab dalam kasus ini, bagian `Comments` yang menyebabkan halaman tersebut membutuhkan waktu lama untuk di-*render*. Untuk itu, kita dapat membungkus komponen `Comments` di halaman *app/posts/[id]/page.tsx* dengan `Suspense` secara manual:
+
+```tsx filename="app/posts/[id]/page.tsx" {1,16-18}
+import {Suspense} from 'react';  
+  
+...  
+  
+export default async function SinglePost({  
+  params: {id},  
+}: {  
+  params: {id: string};  
+}) {  
+  const post = await getPost(id);  
+  
+  return (  
+    <section>  
+      <h1 className="text-xl font-semibold">{post.title}</h1>  
+      <p>{post.body}</p>  
+      <Suspense fallback={<p>Loading comments...</p>}>  
+        <Comments />  
+      </Suspense>  
+    </section>  
+  );  
+}
+```
+
+Kini apabila kita akses kembali halaman *single post*, halaman tersebut akan menampilkan *loading* di bagian `Comments` saja, sementara bagian yang lain akan ditampilkan ketika selesai di-*render* tanpa harus menunggu komponen `Comments` selesai di-*render*:
+
+<Image src="/next-js-pragmatis-streaming/Uch-6iryIs3H4T8_2JvD0g.webp" alt="Tampilan loading hanya pada bagian Comments" />
+
+Ini sangat berguna ketika kita membuat aplikasi yang lebih kompleks seperti halaman *dashboard* yang menampilkan pelbagai macam data pada komponen terpisah. Dengan adanya *streaming,* kita dapat memisahkan data yang berbeda menjadi komponen terpisah dan membungkusnya dengan komponen `Suspense` agar tidak memblok keseluruhan proses *render* halaman.
+
+## Rangkuman
+
+Pada bab ini kita sudah mempelajari beberapa hal:
+
+-   Next memiliki fitur *streaming* yang merupakan fitur React secara mendasar
+-   Fitur *streaming* dibangun di atas fitur React Suspense
+-   Untuk melakukan *streaming* di tingkat halaman dapat dilakukan dengan fail *loading.tsx*
+-   Untuk melakukan *streaming* di komponen yang spesifik dapat menggunakan `Suspense`

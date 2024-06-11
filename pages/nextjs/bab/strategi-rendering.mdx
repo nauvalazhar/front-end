@@ -1,0 +1,52 @@
+import { Image } from '@/components/image';
+
+# Strategi Rendering
+
+Next memiliki dua strategi *rendering,* yaitu Static Rendering dan Dynamic Rendering. Keduanya dapat digunakan untuk yang berbeda, sehingga dapat memberikan dampak yang optimal.
+
+## Static Rendering
+
+Secara bawaan metode Static Rendering digunakan oleh Next untuk setiap halaman. Metode *rendering* ini akan melakukan *render* halaman pada saat proses *build time* dan saat proses *revalidation.* Proses *build time* ini saat kita sebagai pengembang menjalankan perintah `npm run build` untuk meng-*compile* aplikasi Next untuk siap dijalankan di lingkungan produksi.
+
+Hasil dari proses *rendering* ini akan di-*cache* atau yang oleh Next disebut dengan Full Route Cache, *cache* ini terdiri dari HTML dan RSC Payload, sehingga halaman yang di-*render* dengan metode ini dapat ditampilkan lebih cepat, sebab tidak perlu ada proses *rendering* saat *request time*.
+
+Metode *rendering* ini berguna untuk halaman yang tidak memiliki data atau dengan data yang sama untuk semua pengguna, seperti data produk.
+
+## Dynamic Rendering
+
+Di sisi lain, Next memiliki Dynamic Rendering. Metode *rendering* ini melakukan *render* halaman pada saat *request time* atau saat pengguna mengunjungi halaman melalui *browser*. Tidak ada *cache* secara bawaan yang dihasilkan dari metode *rendering* ini, sehingga data yang ditampilkan adalah *real-time* atau data yang selalu *update*.
+
+Metode *rendering* ini berguna untuk kasus ketika kita hendak menampilkan data yang bergantung pada data pengguna, seperti *dashboard* atau data profil pengguna. Selain itu, dengan metode *rendering* ini kita dapat mengakses informasi yang hanya diketahui saat *request time*, seperti *cookies* atau *parameter* URL.
+
+Suatu halaman akan di-*render* secara *dynamic* apabila Next menemukan bahwa halaman tersebut menggunakan fungsi dinamis, seperti `cookies()`, `headers()`, menggunakan *prop* `searchParams`, atau menonaktifkan *cache*.
+
+Sebagai contoh, halaman berikut akan di-*render* secara *dynamic*:
+
+```tsx
+export default function Page({  
+  searchParams,  
+}: {  
+  searchParams: { id: string; }  
+}) {  
+  return <h1>ID: {searchParams.id}</h1>  
+}
+```
+
+Kita tidak perlu menentukan secara manual apakah suatu halaman perlu di-*render* secara *static* atau *dynamic,* sebab Next sudah menentukannya secara otomatis berdasarkan kondisi-kondisi yang sudah dijelaskan.
+
+## Pengujian
+
+Kita dapat menjalankan perintah `npm run build` untuk mengujinya. Hasilnya kira-kira seperti ini:
+
+<Image src="/next-js-pragmatis-strategi-rendering/NEJlZ9fP18d4oTsit0C5zg.webp" alt="Hasil dari perintah build" />
+
+Seperti yang dapat dilihat, halaman yang di-*render* secara *static* akan ditandai dengan simbol “○”; sedangkan yang di-*render* secara *dynamic* akan ditandai dengan simbol “λ”. Dalam proyek Next kita ini hampir semua halaman di-*render* secara *static*, kecuali (sebagai contoh) halaman */posts*. Halaman tersebut di-*render* secara *dynamic* karena di dalamnya terdapat opsi untuk menonaktifkan *cache ,* yaitu `force-dynamic`.
+
+## Rangkuman
+
+Bab ini membahas kedua strategi *rendering* yang dimiliki Next:
+
+-   Semua halaman akan di-*render* secara *static* oleh Next secara bawaan
+-   Suatu halaman akan di-*render* secara *dynamic* apabila halaman tersebut menggunakan fungsi dinamis
+-   Fungsi dinamis yang dimaksud oleh Next adalah `cookies()`, `headers()`, *prop* `searchParams` halaman, atau menonaktifkan *cache*
+-   Next secara otomatis menentukan strategi *rendering* suatu halaman

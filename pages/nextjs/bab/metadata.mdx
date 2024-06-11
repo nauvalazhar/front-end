@@ -1,0 +1,263 @@
+import { Image } from '@/components/image';
+
+# Metadata
+
+Kita sudah membahas seklias tentang fitur *metadata* di Next pada saat kita memabahs tentang *layout*. Fitur *metadata* ini membantu kita untuk mengatur judul halaman, deskripsi, dan bagian metadata lainnya yang umumnya kita atur secara manual melalui *tag* `<meta>`.
+
+Next, sebenarnya, memiliki tiga cara untuk menentukan *metadata*: *static, dynamic,* dan *file-based*. Metode *static* berguna untuk mengatur *metadata* yang kita sudah tahu nilainya; *dynamic* berguna untuk mengatur *metadata* yang kita belum tahu nilainya, seperti data yang diminta dari layanan *back-end*; sementara *file-based* merupakan nama fail spesifik yang akan secara otomatis oleh Next dijadikan *metadata*.
+
+## Static Metadata
+
+Cara paling dasar untuk menentukan *metadata* di Next adalah dengan pendekatan *static*. Sebagai contoh seperti ini:
+
+```tsx {1,3-6}
+import type { Metadata } from 'next'  
+   
+export const metadata: Metadata = {  
+  title: 'Judul halaman',  
+  description: 'Deskripsi halaman',  
+}  
+   
+export default function Page() {  
+  ...  
+}
+```
+
+Kode di atas akan menghasilkan HTML:
+
+```tsx
+<title>Judul halaman</title>  
+<meta name="description" content="Deskripsi halaman"/>
+```
+
+Tentu, kita dapat mengatur data yang lain, seperti:
+
+```tsx
+export const metadata = {  
+  keywords: ['Next.js', 'React', 'JavaScript'],  
+  authors: [{ name: 'Nauval' }, { name: 'Rizal' }],  
+}
+```
+
+Next juga memungkinkan kita untuk membuat *template* untuk judul *metadata*, ini berguna apabila kita hendak, misal, menambahkan nama *website* untuk setiap judul:
+
+```tsx filename="app/layout.tsx" {4-7}
+import type { Metadata } from 'next'  
+  
+export const metadata: Metadata = {  
+  title: {  
+    template: '%s | Company Name',  
+    default: 'Untitled',  
+  },  
+}  
+  
+...
+```
+
+Kemudian kita dapat mengatur judul di setiap halaman spesifik:
+
+```tsx filename="app/posts/page.tsx"
+import { Metadata } from 'next'  
+   
+export const metadata: Metadata = {  
+  title: 'Posts',  
+}  
+  
+...
+```
+
+Hasilnya akan menjadi:
+
+```tsx
+<title>Posts | Company Name</title>
+```
+
+Sementara untuk mengatur *open graph,* kita dapat memanfaatkan *property* `openGraph`:
+
+```tsx
+export const metadata = {  
+  openGraph: {  
+    title: 'Nauval',  
+    description: 'Website Nauval',  
+    url: 'https://nauv.al',  
+    siteName: 'Nauval',  
+    images: [  
+      {  
+        url: 'https://nauv.al/og.png',  
+        width: 800,  
+        height: 600,  
+      },  
+    ],  
+    locale: 'en_US',  
+    type: 'website',  
+  },  
+}
+```
+
+Seperti yang kita pelajari bersama bahwa pendekatan ini sangat berguna untuk *metadata* yang kita sudah tahu nilainya, sementara yang kita belum ketahui nilainya, kita dapat memanfaatkan *dynamic metadata*.
+
+## Dynamic Metadata
+
+Di proyek Next kita saat ini, contoh kasus yang paling masuk akal untuk penggunaan *dynamic metadata* adalah halaman *single post*. Ya, kita belum membuatnya, mari kita buat terlebih dahulu.
+
+Mari buat fail baru di *app/posts/[id]/page.tsx*:
+
+```tsx filename="app/posts/[id]/page.tsx"
+export default function SinglePost() {  
+  return (  
+    <section>  
+      <h1 className="text-xl font-semibold">Single Post</h1>  
+      <p>Body post</p>  
+    </section>  
+  );  
+}
+```
+
+Sementara dapat dibuat seperti itu terlebih dahulu. Berikutnya kita dapat membuka kembali fail *app/posts/page.tsx* untuk melakukan beberapa perubahan. Pertama-tama, berikan beberapa gaya untuk membuat visual *article* menjadi lebih baik:
+
+```tsx filename="app/posts/page.tsx" {7}
+export default async function PostsPage() {  
+  const posts = await getPosts();  
+  
+  return (  
+    <section>  
+      {posts.map(post => (  
+        <article key={post.id} className="border-b border-white py-4">  
+          <h2 className="text-xl font-semibold">{post.title}</h2>  
+          <p>{post.body}</p>  
+          <ClapButton postId={post.id} clap={post.clap} />  
+        </article>  
+      ))}  
+    </section>  
+  );  
+}
+```
+
+Bagian pentingnya adalah kita perlu menambah *link* untuk menuju ke halaman *single post*:
+
+```tsx filename="app/posts/page.tsx" {1,15-17}
+import Link from 'next/link';
+
+...
+
+export default async function PostsPage() {  
+  const posts = await getPosts();  
+  
+  return (  
+    <section>  
+      {posts.map(post => (  
+        <article key={post.id} className="border-b border-white py-4">  
+          <h2 className="text-xl font-semibold">{post.title}</h2>  
+          <p>{post.body}</p>  
+          <ClapButton postId={post.id} clap={post.clap} />  
+          <div className="mt-2">  
+            <Link href={`/posts/${post.id}`}>Read More</Link>  
+          </div>  
+        </article>  
+      ))}  
+    </section>  
+  );  
+}
+```
+
+Bila *link* tersebut diklik maka akan membawa pengguna ke halaman *single post*:
+
+<Image src="/next-js-pragmatis-metadata/qrk02wc6fRoTASnpqf2hZw.webp" alt="Halaman single post" />
+
+Masih di fail yang sama, kita perlu mengekspor `type Post` agar dapat digunakan di halaman *single post* juga:
+
+```tsx filename="app/posts/page.tsx" {6}
+import Link from 'next/link';  
+import ClapButton from './ClapButton';  
+  
+export const dynamic = 'force-dynamic';  
+  
+export type Post = {  
+  id: string;  
+  title: string;  
+  body: string;  
+  clap: number;  
+};  
+  
+...
+```
+
+Beralih ke halaman *single post,* halaman tersebut belum selesai, mari kita selesaikan. Buat permintaan data *post* berdasarkan *id post* untuk mendapatkan data *post* khusus dengan *id* tersebut saja:
+
+```tsx filename="app/posts/[id]/page.tsx"
+import type {Post} from '../page';  
+  
+async function getPost(id: Post['id']): Promise<Post> {  
+  const res = await fetch(`http://localhost:3001/posts/${id}`);  
+  return res.json();  
+}
+```
+
+Pada bagian komponen `SinglePost`, kita dapat memanggil fungsi tersebut dengan argumen *id* *post* dari *prop*:
+
+```tsx filename="app/posts/[id]/page.tsx" {6,10-11}
+export default async function SinglePost({  
+  params: {id},  
+}: {  
+  params: {id: string};  
+}) {  
+  const post = await getPost(id);  
+  
+  return (  
+    <section>  
+      <h1 className="text-xl font-semibold">{post.title}</h1>  
+      <p>{post.body}</p>  
+    </section>  
+  );  
+}
+```
+
+Sejauh ini kita sudah membuat halaman *single post* berdasarkan data dari layanan *back-end*.
+
+<Image src="/next-js-pragmatis-metadata/CORd0elCL1CyA7nZ-mhg3g.webp" alt="Halaman single post dengan data dari layanan back-end" />
+
+Halaman tersebut masih belum memiliki judul yang spesifik sesuai dengan data *post* yang sedang dibuka. Untuk melakukannya, kita dapat memanfaatkan *dynamic metadata*:
+
+```tsx filename="app/posts/[id]/page.tsx" {2,9-20}
+import type {Post} from '../page';  
+import type {Metadata} from 'next';  
+  
+async function getPost(id: Post['id']): Promise<Post> {  
+  const res = await fetch(`http://localhost:3001/posts/${id}`);  
+  return res.json();  
+}  
+  
+export async function generateMetadata({  
+  params,  
+}: {  
+  params: {id: string};  
+}): Promise<Metadata> {  
+  const post = await getPost(params.id);  
+  
+  return {  
+    title: post.title,  
+    description: post.body,  
+  };  
+}  
+  
+...
+```
+
+Berbeda dengan *static metadata*, untuk menggunakan *dynamic metadata* kita perlu mengekspor fungsi, alih-alih sebuah variabel. Fungsi tersebut harus mengembalikan nilai *object* yang bentuknya sama seperti *static metadata*.
+
+## File-Based Metadata
+
+Selain kedua pendekatan *metadata* sebelumnya, Next mendukung *file-based metadata* yang merupakan sebuah fail dengan nama tertentu yang nantinya fail tersebut akan menjadi *metadata* tanpa deklarasi kode apapun. Contoh yang paling mendasar dari ini adalah *favicon*.
+
+Next memungkinkan kita menaruh sebuah fail dengan nama *favicon.ico* di dalam direktori *app* dan nantinya fail tersebut secara otomatis dijadikan sebagai *favicon* aplikasi Next. Pada aplikasi bawaan Next yang dibuat melalui *create-next-app,* sudah terdapat fail *favicon.ico* bawaan yang terdapat di direktor *app*.
+
+Bukan hanya *favicon*, fail seperti *robots.txt* dan *sitemap.xml* juga dikenali oleh Next sebagai *metadata* bila kita taruh di dalam direktori *app*.
+
+## Rangkuman
+
+Pada bab ini kita sudah membahas beberapa hal:
+
+-   Next memiliki tiga jenis *metadata*: *static*, *dynamic*, dan *file-based*
+-   *Static metadata* berupa variabel dengan nilai *object*
+-   *Dynamic metadata* berupa fungsi yang mengembalikan nilai *object* yang bentuknya sama seperti *static metadata*
+-   *File-based metadata* berupa fail dengan nama yang spesifik

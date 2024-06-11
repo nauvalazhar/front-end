@@ -1,0 +1,499 @@
+import { Image } from '@/components/image';
+
+# Data Fetching
+
+Next memiliki fitur *data fetching* yang dapat kita gunakan untuk melakukan permintaan data ke layanan *back-end*. Secara mendasar, kita dapat melakukan *data fetching* dengan fungsi `fetch` pada aplikasi berbasis JavaScript. Begitu juga dengan Next, kita dapat menggunakan fungsi yang sama, hanya saja, Next memperluas fungsi ini sehingga memiliki fitur seperti *caching* dan *memoization* yang akan kita bahas pada bagian terkait.
+
+## Menyiapkan Layanan Back-end
+
+Sebelum membahas *data fetching* di Next, kita perlu menyiapkan layanan *back-end* yang menyediakan beberapa data. Nantinya aplikasi Next kita akan melakukan permintaan data ke layanan tersebut. Kita tidak akan membuat layanan *back-end* ini dari awal menggunakan *framework* tertentu, alih-alih kita akan menggunakan *json-server*. Alat ini memungkinkan kita untuk membangun *server* REST API kurang dari 30 detik saja.
+
+Hal yang pertama kita perlu siapkan adalah struktur data dengan format JSON yang akan berperan sebagai *database*. Misal, kita hendak membuat data terkait *blog*, kita dapat membuat strukturnya seperti berikut:
+
+```json filename="data/db.json"
+{  
+  "posts": [  
+    { "id": "1", "title": "Tulisan 1", "body": "Lorem ipsum" },  
+    { "id": "2", "title": "Tulisan 2", "body": "Dolor sit amet" }  
+  ]  
+}
+```
+
+Kita dapat menyimpan data tersebut sebagai sebuah fail baru dengan nama *db.json* dan menaruhnya di dalam direktori baru bernama *data* di *root* proyek Next kita.
+
+<Image src="/next-js-pragmatis-data-fetching/Zwj54aSmweSIYUZd1cEtfg.webp" alt="Fail baru bernama db.json di dalam direktori data" />
+
+Sekarang, kita dapat membuka *tab* baru di *terminal* untuk menjalankan alat *json-server* dengan perintah:
+
+```bash filename="terminal"
+npx json-server data/db.json --port 3001
+```
+
+Kita perlu menambahkan opsi `--port 3001`, karena secara bawaan alat tersebut menggunakan *port* 3000 yang sudah digunakan oleh *development server* Next.
+
+<Image src="/next-js-pragmatis-data-fetching/IV_S3nwACcgoxSG8bHwwtQ.webp" alt="Menjalankan perintah json-server" />
+
+Buka alamat lokal *http://localhost:3001* di *browser* dan kita akan melihat tampilan seperti berikut:
+
+<Image src="/next-js-pragmatis-data-fetching/FU8RbZdt_wpS69VJENm59Q.webp" alt="Halaman awal json-server" />
+
+Apabila kita pergi ke alamat *http://localhost:3001/posts*, maka kita akan melihat data *posts* yang kita taruh di dalam fail *data/db.json*:
+
+<Image src="/next-js-pragmatis-data-fetching/oDWpIinezQOUhbDFGRR23Q.webp" alt="Data posts dari fail data/db.json" />
+
+Layanan *back-end* ini sudah cukup untuk dapat kita gunakan sebagai *server* untuk kita mintai data nantinya melalui aplikasi Next.
+
+## Data Fetching di Next
+
+Anggap saja kita hendak menampilkan data *posts* dari layanan *back-end* sebelumnya di aplikasi Next kita. Secara mendasar, kita dapat melakukan *data fetching* di React dengan fungsi `fetch` dan di dalam `useEffect`:
+
+```tsx
+function Posts() {  
+  const [posts, setPosts] = useState([]);  
+  
+  useEffect(() => {  
+    async function fetchData() {  
+      const res = await fetch('http://localhost:3001/posts');  
+      const data = await res.json();  
+      setPosts(data);  
+    }  
+  
+    fetchData();  
+  }, []);  
+  
+  ...  
+}
+```
+
+Kode di atas merupakan pendekatan yang umum untuk melakukan *data fetching* di React. Namun, biasanya orang-orang juga lebih menyukai menggunakan *library* khusus *data fetching* seperti SWR atau React Query. Karena *library* tersebut menawarkan fitur-fitur yang tidak dimiliki oleh fungsi `fetch` bawaan *browser*.
+
+Di sisi lain, karena Next menggunakan React Server Components secara bawaan, maka kita dapat melakukan *data fetching* di dalam suatu komponen dengan *async* tanpa menggunakan `useEffect`. Kode sebelumnya apabila ditulis di Next dengan React Server Components, maka seperti ini jadinya:
+
+```tsx
+async function getPosts() {  
+  const res = await fetch('http://localhost:3001/posts');  
+  return res.json();  
+}  
+  
+async function Posts() {  
+  const posts = await getPosts();  
+  
+  ...  
+}
+```
+
+Ya, kita dapat menggunakan *async* pada React Server Components! Ini sangat membantu untuk keperluan seperti *data fetching*.
+
+Sekarang mari kita buat sebuah halaman untuk menampilkan semua data *posts* dengan membuat fail baru di *app/posts/page.tsx*:
+
+```tsx filename="app/posts/page.tsx"
+async function getPosts() {  
+  const res = await fetch('http://localhost:3001/posts');  
+  return res.json();  
+}  
+  
+export default async function PostsPage() {  
+  const posts = await getPosts();  
+  
+  return (  
+    <section>  
+      {posts.map((post) => (  
+        <article key={post.id}>  
+          <h2>{post.title}</h2>  
+          <p>{post.body}</p>  
+        </article>  
+      ))}  
+    </section>  
+  );  
+}
+```
+
+Bila kita akses halaman */posts* di *browser*, kita akan melihat daftar tulisan berdasarkan data dari layanan *back-end* sebelumnya:
+
+<Image src="/next-js-pragmatis-data-fetching/P2qANrRqpCi8e4bD_oV2TQ.webp" alt="Daftar tulisan dari layanan back-end" />
+
+Ini berarti kita sudah berhasil melakukan *data fetching* pertama kita!
+
+Kembali ke editor teks, bila kita menggunakan editor teks yang cukup canggih, biasanya mereka akan memberikan galat pada kode di baris 11 seperti ini:
+
+<Image src="/next-js-pragmatis-data-fetching/CLFl5TK0k_a_BmP-cLt7kg.webp" alt="Galat pada kode di baris 11" />
+
+Ini disebabkan *parameter* `post` dalam hal ini secara implisit memiliki *type* `any`. Hal ini wajar, karena kita belum memberikan *type* apapun terkait data yang kita minta dari layanan *back-end*. Sekarang kita dapat memberikan *type* pada fungsi `getPosts` untuk memberitahu TypeScript bentuk hasil dari fungsi tersebut:
+
+```tsx filename="app/posts/page.tsx" {1-5}
+type Post = {  
+  id: number;  
+  title: string;  
+  body: string;  
+};  
+  
+async function getPosts(): Promise<Post[]> {  
+  const res = await fetch('http://localhost:3001/posts');  
+  return res.json();  
+}  
+  
+...
+```
+
+Dengan seperti ini, kita memberi tahu TypeScript bahwa fungsi `getPosts` memiliki *type* `Promise<Post[]>`. Sederhananya adalah fungsi yang me-*return* sebuah `Promise` yang menghasilkan *array* dari *object* `Post`. Kini seharusnya galat tersebut sudah pergi.
+
+## Cache Dengan Fungsi fetch
+
+Terdapat perbedaan yang signifikan mengenai fungsi `fetch` di Next dengan standar *browser*. Saat kita melakukan *data fetching* di aplikasi Next menggunakan `fetch`, data hasil respons dari *server* tersebut akan di-*cache* oleh Next. Dengan seperti ini, perubahan data yang terjadi di sumber data tidak akan langsung berdampak perubahannya di Next.
+
+Sebagai contoh, kita sudah melakukan *data fetching* ke *endpoint http://localhost:3001/posts*, hasil dari *data fetching* tersebut di-*cache* oleh Next, kita dapat menguji ini dengan cara melakukan perubahan di sumber data, yaitu fail *data/db.json*. Kita dapat menambahkan “*(update)*” pada *object* dengan judul “*Tulisan 2*”:
+
+```json filename="data/db.json" /(update)/
+{  
+  "posts": [  
+    { "id": "1", "title": "Tulisan 1", "body": "Lorem ipsum" },  
+    { "id": "2", "title": "Tulisan 2", "body": "Dolor sit amet (update)" }  
+  ]  
+}
+```
+
+Sekarang apabila kita *refresh* halaman */posts,* ia akan tetap menampilkan data yang sama atau tidak ada perubahan apapun kendati kita sudah melakukan perubahan di sumber data tersebut.
+
+<Image src="/next-js-pragmatis-data-fetching/m7LOb97QLvU9GNMHqRG_bQ.webp" alt="Tidak ada perubahan di halaman /posts" />
+
+Kita juga dapat membandingkannya dengan mengakses *endpoint* [*http://localhost:3001/posts*](http://localhost:3001/posts).
+
+<Image src="/next-js-pragmatis-data-fetching/N0zCsz0-WuB-i8LsAe1tmA.webp" alt="Perubahan data dari sumber data terlihat" />
+
+Seperti yang bisa dilihat, terdapat perubahan di sumber data sesuai dengan yang kita lakukan sebelumnya. Ini berarti data yang ditampilkan di halaman */posts* merupakan data hasil *cache*. Ini yang membedakan fungsi `fetch` di Next dengan standar *browser* yang kita biasa gunakan. Fungsi `fetch` di Next memiliki fitur *cache* secara otomatis yang akan men-*cache* hasil dari *data fetching* dan menyimpannya ke Data Cache. Kita dapat berpikir bahwa Data Cache merupakan sebuah tempat yang digunakan oleh Next untuk mempertahankan hasil *data fetching*.
+
+Fungsi `fetch` akan men-*cache* data saat ia pertama kali dipanggil dalam masa *rendering*. Seperti contoh sebelumnya di halaman */posts*, fungsi `fetch` di dalam fungsi `getPosts` akan dipanggil dan melakukan permintaan data ke *endpoint* [*http://localhost:3001/posts*](http://localhost:3001/posts), lalu hasilnya akan di-*cache*.
+
+Saat fungsi `fetch` dipanggil untuk kedua kali dan selanjutnya, maka fungsi tersebut tidak akan melakukan permintaan data ke sumber data yang berada di *endpoint* tersebut, alih-alih akan mengambil data dari *cache*. Ini mengapa ketika kita melakukan perubahan data di sumber data, hasilnya tidak terlihat di aplikasi Next, karena Next menampilkan Data Cache.
+
+Data Cache akan terus ada di seluruh *request*, oleh karena itu ketika kita melakukan *refresh* halaman, *cache* masih tetap ada. Untuk memperbarui data di dalam Data Cache, kita dapat melakukan proses *revalidation*.
+
+## Revalidation
+
+Dalam konteks *cache*, proses untuk menghapus *cache* dan melakukan permintaan data baru ke sumber data disebut dengan *revalidation*. Di Next, data dapat di-*revalidate* dengan dua cara, yaitu *time-based revalidation* dan *on-demand revalidation*.
+
+### Time-based Revalidation
+
+Metode ini akan melakukan *revalidation* berdasarkan interval waktu tertentu, misal setiap satu detik atau satu jam. Kita dapat mencoba metode ini untuk melakukan *revalidation* pada fungsi sebelumnya:
+
+```tsx filename="app/posts/page.tsx" {3-5}
+async function getPosts(): Promise<Post[]> {  
+  const res = await fetch('http://localhost:3001/posts', {  
+    next: {  
+      revalidate: 1,  
+    },  
+  });  
+  return res.json();  
+}
+```
+
+Kode di atas akan melakukan *revalidation* setiap 1 detik.
+
+Sekarang apabila kita me-*refresh* halaman */posts* sebanyak dua kali, ini akan memicu proses *revalidation*, sehingga data baru akan muncul:
+
+<Image src="/next-js-pragmatis-data-fetching/ZsW3tKkpOY8v_LAqWsqCNg.webp" alt="Data baru sudah terlihat" />
+
+Melakukan *refresh* halaman sebanyak dua kali agar kita dapat melihat perubahan secara instan, dan ini terkait dengan bagaimana proses *time-based revalidation* di Next bekerja:
+
+-   Ketika pertama kali fungsi `fetch` dengan opsi `revalidate` dipanggil, ia akan melakukan permintaan data ke sumber data eksternal berdasarkan *endpoint http://localhost:3001/posts* dan menaruhnya ke Data Cache.
+-   Ketika fungsi `fetch` dipanggil kembali dalam interval waktu sesuai opsi `revalidate`, misal 1 detik atau 1 jam, maka fungsi tersebut akan mengembalikan data dari Data Cache.
+-   Ketika fungsi `fetch` dipanggil setelah melewati waktu interval sesuai opsi `revalidate`, fungsi tersebut tetap akan mengembalikan data dari Data Cache, hanya saja ia akan memicu proses *revalidation* di latar belakang. Setelah proses *revalidation* selesai, data di dalam Data Cache akan diperbarui dengan data baru. Apabila proses *revalidation* gagal, data sebelumnya akan tetap dipertahankan.
+
+Dengan demikian, ketika kita melakukan *refresh* halaman sebanyak dua kali, ini berarti:
+
+-   *Refresh* pertama akan memicu proses *revalidation* dan memperbarui Data Cache di latar belakang, namun masih menampilkan data lama.
+-   *Refresh* kedua akan menampilkan data yang baru karena Data Cache sudah diperbarui berdasarkan proses *revalidation* yang dipicu sebelumnya.
+
+Metode *revalidation* ini biasanya digunakan ketika perubahan data dapat diprediksi atau sudah diketahui. Mungkin data tersebut akan berubah setiap satu jam atau dalam interval waktu tertentu. Di sisi lain, ketika kita tidak tahu kapan data tersebut berubah, menentukan waktu interval menjadi sulit, sebab mungkin saja kita terlalu lama atau terlalu cepat dalam melakukan proses *revalidation*.
+
+### On-demand Revalidation
+
+Berbeda dengan metode sebelumnya, dengan *on-demand revalidation* kita dapat memicu proses *revalidation* secara manual dengan fungsi `revalidatePath` atau `revalidateTag`. Kedua fungsi tersebut dapat kita eksekusi di dalam Route Handlers atau Server Actions, keduanya akan kita bahas di bab terkait.
+
+Sebagai contoh kita dapat menggunakan Route Handlers. Buat membuat sebuah fail baru di dalam direktori *app/posts/purge/route.ts*, di dalamnya kita dapat menggunakan fungsi `revalidatePath` untuk memicu proses *revalidation* untuk halaman */posts*:
+
+```tsx filename="app/posts/purge/route.ts"
+import { revalidatePath } from 'next/cache';  
+import { redirect } from 'next/navigation';  
+  
+export async function GET() {  
+  revalidatePath('/posts');  
+  redirect('/posts');  
+}
+```
+
+Sebelum mengujinya, kita hapus kembali opsi `revalidate` pada fungsi `fetch` di dalam fungsi `getPosts`:
+
+```tsx filename="app/posts/page.tsx"
+async function getPosts(): Promise<Post[]> {  
+  const res = await fetch('http://localhost:3001/posts');  
+  return res.json();  
+}
+```
+
+Sekarang kita dapat mengujinya dengan mengubah data di *data/db.json*:
+
+```json filename="data/db.json" /(second update)/
+{  
+  "posts": [  
+    { "id": "1", "title": "Tulisan 1", "body": "Lorem ipsum" },  
+    {  
+      "id": "2",  
+      "title": "Tulisan 2",  
+      "body": "Dolor sit amet (second update)"  
+    }  
+  ]  
+}
+```
+
+Kemudian akses */posts/purge* untuk mengeksekusi fungsi Route Handlers yang kita telah buat sebelumnya. Fungsi tersebut akan melakukan *revalidation* untuk *cache* di halaman */posts* dengan fungsi `revalidatePath` dan juga akan mengalihkan halaman kembali ke halaman */posts* dengan fungsi `redirect`.
+
+<Image src="/next-js-pragmatis-data-fetching/sIoEW3rKmr9_BO2na0-XFg.webp" alt="Proses revalidation berhasil" />
+
+Fungsi `revalidatePath` akan melakukan *revalidation* pada semua fungsi `fetch` di dalam *path* tersebut. Bila kita hendak lebih spesifik untuk melakukan *revalidation* pada `fetch` tertentu saja, di sinilah fungsi `revalidateTag` berperan.
+
+Pada fungsi `fetch` di dalam fungsi `getPosts` sebelumnya, kita dapat memberika opsi `tags`:
+
+```tsx filename="app/posts/page.tsx" {3-5}
+async function getPosts(): Promise<Post[]> {  
+  const res = await fetch('http://localhost:3001/posts', {  
+    next: {  
+      tags: ['posts'],  
+    },  
+  });  
+  return res.json();  
+}
+```
+
+Kemudian kembali ke fail *app/posts/purge/route.ts*, kita dapat mengubah `revalidatePath` menjadi `revalidateTag`:
+
+```tsx filename="app/posts/purge/route.ts" /revalidateTag/
+import { revalidateTag } from 'next/cache';  
+import { redirect } from 'next/navigation';  
+  
+export async function GET() {  
+  revalidateTag('posts');  
+  redirect('/posts');  
+}
+```
+
+Untuk mengujinya, kita dapat mengubah data di fail *data/db.json*:
+
+```json filename="data/db.json" /(third update)/
+{  
+  "posts": [  
+    { "id": "1", "title": "Tulisan 1", "body": "Lorem ipsum" },  
+    {  
+      "id": "2",  
+      "title": "Tulisan 2",  
+      "body": "Dolor sit amet (third update)"  
+    }  
+  ]  
+}
+```
+
+Kini kita dapat kembali mengakses *path /posts/purge* di *browser*. Hasilnya akan sama seperti sebelumnya, bedanya kini kita menggunakan `revalidateTag`, alih-alih `revalidatePath`.
+
+<Image src="/next-js-pragmatis-data-fetching/24bQeb3RZggWsLk3r-yCqA.webp" alt="Proses revalidation berhasil menggunakan revalidateTag" />
+
+Kedua fungsi tersebut dapat kita gunakan untuk memicu proses *revalidation* sesuai dengan kebutuhan kita, dalam satu kasus mungkin kita membutuhkan `revalidatePath` dan dalam kasus lain kita mungkin membutuhkan `revalidateTag`.
+
+Dalam kasus nyata, biasanya pendekatan *on-demand revalidation* diintegrasikan dengan Webhook. Misal, di halaman admin sebuah proyek *blog*, setelah menyimpan data ke *database*, kita dapat memicu sebuah Webhook untuk melakukan proses *revalidation* di aplikasi Next. Ini akan membuat aplikasi Next melakukan *revalidation* di saat yang tepat.
+
+## Menonaktifkan Data Cache
+
+Seperti yang sudah dibahas sebelumnya, fungsi `fetch` akan melakukan *cache* secara otomatis dan menyimpannya di dalam Data Cache. Kita dapat menonaktifkan prilaku ini, sehingga fungsi `fetch` tidak akan men-*cache* hasil dari permintaan data.
+
+Untuk menonaktifkan *cache* pada masing-masing fungsi `fetch`, kita dapat menggunakan opsi `no-store`:
+
+```tsx filename="app/posts/page.tsx" {3}
+async function getPosts(): Promise<Post[]> {  
+  const res = await fetch('http://localhost:3001/posts', {  
+    cache: 'no-store',  
+  });  
+  return res.json();  
+}
+```
+
+Sebagai alternatif, kita dapat menggunakan opsi pada *route segment* untuk menonaktifkannya di seluruh halaman:
+
+```tsx filename="app/posts/page.tsx" {1}
+export const dynamic = 'force-dynamic';  
+  
+type Post = {  
+  id: number;  
+  title: string;  
+  body: string;  
+};  
+  
+async function getPosts(): Promise<Post[]> {  
+  const res = await fetch('http://localhost:3001/posts');  
+  return res.json();  
+}  
+  
+...
+```
+
+Sekarang apabila kita melakukan perubahan di sumber data, perubahan tersebut akan langsung terlihat, ini karena Next selalu menampilkan data dari sumber data, alih-alih dari Data Cache.
+
+## Data Fetching di Komponen
+
+Pada contoh sebelumnya, kita melakukan *data fetching* di halaman */posts*. Sebenarnya, kita juga dapat melakukannya di dalam komponen. Ini berbeda dengan versi Next yang lebih purba dengan *pages router* yang hanya memungkinkan kita melakukan *data fetching* di halaman saja.
+
+Kita dapat mengujinya dengan terlebih dahulu membuat sebuah data *user* di fail *data/db.json*:
+
+```json filename="data/db.json"
+{  
+  "posts": [  
+    { "id": "1", "title": "Tulisan 1", "body": "Lorem ipsum" },  
+    {  
+      "id": "2",  
+      "title": "Tulisan 2",  
+      "body": "Dolor sit amet (third update)"  
+    }  
+  ],  
+  "user": {  
+    "id": "1",  
+    "name": "John Doe"  
+  }  
+}
+```
+
+Kini layanan *back-end* kita memiliki *endpoint http://localhost:3001/user* untuk mengakses data *user*.
+
+Lalu kita pergi ke fail *app/Navbar.tsx* dan membuat sebuah fungsi `getUser` untuk meminta data *user*:
+
+```tsx filename="app/Navbar.tsx"
+async function getUser() {  
+  const res = await fetch('http://localhost:3001/user');  
+  return res.json();  
+}
+```
+
+Untuk menampilkan datanya, kita dapat memanggil fungsi tersebut di komponen *Navbar*:
+
+```tsx filename="app/Navbar.tsx"
+export default async function Navbar() {  
+  const user = await getUser();  
+  
+  return (  
+    <nav>  
+      Navbar:  
+      <Link href="/">Home</Link>  
+      {' | '}  
+      <Link href="/about">About</Link>  
+      {' | '}  
+      User: {user.name}  
+    </nav>  
+  );  
+}
+```
+
+Kita dapat melihat nama *user* di komponen *Navbar* sekarang:
+
+<Image src="/next-js-pragmatis-data-fetching/VtF6t6USAwbtzc84SovAlw.webp" alt="Nama user di komponen Navbar" />
+
+Untuk membuatnya lebih aman, mari kita berikan *type* pada fungsi `getUser`:
+
+```tsx filename="app/Navbar.tsx" {3-6}
+import Link from 'next/link';  
+  
+type User = {  
+  id: string;  
+  name: string;  
+};  
+  
+async function getUser(): Promise<User> {  
+  const res = await fetch('http://localhost:3001/user');  
+  return res.json();  
+}  
+  
+...
+```
+
+Ini berarti fungsi `getUser` me-*return* Promise yang menghasilkan *object* `User`.
+
+## Memoization Pada Fungsi fetch
+
+Selain menyimpan hasil *data fetching* ke Data Cache, fungsi `fetch` juga secara otomatis melakukan *memoization.* Ini berarti ketika kita memanggil fungsi `fetch` dengan *endpoint* dan opsi yang sama beberapa kali dalam satu proses *rendering* yang sama, Next tetap akan melakukan permintaan sekali saja untuk menghindari duplikasi.
+
+Kita dapat mengujinya dengan terlebih dahulu mengabstrak fungsi `getUser` yang ada di dalam fail *app/Navbar.tsx* ke dalam fail terpisah, misal, kita menaruhnya ke dalam fail *app/data.ts* dan jangan lupa untuk mengekspor fungsinya:
+
+```tsx filename="app/data.ts"
+type User = {  
+  id: string;  
+  name: string;  
+};  
+  
+export async function getUser(): Promise<User> {  
+  const res = await fetch('http://localhost:3001/user');  
+  return res.json();  
+}
+```
+
+Sekarang kita perlu mengimpor fungsi tersebut di dalam fail *app/Navbar.tsx*:
+
+```tsx filename="app/Navbar.tsx" {2}
+import Link from 'next/link';  
+import { getUser } from './data';  
+  
+export default async function Navbar() {  
+  const user = await getUser();  
+  
+  return (  
+    <nav>  
+      Navbar:  
+      <Link href="/">Home</Link>  
+      {' | '}  
+      <Link href="/about">About</Link>  
+      {' | '}  
+      User: {user.name}  
+    </nav>  
+  );  
+}
+```
+
+Untuk menguji *memoization*, kita dapat mengimpor fungsi yang sama, misal, di halaman baru dengan fail *app/user/page.tsx*:
+
+```tsx filename="app/user/page.tsx"
+import { getUser } from '../data';  
+  
+export default async function UserPage() {  
+  const user = await getUser();  
+  
+  return (  
+    <div>  
+      <p>Name: {user.name}</p>  
+      <p>ID: {user.id}</p>  
+    </div>  
+  );  
+}
+```
+
+Kini kita dapat mengakses halaman */user*:
+
+<Image src="/next-js-pragmatis-data-fetching/I-oNsJJ4Z-DN6xQSzjmGNg.webp" alt="Data user ditampilkan di halaman /user" />
+
+Seperti yang bisa dilihat, data *user* muncul di kedua tempat berbeda, yaitu di komponen *app/Navbar.tsx* dan di halaman *app/user/page.tsx*. Ini berarti dalam satu proses *rendering*, fungsi `getUser` dipanggil dua kali. Kendati demikian, fungsi tersebut hanya akan melakukan permintaan ke sumber data atau Data Cache sekali. Ini karena fungsi `fetch` secara otomatis melakukan *memoization* untuk menghindari duplikasi permintaan data.
+
+Dengan demikian, fungsi `fetch` bukan hanya secara otomatis men-*cache* hasil *data fetching* dan menaruhnya ke Data Cache, tapi, ia juga melakukan *memoization* untuk fungsi dengan *endpoint* dan opsi yang sama.
+
+Oleh karena itu, bila kita membutuhkan data yang sama di beberapa tempat yang berbeda, kita dapat melakukan `fetch` beberapa kali, alih-alih melakukan `fetch` di *layout* dan membagikannya dengan React Context atau melalui *props*.
+
+Perlu diingat bahwa *memoization* merupakan fitur dari React, bukan spesifik Next. Selain itu, fitur *memoization* hanya berlaku untuk fungsi `fetch` dengan *method* `GET`.
+
+## Rangkuman
+
+Di bab ini kita sudah membahas beberapa hal:
+
+-   Fungsi `fetch` digunakan untuk melakukan *data fetching*
+-   Fungsi `fetch` secara otomatis men-*cache* data hasil dari *data fetching*
+-   Fungsi `fetch` secara otomatis melakukan *memoization* untuk menghindari duplikasi pemintaan data
+-   Proses *revalidation* diperlukan untuk memperbarui Data Cache
+-   Proses *revalidation* dapat dilakukan dengan dua metode, yaitu *time-based revalidation* dan *on-demand revalidation*
+-   Opsi `{ next: { revalidate } }` dapat digunakan untuk mengatur interval waktu *time-based revalidation*
+-   Fungsi `revalidatePath` dan `revalidateTag` dapat digunakan untuk memicu proses *on-demand revalidation*
+-   Opsi `{ cache: 'no-store' }` dapat digunakan untuk menonaktifkan *cache* pada fungsi `fetch` secara individual
+-   Opsi `export const dynamic = ‘force-dynamic’` untuk menonaktifkan *cache* pada tingkat *route segment*
+-   Proses *data fetching* dapat dilakukan di tingkat komponen, bukan hanya halaman
+-   Tidak perlu melakukan *data fetching* di *layout* untuk membagikannya ke beberapa tempat berbeda, alih-alih, lakukan *data fetching* di tempat yang membutuhkan data tersebut

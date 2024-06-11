@@ -1,0 +1,255 @@
+import { Image } from '@/components/image';
+
+# Error Handling
+
+Ketika terdapat galat di aplikasi Next yang kita sedang bangun, akan muncul sebuah *overlay* mengenai galat tersebut. Hal ini berguna untuk kita mengetahui apa yang salah. Sedangkan di aplikasi Next versi produksi, tidak akan ada *overlay*, alih-alih Next akan menampilkan antarmuka khusus bawaan untuk memberitahu pengguna bahwa terdapat galat. Antarmuka tersebut dapat kita ubah suai melalui fail dengan nama *error.tsx*.
+
+## Menangani Galat Dengan Fail error.tsx
+
+Next memungkinkan kita untuk membuat sebuah fail dengan nama *error.tsx* yang nantinya fail ini akan di-*render* apabila terdapat galat yang terjadi di aplikasi Next. Kita dapat menaruh fail tersebut di *app/error.tsx*.
+
+Struktur fail *error.tsx* dapat dibuat seperti ini:
+
+```tsx filename="app/error.tsx"
+'use client';  
+  
+import {useEffect} from 'react';  
+  
+export default function Error({  
+  error,  
+  reset,  
+}: {  
+  error: Error & {digest?: string};  
+  reset: () => void;  
+}) {  
+  useEffect(() => {  
+    console.error(error);  
+  }, [error]);  
+  
+  return (  
+    <div>  
+      <h2>Something went wrong!</h2>  
+      <button onClick={() => reset()}>Try again</button>  
+    </div>  
+  );  
+}
+```
+
+Sekarang, kita dapat membuat simulasi galat di halaman *app/page.tsx*. Buat saja seperti ini:
+
+```tsx filename="app/page.tsx"
+import Image from 'next/image';  
+  
+export const metadata = {  
+  title: 'Judul halaman',  
+  description: 'Deskripsi halaman',  
+};  
+  
+export default async function Home() {  
+  throw new Error('Error');  
+...
+```
+
+Kini apabila kita mengakses halaman *index* di *browser*, akan menampilkan antarmuka seperti ini:
+
+<Image src="/next-js-pragmatis-error-handling/XVZFx-DYGCmqp_LgcNLExA.webp" alt="Antarmuka galat dari fail error.tsx" />
+
+Bila kita perhatikan kembali kode pada fail *app/error.tsx*, komponen di dalamnya menerima dua *parameter*, yaitu `error` dan `reset`:
+
+-   `error`: ini merupakan *instance* dari *object* `Error` JavaScript, kita dapat memanfaatkan ini untuk, misal, kebutuhan *logging*
+-   `reset`: ini merupakan fungsi yang bila dieksekusi akan mencoba untuk melakukan *re-render* segmen halaman tersebut
+
+Selain itu, komponen di dalam fail *error.tsx* juga harus merupakan *client components,* dan kita tidak perlu menulis elemen `html` dan `body`, karena fail *error.tsx* akan dibungkus oleh *layout* dari segmen halaman tersebut.
+
+## Menangani Galat di Nested Routes
+
+Fail yang sebelumnya sudah kita buat akan menangani galat yang terjadi di seluruh halaman. Apabila kita, dalam kasus tertentu, hendak membuat antarmuka yang berbeda dalam menangani galat, kita dapat membuat fail *error.tsx* di direktori halaman tertentu.
+
+Sebagai contoh, kita dapat membuat fail *error.tsx* di dalam direktori *app/dashboard*:
+
+```tsx filename="app/dashboard/error.tsx"
+'use client';  
+  
+import {useEffect} from 'react';  
+  
+export default function Error({  
+  error,  
+  reset,  
+}: {  
+  error: Error & {digest?: string};  
+  reset: () => void;  
+}) {  
+  useEffect(() => {  
+    console.error(error);  
+  }, [error]);  
+  
+  return (  
+    <div>  
+      <h2>Something went wrong on the dashboard.</h2>  
+      <button onClick={() => reset()}>Try again</button>  
+    </div>  
+  );  
+}
+```
+
+Untuk mengujinya, kita dapat dengan sengaja membuat galat di halaman *app/dashboard/page.tsx*:
+
+```tsx filename="app/dashboard/page.tsx"
+import './dashboard.css';  
+  
+export default function Dashboard() {  
+  throw new Error('Error thrown from Dashboard component');  
+  return <h1>Dashboard</h1>;  
+}
+```
+
+Sebelum mengujinya di *browser*, kita perlu memberi komentar pada kode yang sudah kita tulis sebelumnya di fail *middleware.ts*:
+
+```tsx filename="middleware.ts" {7-9}
+import {NextResponse, type NextRequest} from 'next/server';  
+  
+export async function middleware(request: NextRequest) {  
+  const cookies = request.cookies;  
+  const pathname = request.nextUrl.pathname;  
+  
+  // if (!cookies.has('token') && pathname.startsWith('/dashboard')) {  
+  //  return NextResponse.redirect(new URL('/login', request.url));  
+  // }  
+}
+```
+
+Dengan demikian, kita dapat mengakses halaman */dashboard* di *browser* untuk melihat tampilan galat khusus untuk semua halaman *dashboard*.
+
+## Menangani Galat di Root Layout
+
+Fail *error.tsx* akan menangani galat untuk halaman dalam direktori yang sama, sedangkan galat pada *layout* akan ditangani oleh fail *error.tsx* di atasnya. Ini berarti ketika terjadi galat pada *app/dashboard/layout.tsx*, fail *error.tsx* yang akan di-*render* adalah yang berada di *app/error.tsx*, bukan yang di *app/dashboard/error.tsx*.
+
+Sedangkan untuk mengatasi galat yang terjadi di *root layout* atau fail *app/layout.tsx*, kita perlu variasi lain dari *error.tsx*, yaitu *global-error.tsx* yang ditaruh di *app/global-error.tsx*. Bila terjadi galat di *root layout*, fail ini akan di-*render* dan menggantikan *root layout*. Oleh karena itu, kita perlu menulis elemen `html` dan `body` di dalamnya:
+
+```tsx filename="app/global-error.tsx"
+'use client'  
+   
+export default function GlobalError({  
+  error,  
+  reset,  
+}: {  
+  error: Error & { digest?: string }  
+  reset: () => void  
+}) {  
+  return (  
+    <html>  
+      <body>  
+        <h2>Something went wrong!</h2>  
+        <button onClick={() => reset()}>Try again</button>  
+      </body>  
+    </html>  
+  )  
+}
+```
+
+Perlu diingat, fail *global-error.tsx* hanya akan berjalan di mode produksi, sedangkan di mode pengembangan hanya akan menampilkna *error overlay* seperti biasanya.
+
+## Menampilkan Halaman Not Found
+
+Selain fail *error.tsx*, kita juga dapat melakukan ubah suai halaman *not found* melalui fail *not-found.tsx*. Sebagai contoh, kita dapat membuat fail baru di *app/not-found.tsx* seperti ini:
+
+```tsx filename="app/not-found.tsx"
+import Link from 'next/link'  
+   
+export default function NotFound() {  
+  return (  
+    <div>  
+      <h2>Not Found</h2>  
+      <p>Could not find requested resource</p>  
+      <Link href="/">Return Home</Link>  
+    </div>  
+  )  
+}
+```
+
+Kini apabila pengguna mengakses halaman dengan *path* yang tidak ada di aplikasi Next kita, fail *app/not-found.tsx* tersebut yang akan ditampilkan.
+
+Berbeda dengan fail *error.tsx*, fail *not-found.tsx* merupakan sebuah *server components*.
+
+### Memicu Not Found Dengan Fungsi notFound()
+
+Fail *not-found.tsx* akan secara otomatis ditampilkan ketika pengguna mencoba mengakses halaman yang tidak ada di aplikasi Next kita. Tapi, seringkali kita hendak secara manual menampilkan halaman *not found*, misal, setelah proses *data fetching* dengan hasil yang nihil.
+
+Sebagai contoh, kita akan menampilkan halaman *not found* bila data *post* dengan *id* tertentu tidak ada. Mari kita buka kembali fail *app/posts/[id]/page.tsx*. Pertama-tama, kita perlu melakukan modifikasi fungsi `getPost` menjadi seperti ini:
+
+```tsx filename="app/posts/[id]/page.tsx" {4-6} / | null/
+async function getPost(id: Post['id']): Promise<Post | null> {  
+  const res = await fetch(`http://localhost:3001/posts/${id}`);  
+  
+  if (res.status === 404) {  
+    return null;  
+  }  
+  
+  return res.json();  
+}
+```
+
+Kita juga perlu memodifikasi fungsi `generateMetadata`:
+
+```tsx filename="app/posts/[id]/page.tsx" {8-13}
+export async function generateMetadata({  
+  params,  
+}: {  
+  params: {id: string};  
+}): Promise<Metadata> {  
+  const post = await getPost(params.id);  
+  
+  if (!post) {  
+    return {  
+      title: 'Post not found',  
+      description: 'The post you are looking for does not exist.',  
+    };  
+  }  
+  
+  return {  
+    title: post.title,  
+    description: post.body,  
+  };  
+}
+```
+
+Terakhir, kita dapat menambahkan kondisi seperti ini pada bagian *render*:
+
+```tsx filename="app/posts/[id]/page.tsx" {8-10}
+export default async function SinglePost({  
+  params: {id},  
+}: {  
+  params: {id: string};  
+}) {  
+  const post = await getPost(id);  
+  
+  if (!post) {  
+    notFound();  
+  }  
+  
+  return (  
+    <section>  
+      <h1 className="text-xl font-semibold">{post.title}</h1>  
+      <p>{post.body}</p>  
+      <Suspense fallback={<p>Loading comments...</p>}>  
+        <Comments />  
+      </Suspense>  
+    </section>  
+  );  
+}
+```
+
+Kita dapat mengujinya dengan mengakses halaman */posts/100* dan melihat fail *app/not-found.tsx* ditampilkan karena data *post* tidak ada.
+
+## Rangkuman
+
+Pada bab ini kita telah mempelajari beberapa hal:
+
+-   Next memungkinkan kita untuk membuat fail *error.tsx* yang nantinya akan ditampilkan saat terjadi galat di aplikasi Next
+-   Fail *error.tsx* dapat dibuat di *nested routes*
+-   Fail *error.tsx* akan menangani yang terjadi di segmen halaman yang sama, tapi, tidak dengan *layout* di segmen halaman tersebut
+-   Galat yang terjadi di *layout* akan ditangani oleh fail *error.tsx* di atas halaman tersebut, sebagai contoh galat yang terjadi pada *app/dashboard/layout.tsx* akan ditangani oleh fail *app/error.tsx,* alih-alih *app/dashboard/error.tsx*
+-   Galat yang terjadi di *root layout* atau *app/layout.tsx* dapat ditangani oleh fail variasi lain dari *error.tsx*, yaitu *global-error.tsx*
+-   Fail *global-error.tsx* hanya akan ditampilkan pada mode produksi, untuk mode pengembangan hanya akan menampilkan *error overlay* seperti biasanya
+-   Untuk menangani *not found*, dapat menggunakan fail *not-found.tsx*
+-   Untuk memicu *not found* secara manual, dapat menggunakan fungsi `notFound()`

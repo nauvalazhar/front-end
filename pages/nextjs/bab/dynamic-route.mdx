@@ -1,0 +1,117 @@
+import { Image } from '@/components/image';
+
+# Dynamic Route
+
+Apa yang sudah dibahas pada bab sebelumnya merupakan bagian dasar dari *routing*. Dasar-dasar tersebut cukup untuk membuat halaman yang bergantung pada data statis atau *hard coded,* sebab nama segmen dari halaman tersebut kita sudah tahu, seperti */about, /products,* atau */contact*.
+
+Pada kasus lain, terdapat situasi ketika kita hendak membuat halaman yang nama segmennya kita belum tahu, halaman yang lebih dinamis dan bergantung pada data eksternal, seperti halaman detail *blog* atau detail *product*. Halaman-halaman tersebut memiliki segmen yang dinamis sesusai dengan datanya.
+
+Sebagai contoh, ketika hendak membuat sebuah *ecommerce,* kita dapat membuat halaman daftar produk dengan segmen */products*, namun untuk setiap halaman detail dari produk tersebut membutuhkan nama segmen yang dinamis, biasanya bergantung pada nama produknya. Misal, produk dengan nama “Baju Anak Ukuran Dewasa” akan memiliki segmen “*/products/baju-anak-ukuran-dewasa*”, begitu juga dengan yang lain.
+
+Dengan pengetahuan kita sejauh ini, kita dapat membuat halaman tersebut dengan struktur direktori dan fail, *app/products/baju-anak-ukuran-dewasa/page.tsx*. Namun, tentu ini bukan pendekatan yang ideal, umumnya kita tidak menambah produk dengan pendekatan statis semacam itu. Biasanya terdapat suatu *dashboard* untuk mengelola produk, dan di sisi teknikal kita membuat satu halaman untuk memuat detail setiap produk berdasarkan nama segmen yang dinamis. Di sinilah *dynamic routing* diperlukan.
+
+Fitur *dynamic routing* memungkinkan kita untuk membuat halaman dengan nama segmen dinamis dan menangkap nilai segmennya di dalam *path*. Misal, dalam *path /products/baju-anak-ukuran-dewasa*, kita dapat mengambil nilai “baju-anak-ukuran-dewasa” dan digunakan untuk memuat informasi produk tersebut saja secara detail. Dalam *dynamic routing*, bagian “baju-anak-ukuran-dewasa” merupakan bagian dinamis, sebab kita belum tahu nilai tersebut sebelumnya.
+
+## Membuat Dynamic Route
+
+Untuk membuat *dynamic route*, kita dapat menggunakan konvensi, *app/products/[slug]/page.tsx*. Alih-alih menulis nama segmen secara statis, kita dapat menggunakan konvensi *[direktori]* untuk memberitahu Next bahwa segmen tersebut dinamis. Nama *[direktori]* juga nantinya akan digunakan sebagai nama *parameter* di dalam komponen. Sebagai contoh seperti ini:
+
+```tsx filename="app/products/[slug]/page.tsx"
+type ProductProps = {  
+  params: {  
+    slug: string;  
+  };  
+};  
+  
+export default function Product({ params }: ProductProps) {  
+  console.log(params);  
+  
+  return <h1>Detail {params.slug}</h1>;  
+}
+```
+
+Seperti yang dapat dilihat dari kode di atas, kita dapat mengakses sebuah *object* bernama `params`, dan kita mendeklarasikan *type* untuk bentuk *object* tersebut melalui `type ProductProps`. Ini berarti *object* `params` hanya memiliki satu *property* saja, yaitu `slug`. Nama `slug` ini sesuai dengan nama direktori *[slug]* yang kita buat untuk *dynamic route*.
+
+Sekarang halaman tersebut dapat diakses dengan *path /products/segmen-apa-saja*. Ya, secara harfiah, *apa saja*. Maksudnya kita dapat mengakses dengan beragam nama segmen:
+
+-   *http://localhost:3000/products/produk-1*
+-   *http://localhost:3000/products/produk-2*
+-   *http://localhost:3000/products/produk-3*
+-   *http://localhost:3000/products/bla-bla-bla*
+-   *http://localhost:3000/products/dan-sebagainya*
+
+Apabila kita mengakses halaman tersebut dengan alamat lokal [*http://localhost:3000/products/produk-1*](http://localhost:3000/products/produk-1), kita akan melihat di dalam *terminal* sebuah *object* dengan nilai `{ slug: ‘produk-1’ }`. Nilai *property* `slug` tersebut sesuai dengan nama segmen yang kita akses, dalam hal ini adalah `produk-1`.
+
+<Image src="/next-js-pragmatis-dynamic-route/VWiu40-B_afNk3FSOAXXdw.webp" alt="Nilai object params di dalam terminal" />
+
+Apabila terdapat kasus tertentu yang mengharuskan membuat dua segmen dinamis, kita dapat membuatnya dengan konvensi yang sama. Misal, struktur *app/products/[slug]/[tab]/page.tsx* akan menjadi halaman dengan *path /products/segmen-1/segmen-2*:
+
+```tsx filename="app/products/[slug]/[tab]/page.tsx"
+type ProductTabProps = {  
+  params: {  
+    slug: string;  
+    tab: string;  
+  };  
+};  
+  
+export default function ProductTab({ params }: ProductTabProps) {  
+  console.log(params);  
+  
+  return (  
+    <h1>  
+      Detail {params.slug}, {params.tab}  
+    </h1>  
+  );  
+}
+```
+
+Kadangkala kita hendak mengizinkan banyak segmen dan ditangani oleh satu halaman yang sama dalam kasus tertentu. Misal, halaman dengan *path /products/segmen-1/segmen-2* dan halaman dengan *path /products/segmen-1/segmen-2/segmen-3/segmen-4/…* dan seterursnya dapat ditangani oleh satu fail *route* yang sama. Dalam kasus seperti ini, kita dapat menggunakan fitur *catch-all segments.*
+
+Fitur ini dapat kita gunakan dengan menambahkan tiga titik sebelum nama *dynamic route.* Pada contoh sebelumnya, berarti kita dapat menggunakan struktur *app/products/[…slug]/page.tsx*:
+
+```tsx filename="app/products/[…slug]/page.tsx"
+type ProductProps = {  
+  params: {  
+    slug: string[];  
+  };  
+};  
+  
+export default function Product({ params }: ProductProps) {  
+  console.log(params);  
+  
+  return <h1>Detail {params.slug.join(', ')}</h1>;  
+}
+```
+
+Kini nilai `slug` di dalam *props* `params` menjadi *array string* seperti `{ slug: [ ‘segmen-1’, ‘segmen-2’, ‘segmen-3’, ‘segmen-4’ ] }`, sehingga kita perlu menggunakan `string[]` sebagai representasi *type*-nya di TypeScript.
+
+> Bila kita menggunakan *catch-all segments,* maka kita tidak dapat membuat *route* lagi di dalam halaman tersebut (nesting route). Dalam hal ini, di dalam direktori *app/products/[…slug]* tidak boleh ada lagi *route* apapun.
+
+Selain itu, kita juga dapat membuat *catch-all segments* menjadi opsional, ini membuat halaman tersebut dapat diakses tanpa segmen dinamis. Pada contoh sebelumnya, kita dapat mengubah *[…slug]* menjadi *[[…slug]]*. Ya, dengan tanda kurung siku ganda. Sebagai contoh seperti ini:
+
+```tsx filename="app/products/[[...slug]]/page.tsx" /slug?: string[];/
+type ProductProps = {  
+  params: {  
+    slug?: string[];  
+  };  
+};  
+  
+export default function Product({ params }: ProductProps) {  
+  console.log(params);  
+  
+  return <h1>Detail {params.slug?.join(', ')}</h1>;  
+}
+```
+
+Yang membedakan adalah sekarang kita menggunakan simbol `?` untuk memberitahu *compiler* TypeScript bahwa `slug` adalah opsional, sebab kini nilainya bukan hanya *object,* melainkan juga bisa *undefined* bila kita mengaksesnya tanpa segmen.
+
+Kini halaman tersebut kita dapat akses dengan *path /products* saja, tanpa segmen dinamis apapun, atau dengan segmen dinamis seperti */products/segmen-1* atau */products/segmen-1/segmen-2*.
+
+## Rangkuman
+
+Kita telah mempelajari hal baru lagi pada fitur *routing* Next:
+
+-   Fitur *dynamic routing* memungkinkan membuat halaman dengan segmen dinamis
+-   Konvensi struktur direktor untuk *dynamic routing* adalah *app/[param]/page.tsx*
+-   Sedangkan untuk *catch-all segments* adalah *app/[…params]/page.tsx*
+-   Kita dapat membuatnya menjadi opsional dengan *app/[[…params]]/page.tsx*

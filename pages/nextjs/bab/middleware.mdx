@@ -1,0 +1,100 @@
+import { Image } from '@/components/image';
+
+# Middleware
+
+Next memiliki fitur Middleware yang memungkinkan kita untuk mengeksekusi kode sebelum permintaan HTTP ke aplikasi Next kita selesai. Fitur ini berguna dalam beberapa kasus, salah satu contohnya seperti memeriksa otorisasi apakah pengguna diizinkan mengakses suatu halaman melalui pemeriksaan *cookies*. Pada kasus lain, kita juga mungkin hendak melakukan *log,* seperti menangkap *object* permintaan sebelum menampilkan halaman.
+
+## Membuat Middleware
+
+Untuk membuat sebuah *middleware* di Next, kita dapat membuat sebuah fail dengan nama *middleware.ts* di *root* direktori, sejajar dengan fail *package.json*. Di dalamnya, kita dapat mengekspor sebuah fungsi:
+
+```tsx filename="middleware.ts"
+import type {NextRequest} from 'next/server';  
+  
+export async function middleware(request: NextRequest) {  
+  console.log(request.url);  
+}
+```
+
+Kode di atas akan menampilkan URL dari permintaan HTTP yang masuk ke aplikasi Next kita.
+
+<Image src="/next-js-pragmatis-middleware/z8jbK7PVbFa02fL-Kdp5bg.webp" alt="Contoh URL dari permintaan HTTP yang masuk ke aplikasi Next" />
+
+Fungsi tersebut akan dieksekusi pada semua permintaan HTTP yang masuk, bukan hanya pada halaman saja, ini juga termasuk pada setiap permintaan fail statis.
+
+Next memungkinkan kita untuk mengeksekusi *middleware* hanya pada *path* tertentu saja. Anggap saja kita hanya ingin fungsi *middleware* ini dieksekusi pada *path* dengan awalan */dashboard/** saja. Untuk melakukannya, kita dapat mengekspor `config` seperti ini:
+
+```tsx
+export const config = {  
+  matcher: '/dashboard/:path*',  
+};
+```
+
+Dengan seperti ini, fungsi *middleware* hanya akan dieksekusi apabila pengguna mengakses halaman dengan awalan */dashboard* saja.
+
+## Redirect di Middleware
+
+Pada banyak kasus, seringkali kita hendak melakukan *redirect* dari satu halaman ke halaman lain dalam kondisi tertentu, misal, halaman sebelumnya sudah berganti *path*. Sebagai contoh, seperti berikut:
+
+```tsx filename="middleware.ts"
+import {NextResponse, type NextRequest} from 'next/server';  
+  
+export async function middleware(request: NextRequest) {  
+  const path = request.nextUrl.pathname;  
+  
+  if (path === '/about-company') {  
+    return NextResponse.redirect(new URL('/about', request.nextUrl));  
+  }  
+}
+```
+
+Kode di atas akan melakukan *redirect* ka halaman */about* apabila pengguna mengakses halaman */about-company*.
+
+## Rewrite Response di Middleware
+
+Selain melakukan *redirect*, kita juga dapat menulis ulang respons daripada menampilkan respons sesungguhnya. Misal, pada contoh *redirect* sebelumnya, kita dapat menampilkan langsung halaman */about* ketika pengguna mengakses halaman */about-company*:
+
+```tsx filename="middleware.ts"
+import {NextResponse, type NextRequest} from 'next/server';  
+  
+export async function middleware(request: NextRequest) {  
+  const path = request.nextUrl.pathname;  
+  
+  if (path === '/about-company') {  
+    return NextResponse.rewrite(new URL('/about', request.nextUrl));  
+  }  
+}
+```
+
+Pada dasarnya, halaman */about-company* tidak ada di dalam proyek Next kita saat ini. Ketika pengguna mengakses halaman tersebut, Next akan menampilkan pesan galat 404 yang menandakan halaman tersebut tidak ada. Namun, karena kita memotong permintaan HTTP menggunakan *middleware*, maka ketika pengguna mengakses halaman */about-company*, responsnya ditulis ulang atau diganti dengan halaman */about* sesuai dengan yang kita tulis pada kode di atas.
+
+## Mengakses Cookies
+
+Pada kasus yang lebih kompleks, seringkali membuat kita banyak berinteraksi dengan *cookies*, entah sekadar menyimpan data preferensi pengguna atau data yang lebih sensitif seperti *token login*. Di dalam *middleware*, kita dapat mengakses *cookies*. Hal ini berguna ketika kita hendak memeriksa apa pengguna sudah *login* atau belum:
+
+```tsx filename="middleware.ts"
+import {NextResponse, type NextRequest} from 'next/server';  
+  
+export async function middleware(request: NextRequest) {  
+  const cookies = request.cookies;  
+  const pathname = request.nextUrl.pathname;  
+  
+  if (!cookies.has('token') && pathname.startsWith('/dashboard')) {  
+    return NextResponse.redirect(new URL('/login', request.url));  
+  }  
+}
+```
+
+Pada kode di atas, kita dapat memeriksa apakah terdapat *cookie* dengan nama `token` di dalam `request.cookies`. Kita juga memeriksa apakah halaman yang sedang diakses di awali dengan */dashboard*, hal ini bertujuan agar pemeriksaan `token` tidak dijalankan di semua halaman. Bila `token` tidak ada di dalam `request.cookies`, *middleware* akan melakukan *redirect* ke halaman `/login`.
+
+Saya pribadi sering menggunakan pendekatan seperti kode di atas untuk menulis *middleware*, yaitu menggunakan pemeriksaan *path* halaman melalui `pathname.startsWith`, alih-alih dengan konfigurasi `matcher`. Hal ini berguna ketika saya perlu menulis beberapa kondisi di dalam *middleware* untuk seluruh halaman di aplikasi Next.
+
+## Rangkuman
+
+Pada bab ini kita sudah membahas beberapa hal:
+
+-   Next memiliki fitur Middleware yang memungkinkan kita untuk mengeksekusi kode sebelum permintaan HTTP selesai
+-   Fail *middleware* dapat dibuat dengan nama *middleware.ts* dan ditaruh di *root* direktori proyek Next
+-   Fail *middleware* berisi fungsi yang diekspor yang nantinya fungsi tersebut dapat berisi beberapa kondisi
+-   Secara bawaan fungsi *middleware* akan dieksekusi untuk semua permintaan HTTP, kita dapat membatasi dengan konfigurasi `matcher`
+-   Di dalam *middleware* kita dapat melakukan manipulasi respons, seperti melakukan *redirect, rewrite,* atau manipulasi *cookies*

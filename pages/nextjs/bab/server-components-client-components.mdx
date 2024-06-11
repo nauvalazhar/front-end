@@ -1,0 +1,306 @@
+import { Image } from '@/components/image';
+
+# Server Components & Client Components
+
+Kita dapat lihat kembali bahwa di dalam proyek Next sudah terdapat satu halaman atau *route* bawaan yang dapat kita akses dengan alamat lokal [*http://localhost:3000*.](http://localhost:3000.)
+
+<Image src="/next-js-pragmatis-server-components-client-components/eLn4O8pbX--I_YGIJY5BMg.webp" alt="Halaman bawaan Next" />
+
+Halaman tersebut seringkali disebut dengan halaman beranda atau *home*, bila menggunakan istilah teknis bisa juga disebut dengan halaman *index*.
+
+Dalam pemrograman tidak ada sulap. Apa yang kita lihat di layar, pasti ada suatu proses yang bekerja di belakangnya. Sebagai contoh halaman *index* ini. Tidak tiba-tiba muncul, pasti ada komponen yang di-*render*, seperti aplikasi React pada umumnya. Dalam hal ini, komponen yang di-*render* berada di dalam fail *app/page.tsx*.
+
+Jalur *app/page.tsx* merupakan konvensi dari Next untuk membuat halaman *index*. Ini berarti kita juga dapat membuat halaman lain dengan konvensi yang sama, misal *app/about/page.tsx*, fail tersebut akan menjadi halaman *about* yang dapat diakses dengan alamat lokal [*http://localhost:300/about.*](http://localhost:300/about.)
+
+Kita akan membahas hal ini lebih terperinci pada bab terkait. Sekarang, ada baiknya kita perlu memahami konsep *server components* dan *client components* terlebih dahulu. Kedua konsep ini merupakan bagian fundamental yang penting, sebab kita akan sering berinteraksi dengan mereka. Mempelajarinya dapat membantu kita dalam memahami bagaimana suatu komponen React di-*render* oleh Next termasuk komponen di dalam *route*.
+
+## Server Components
+
+Bab sebelumnya membahas beberapa fitur utama yang disediakan Next, dan *server components* salah satunya. Pada penjelasan paling sederhana, *server components* merupakan komponen React reguler yang di-*render* di *server* alih-alih di *client*. Next memiliki satu *server component* yang dapat kita lihat, yaitu fail *app/page.tsx*. Mari kita buka fail tersebut.
+
+<Image src="/next-js-pragmatis-server-components-client-components/h7LBFPQscXXVsEkc-JQI3A.webp" alt="Isi dari fail app/page.tsx" />
+
+Fail *app/page.tsx* berisi komponen React yang seharusnya tidak asing bila kita saat ini menguasai atau memahami dasar-dasar React. Komponen React merupakan sebuah fungsi JavaScript yang menghasilkan JSX. Berikut ini contoh komponen React paling sederhana:
+
+```tsx
+function Hello() {  
+  return <h1>Hello</h1>;  
+}
+```
+
+Kode di atas terdiri dari fungsi `Hello` yang menghasilkan atau mengembalikan (*return*) kode JSX. Ya, bagian `<h1>` itu merupakan JSX.
+
+Begitu juga dengan fail *app/page.tsx*, berisi komponen React reguler, hanya saja lebih panjang. Tentu, untuk menampilkan halaman seperti halaman *index* yang dimiliki Next perlu struktur komponen yang lebih rumit. Namun, secara konseptual keduanya merupakan komponen React. Yang membedakan adalah proses bagaimana komponen itu ditampilkan di *browser*.
+
+Bila kita membuat aplikasi React dengan alat seperti [Vite](https://vitejs.dev/) atau *create-react-app*, maka komponen tersebut akan di-*render* di *browser.* Di sisi lain, karena kita menggunakan Next, komponen tersebut akan di-*render* di *server*. Dalam konteks saat ini, karena kita menjalankan aplikasi Next di lokal dengan menjalankan *development server*, maka istilah “*server*” mengacu pada komputer kita sendiri.
+
+Kita dapat menguji ini dengan menambahkan baris kode berikut sebelum `return` pada komponen React di dalam fail *app/page.tsx* tersebut:
+
+```tsx filename="app/page.tsx" {4}
+import Image from "next/image";  
+  
+export default function Home() {  
+  console.log('Render');  
+  
+  return (  
+    <main className="flex min-h-screen flex-col items-center justify-between p-24">  
+...
+```
+
+Baris kode `console.log('Render');` akan mencetak tulisan “*Render*” di dalam *terminal* yang sebelumnya kita menjalankan perintah `npm run dev`. Mari kita tambahkan kode tersebut, dan simpan failnya. Kita akan melihat secara instan tulisan “*Render*” berada di dalam *terminal*:
+
+<Image src="/next-js-pragmatis-server-components-client-components/KdZOJN6ilMHAH2rSQ7hKOA.webp" alt="Mencetak tulisan “Render” di server" />
+
+Di sisi lain, kita dapat melihat *tab console* di *browser dev tools* dengan menekan F12 (*chrome*) di dalam *browser*.
+
+<Image src="/next-js-pragmatis-server-components-client-components/44OpslJ7RG5_wzOv46zGbg.webp" alt="Tidak ada tulisan “Render”" />
+
+Bisa kita lihat, tidak ada tulisan “*Render*” di dalamnya:
+
+<Image src="/next-js-pragmatis-server-components-client-components/uwzCsmhGugl3lpq1t08WLw.webp" alt="Tidak ada tulisan “Render” di dalam console dev tools" />
+
+Ini berarti komponen React tersebut tidak di-*render* di *browser* sama sekali. Berbeda dengan aplikasi React tradisional yang me-*render* komponen React di *browser*. Hal ini dikarenakan *server components* Next dibangun di atas fitur React Server Components.
+
+React Server Components sendiri merupakan fitur baru dari React yang memungkinkan kita me-*render* komponen React secara eksklusif di *server* dan menjalankannya di *server* saja. Artinya tidak akan pernah di-*render* atau dijalankan di *browser*. Kita dapat bilang bahwa Next mengadopsi fitur React Server Components untuk memungkinkan kita me-*render* komponen React di *server.*
+
+Tentu, kita akan membahas bagaimana proses *rendering* ini bekerja lebih terperinci. Namun, sebelum itu kita akan membahas hal yang lebih ringan dulu, yaitu keuntungan *server components*. Terdapat beberapa keuntungan saat kita menggunakan *server components* di Next:
+
+### Data Fetching
+
+Kita dapat melakukan *data fetching* di *server* untuk mempercepat proses *rendering* web. Hal ini bisa terjadi karena saat suatu halaman dimuat di *browser*, ia sudah berisi data yang dibutuhkannya, *browser* tidak perlu lagi melakukan *data fetching* apapun. Saat kode untuk halaman dikirim ke *browser*, ini hanya perlu di-*render* saja untuk dapat dilihat oleh pengguna.
+
+### Ekseskusi Kode Server
+
+Karena *server components* di-*render* di sisi *server*, ini berarti kita dapat menjalankan kode *server,* seperti mengakses *file system*, atau bahkan mengakses *database* secara langsung dengan ORM favorit kita.
+
+> ORM sederhananya alat yang membantu kita untuk mengakses data dari database dengan paradigma object. Jadi, alih-alih menggunakan kode SQL seperti `select * from products` untuk mengambil data produk, kita dapat melakukannya seperti `db.posts.all()`. Tentu setiap ORM memiliki sintaksis yang berbeda, namun kira-kira seperti itu.
+
+### Mengakses Database Langsung
+
+Kita dapat mengakses *database* langsung di dalam *server components*, ini memungkinkan kita untuk membuat aplikasi *full-stack*. Kita tidak perlu membangun sebuah *layer* yang menyediakan API saja. Tentu, ini dapat menghemat waktu dan kita dapat menulis kode *server* dengan bahasa yang sama tanpa perlu *context switching*.
+
+### Tidak Menambah Beban Bundle
+
+Anggap saja kita menginstal beberapa *library* untuk mengakses data langsung dari *database*, mulai dari *database client* hingga ORM. Setiap *library* yang diinstal ke dalam proyek Next kita, itu akan menambah ukuran proyek secara umum dan cenderung menambah ukuran *bundle*. Namun, dengan *server components* hal itu tidak berlaku, setiap *library* yang kita instal dan impor di dalam *server components* tidak akan memengaruhi ukuran *bundle* sama sekali. Ya, kendati tetap menambah ukuran proyek secara keseluruhan, tapi tidak membebani *bundle* yang membuat aplikasi Next menjadi lambat untuk dimuat.
+
+> *Bundle* merupakan fail JavaScript yang berisi beberapa kode gabungan, seperti JSX, TypeScript dan CSS hasil kompilasi di server. Fail tersebut nantinya dikirim dan di-*parsing* oleh *browser.*
+
+### Keamanan
+
+Apabila kita mengakses data dari sumber data eksternal yang memerlukan otentikasi, seperti token atau *API keys,* kita dapat dengan aman menyimpan kunci tersebut di *server.* Hal ini dikarenakan kode tersebut tidak akan diekspos ke *client* atau *browser*. Selain itu, bahkan *endpoint-*nya pun tidak akan terekspos, ini akan membuatnya lebih aman.
+
+### Caching
+
+Kita juga dapat men-*cache* hasil *rendering* dari *server components*, dan faktanya Next melakukan ini secara bawaan, kita tidak perlu melakukan konfigurasi apapun untuk mencapainya. Dengan melakukan *caching* komponen tersebut, ini dapat mempercepat *rendering*, karena komponen tersebut tidak melulu di-*render* untuk setiap *request*; Next akan menggunakan ulang komponen hasil *caching* sebelumnya.
+
+### Streaming
+
+Bayangkan kita memuat beberapa data yang berbeda di suatu halaman, seperti halaman produk yang memuat data informasi dasar produk dan juga dapat ulasan pengguna. Tanpa *streaming*, kita perlu menunggu semua data tersebut dimuat terlebih dahulu untuk memulai proses *rendering* komponen tersebut, termasuk bagian yang tidak memerlukan data. Di sisi lain, dengan *streaming* kita dapat memulai proses *rendering* untuk bagian yang tidak memerlukan data, dan menampilkan *loading* secara instan untuk bagian yang masih menunggu data.
+
+Dari semua keuntungan di atas, terdapat hal yang tidak dapat kita lakukan di *server components*, yaitu membuat bagian-bagian interaktif. Anggap saja kita ingin membuat bagian interaktif seperti *dropdown menu*, *carousel,* atau pada dasarnya bagian-bagian interaktif lain yang biasa kita buat di React.
+
+Bagian interaktif ini mengandalkan beberapa fitur React, mulai dari `useState`, dan juga *event listener* seperti `onClick`. Fitur-fitur tersebut tidak bisa digunakan di *server components*. Ini disebabkan *server components* tidak *re-render* sebagaimana komponen React reguler interaktif yang memerlukan *re-render* untuk memperbarui UI. Sebagai contoh kita mengklik tombol dan memunculkan *dropdown menu,* ini akan membuat komponen tersebut *re-render*.
+
+Di sisi lain, *server component* tidak akan *re-render* dan hanya di-*render* sekali di *server*. Oleh karena itu, secara sederhana kita dapat menganggap *server components* dapat diandalkan untuk kebutuhan *data fetching* dan juga komponen-komponen statis saja, seperti *logo, sidebar* dengan *link*, atau *layout* statis secara umum.
+
+Kita dapat lihat kembali satu halaman bawaan Next, yaitu *app/page.tsx*.
+
+<Image src="/next-js-pragmatis-server-components-client-components/eLn4O8pbX--I_YGIJY5BMg.webp" alt="Halaman index bawaan Next" />
+
+Seperti yang disebutkan sebelumnya, halaman tersebut merupakan contoh dari *server components* dan merupakan contoh penggunaan yang tepat, sebab di dalamnya tidak terdapat bagian interaktif apapun. Hanya gambar, teks, dan *link* yang tidak memerlukan fitur-fitur React seperti `useState` atau *event listener* apapun.
+
+Sekali lagi, secara bawaan komponen React yang kita tulis di dalam Next akan dianggap sebagai *server components*. Apabila kita membutuhkan bagian-bagian interaktif, kita membutuhkan jenis komponen lain di luar *server components*, dan di sini *client components* berperan!
+
+## Client Components
+
+Dalam konteks React Server Components, terdapat dua jenis komponen. Salah satunya kita sudah bahas, yaitu *server components*, dan satunya lagi merupakan *client components*. Bila *server components* berperan untuk *data fetching*, dan bagian-bagian statis dari suatu halaman, di sisi lain *client components* berperan untuk bagian-bagian interaktif.
+
+Dengan *client components* kita dapat mengakses fitur-fitur React yang beraikatan dengan interaktifitas, seperti `useState`, `useEffect`, dan juga *event listener*. Di luar itu, *client components* juga dapat mengakses fitur-fitur API *browser*, seperti `localStorage`, atau DOM.
+
+Kendati bernama *client components*, sebenarnya komponen ini juga di-*render* di *server* untuk menciptakan versi non-interaktif*,* dan di-*render* di *client* atau *browser* untuk kebutuhan interaktifitas. Mungkin kedengarannya membingungkan, namun ini wajar, sebab sebagian pengguna React kebingungan dengan hal ini. Dan Abramov, tim inti React, membuat gambarannya:
+
+<Image src="/next-js-pragmatis-server-components-client-components/FPgwaSzmmdM6-iGDr9IjXA.webp" alt="Sumber: https://github.com/reactwg/server-components/discussions/4" />
+
+Secara sederhana, *client components* ini merupakan istilah baru yang digunakan, dalam konteks React Server Components, untuk komponen-komponen yang selama ini sudah ada di React. Ya, komponen reguler React.
+
+Sebagai contoh begini, anggap saja kita hendak membuat komponen interaktif *dropdown menu*, kira-kira kodenya seperti berikut:
+
+```tsx
+import { useState } from 'react';  
+  
+export default function Dropdown() {  
+  const [show, setShow] = useState(false);  
+  
+  function handleClick() {  
+    setShow(!show);  
+  }  
+  
+  return (  
+    <div className="dropdown">  
+      <button onClick={handleClick}>Dropdown</button>  
+      {show ? <div className="dropdown-menu">...</div> : null}  
+    </div>  
+  );  
+}
+```
+
+Secara fundamental, di React, komponen tersebut disebut komponen React saja. Komponen reguler sebagai mana mestinya. Namun, ketika kita menggunakan React Server Components, karena terdapat komponen yang di *render* secara eksklusif di *server* dan tidak memiliki interaktifitas alias *server components*, maka perlu istilah untuk menyebut komponen khusus untuk interaktifitas. Oleh karena itu, istilah *client components* hadir.
+
+Selain itu, *client components* juga di-*render* di *server* untuk menciptakan versi non-interaktif dari komponen tersebut, dan kemudian ia akan dibuat menjadi interaktif di *client,* tujuannya untuk waktu *loading* web yang cepat. Secara sederhana, *client components* dijalankan di dua lingkungan yang berbeda, yaitu *server* dan *client*. Bila masih bingung, tidak perlu khawatir, kita akan bahas ini lebih terperinci di bagian berikutnya. Untuk sekarang, kita hanya perlu memahami bahwa *client components* dapat diandalkan untuk membuat bagian-bagian interaktif.
+
+Mari kita perhatikan kembali kode *dropdown* yang sebelumnya kita bahas. Kode tersebut kita dapat simpan ke dalam sebuah fail baru dengan nama *app/Dropdown.tsx.* Kemudian kita impor di dalam fail *app/page.tsx* seperti ini:
+
+```tsx filename="app/page.tsx" {2,9}
+import Image from 'next/image';  
+import Dropdown from './Dropdown';  
+  
+export default function Home() {  
+  console.log('Render');  
+  
+  return (  
+    <main className="flex min-h-screen flex-col items-center justify-between p-24">  
+      <Dropdown />  
+...
+```
+
+Bila kita simpan fail tersebut dan kita buka kembali *browser*, maka akan muncul galat seperti ini:
+
+<Image src="/next-js-pragmatis-server-components-client-components/93HRraDr8gT1yUyTjkDIqQ.webp" alt="Galat saat menjalanakan client components di Next" />
+
+Hal tersebut wajar, sebab kembali lagi pada pembahasan sebelumnya, bahwa setiap komponen yang kita tulis dianggap sebagai *server components* secara bawaan. Jadi, kita perlu sebuah cara untuk memberi tahu Next atau React spesifiknya bahwa komponen yang kita tulis tersebut merupakan *client components,* dalam kata lain kita ingin mengaktifkan *client components*.
+
+Bila kita lihat lagi pesan galatnya, sebenarnya Next sudah memberitahu dengan pesan galat yang ramah bahwa karena kita menulis komponen yang membutuhkan `useState`, dan fitur tersebut hanya dapat digunakan di *client components,* dan tidak ada tanda atau *directive* `'use client';` di dalam komponen kita, maka akan dianggap sebagai *server components*. Ini berarti, dalam kata lain, untuk menandai suatu komponen menjadi *client components* adalah dengan memberi *directive* `'use client';` di dalam komponen tersebut. Untuk melakukannya, kita dapat menandainya di awal baris fail komponen tersebut.
+
+```tsx filename="app/Dropdown.tsx" {1}
+'use client';  
+  
+import { useState } from 'react';  
+  
+export default function Dropdown() {  
+  const [show, setShow] = useState(false);  
+  
+  function handleClick() {  
+    setShow(!show);  
+  }  
+  
+  return (  
+    <div className="dropdown">  
+      <button onClick={handleClick}>Dropdown</button>  
+      {show ? <div className="dropdown-menu">...</div> : null}  
+    </div>  
+  );  
+}
+```
+
+Jadi, seperti itu, untuk menandai sebuah komponen sebagai *client components* kita perlu `'use client';` di awal bari kode fail komponen tersebut, bila tidak, komponen tersebut diangap sebagai *server components*.
+
+Sampai sini kita sudah memahami *client components* dan komponen tersebut dapat diimpor ke dalam *server components,* dalam contoh sebelumnya adalah *server components* di dalam fail *app/page.tsx*.
+
+Selain untuk bagian interaktifitas, kita juga dapat melakukan beberapa hal yang umumnya kita dapat lakukan pada komponen React reguler, misal *data fetching*. Di aplikasi React tradisional, kita dapat melakukan *data fetching* dengan bantuan `useEffect` seperti berikut contohnya:
+
+```tsx
+'use client';  
+  
+import { useState, useEffect } from 'react';  
+  
+export default function Products() {  
+  const [products, setProducts] = useState([]);  
+  
+  useEffect(() => {  
+    fetchData();  
+  }, []);  
+  
+  async function fetchData() {  
+    const res = await fetch('https://api.myserver.tld/products');  
+    const products = await res.json();  
+  
+    setProducts(products);  
+  }  
+  
+  return <div>...</div>;  
+}  
+
+```
+
+Pada kasus nyata, mungkin kita menggunakan bantuan *library* pihak ketiga seperti React Query atau SWR, namun, paling tidak poinnya tetap dapat.
+
+Melakukan *data fetching* di *client* hanya direkomendasikan dalam beberapa kasus saja, seperti seandainya kita hendak melakukan *data fetching* dalam interval tertentu secara terus-menerus, atau hendak mengambil data *real-time*. Next merekomendasikan kita untuk melakukan *data fetching* di *server* dengan *server components* untuk proses *rendering* yang lebih cepat.
+
+## Bagaimana Rendering Next Bekerja
+
+Kedua jenis komponen yang kita bahas sebelumnya di-*render* dalam proses yang sama. Sebelum membahasnya lebih jauh, kita perlu membagi dua peran React. Dalam konteks React Server Components, kita dapat membaginya menjadi dua peran:
+
+-   **React Server**: React yang bekerja di sisi *server* yang berperan me-*render* komponen React dan mengirimkan hasilnya ke *browser* atau *client*.
+-   **React Client**: React yang bekerja di sisi *client* yang berperan me-*render* hasil respons yang diterima dari React Server untuk ditampilkan kepada pengguna.
+
+Secara fundamental, React Server akan me-*render server components* dan menghasilkan format spesial (mirip JSON) yang disebut dengan React Server Components Payload (RSC Payload) dan dikirim ke *client* sebagai respons, sebagai contoh hasil dari fail *app/page.tsx*:
+
+```json filename="RSC Payload"
+2:I["(app-pages-browser)/./app/Dropdown.tsx",["app/page","static/chunks/app/page.js"],""]  
+3:I["(app-pages-browser)/./node_modules/next/dist/client/image-component.js",["app/page","static/chunks/app/page.js"],"Image"]  
+0:["development",[["children","__PAGE__",["__PAGE__",{}],["__PAGE__",{},["$L1",["$","main",null,{"className":"flex min-h-screen   
+...
+```
+
+> Kode di atas hanya sebagai contoh ringkas saja, pada kasus yang nyata sudah pasti kodenya lebih panjang lagi.
+
+Apabila di dalam *server components* terdapat *client components* yang diimpor, maka format tersebut juga akan berisi jalur untuk referensi ke fail *client components* berada. Kita dapat lihat kembali contoh format RSC di atas, format tersebut berisi referensi ke fail JavaScript *client components app/Dropdown.tsx*, lokasi komponen *dropdown* kita berada.
+
+Saat kita mengimpor *client components* di dalam *server components*, RSC Payload akan berisi *“lubang”* atau bisa disebut juga “*placeholder*” yang akan menjadi lokasi *client components* tersebut nantinya di-*render*.
+
+Pada akhirnya, React Client bekerja di sisi *client* atau *browser*, dan menerima format kode di atas yang kemudian akan di-*render* menjadi visual untuk ditampilkan ke pengguna secara utuh.
+
+Proses tersebut merupakan bagian dari React secara fundamental, namun dalam konteks Next, proses ini agak sedikit beda. Ini karena Next menggabungkan teknik *rendering* lain, yaitu Server-side Rendering (SSR) demi meningkatkan performa web.
+
+Di *server*, setelah React Server menghasilkan RSC Payload yang berisi *server components* dan *client components* interaktif, kemudian Next me-*render* kembali format tersebut menjadi HTML dan instruksi JavaScript untuk *client components* yang nantinya dikirim ke *client* sebagai respons. Ini berarti respons dari server bukan hanya RSC Payload, tetapi juga HTML dan JavaScript.
+
+Di *client*, HTML tersebut digunakan untuk dengan cepat menampilkan tampilan awal antarmuka non-interaktif dari halaman tersebut ke pengguna, sedangkan instruksi JavaScript sudah diterima untuk membuatnya menjadi interaktif. Sebelum halaman menjadi interaktif, terdapat proses penyelarasan antara struktur *server components* dan *client components* berdasarkan RSC Payload. Setelah proses penyelarasan selesai, kemudian proses *hydration* dilakukan, yaitu proses membuat halaman non-interaktif tadi menjadi interaktif.
+
+Teknik *rendering* di Next menggabungkan antara React Server Components yang menghasilkan RSC Payload dan juga Server-side Rendering (SSR) yang menghasilkan HTML untuk pratinjau awal (*inital load*). Keduanya merupakan hal yang berbeda dan dapat dikombinasikan, seperti di Next ini. Secara fundamental, kita tidak harus menerapkan SSR untuk menggunakan React Server Components, namun dengan mengkombinasikan keduanya kita akan mendapatkan web performa yang lebih cepat.
+
+Dengan demikian, proses *rendering* di Next seperti berikut alurnya:
+
+1.  Pengguna mengunjungi suatu halaman melalui *browser*
+2.  Next akan me-*render* suatu *route* terkait yang berisi *server components* dan *client components*
+3.  Next me-*render* komponen tersebut menjadi RSC Payload
+4.  Next me-*render* kembali *payload* tersebut menjadi HTML dan instruksi JavaScript untuk *client components* (proses ini bagian dari SSR)
+5.  Kemudian server mengirim RSC Payload, HTML, dan instruksi JavaScript
+6.  Lalu *browser* menerima respons tersebut dan segera menampilkan HTML di awal yang merupakan versi non-interaktif halaman
+7.  RSC Payload digunakan untuk penyelarasan antara struktur *server components* dan *client components*
+8.  Halaman non-interaktif kemudian di-*hydrate* agar menjadi interaktif dengan instruksi JavaScript
+9.  Pengguna dapat melihat antarmuka halaman dan berinteraksi dengannya
+
+Secara historis, Next sudah menggunakan fitur SSR sejak pertama kali saya menggunakannya, hanya saja pada versi barunya ini dikombinasikan dengan React Server Components. Fitur SSR ini mengatasi “masalah” yang terjadi pada proses *rendering* React secara fundamental.
+
+Begini, React ini merupakan *library* JavaScript dan bagaimana ia bekerja sama seperti *library* JavaScript pada umumnya, sangat bergantung pada JavaScript. Saat kita membuat aplikasi React tradisional, kita akan menulis komponen-komponen di dalam fail JavaScript yang nantinya fail-fail JavaScript tersebut digabung menjadi fail *bundle*. Fail *bundle* ini yang nantinya dikirim ke *browser,* lalu *browser* akan mengunduh dan mengolah fail tersebut dan yang akhirnya komponen-komponen di dalamnya di-*render*.
+
+Masalahnya, proses *rendering* tersebut bergantung pada JavaScript, ini berarti apabila fail *bundle* JavaScript belum diunduh dan diolah, tidak akan ada komponen apapun yang di-*render*. Ini berarti semakin skala proyek React tersebut berkembang, akan semakin besar juga fail *bundle* yang diproduksi, dan tentunya akan membutuhkan waktu yang lebih lama untuk diunduh dan diolah oleh *browser*. Proses *rendering* ini dikenal dengan istilah Client-side Rendering (CSR), karena prosesnya terjadi di *client* dan dalam hal ini adalah *browser*.
+
+Bila kita mengunjungi aplikasi web berbasis React yang menggunakan Client-side Rendering, umumnya kita akan melihat layar kosong putih sebelum komponen-komponen di dalamnya di-*render.* Ini wajar, sebab *browser* sedang mengunduh dan mengolah fail *bundle* dari web tersebut. Tentu, terdapat beberapa teknik untuk mengatasi masalah fail *bundle* yang semakin besar, seperti teknik *code splitting, lazy loading,* dan semacamnya. Namun, secara umum fail *bundle* akan selalu membesar seiring berkembangnya proyek tersebut.
+
+Teknik Client-side Rendering juga dianggap tidak ramah untuk SEO (Search Engine Optimization), sebab konten-konten untuk web tersebut berada di dalam fail JavaScript bukan dalam HTML, sehingga tidak dapat dibaca oleh mesin pencari.
+
+Di sisi lain, SSR mengatasi masalah semacam ini. Dengan SSR komponen-komponen yang merupakan konten dari web akan di-*render* di sisi *server* yang kemudian menghasilkan HTML dan instruksi JavaScript. Seperti yang kita sudah pelajari sebelumnya, HTML ini kemudian ditampilkan ke pengguna sebagai tampilan awal non-interaktif. Setelah fail instruksi JavaScript dibaca dan diolah, akan terdapat proses *hydration*, membuat tampilan tersebut menjadi interaktif.
+
+Dibanding CSR, SSR dianggap lebih ramah untuk SEO, sebab konten-konten dari web tersebut berada di HTML, alih-alih di fail JavaScript. Ini berarti akan dengan mudah dibaca oleh mesin pencari.
+
+Sejauh ini kita sudah mempelajari secara umum proses *rendering* di Next dan React secara fundamental. Kita juga akan membahas bagaimana proses *rendering* yang lebih spesifik untuk fitur *streaming* dan saat navigasi halaman di bab terkait. Untuk sekarang, paling tidak kita memahami bagaimana Next me-*render* komponen yang kita tulis hingga dapat ditampilkan ke pengguna.
+
+Konsep fundamental seperti ini sebenarnya bisa dipelajari nanti, namun saya pribadi senang membahasnya di awal agar dapat memahami konsep-konsep yang lain dengan lebih mudah. Tidak mengapa bila ingin melewati bab ini dulu dan lanjut ke bab yang lain bila menurutmu merupakan topik yang lebih ringan dan menyenangkan.
+
+## Rangkuman
+
+Dalam bab ini kita sudah membahas konsep fundamental *rendering* di Next:
+
+-   Komponen React yang kita tulis dianggap *server components* oleh Next secara bawaan
+-   Fitur *server components* dibangun di atas fitur React Server Components
+-   *Server components* hanya dijalankan di *server secara* eksklusif
+-   *Server components* dapat digunakan untuk *data fetching* dan antarmuka statis seperti logo, *sidebar* dengan *link,* atau *layout* statis lainnya
+-   Untuk bagian interaktif kita dapat menggunakan *client components*
+-   Untuk menandai *client components*, kita perlu *directive* `'use client';` di awal baris komponen tersebut
+-   *Client components* dijalankan di dua lingkungan, yaitu *server* dan *client*
+-   *Server components* menghasilkan RSC Payload
+-   Bila terdapat impor *client components* di dalamnya, RSC Payload juga berisi referensi jalur fail *client components* berada
+-   Next mengkombinasikan React Server Components yang menghasilkan RSC Payload dan Server-side Rendering (SSR) yang menghasilkan HTML untuk pratinjau awal yang cepat
+-   HTML merupakan versi non-interaktif dari halaman yang diakses
+-   Instruksi JavaScript digunakan untuk membuat halaman tersebut menjadi interaktif

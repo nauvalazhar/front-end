@@ -1,0 +1,243 @@
+import { Image } from '@/components/image';
+
+# Pengenalan dan Instalasi
+
+Ketika membangun produk aplikasi web dengan React, setidaknya kita perlu menyiapkan beberapa hal sebelum memulai pengerjaannya. Anggap saja kita hendak membangun *dashboard* dengan React, paling tidak kita perlu menyiapkan *routing system* untuk menangani halaman-halaman web.
+
+Kita tidak perlu membuat *routing system* dari awal, sebab terdapat beberapa opsi pustaka *router* pihak ketiga di internet yang bisa kita gunakan, seperti [React Router](https://reactrouter.com/en/main) contohnya. Namun, kita tetap perlu memasangnya pada proyek React kita, melakukan konfigurasi, juga perlu menentukan konvensinya seperti struktur fail dan direktori.
+
+Selain itu, kita juga perlu beberapa hal lain yang umum kita perlukan ketika membangun aplikasi web berbasis React, seperti *data fetching, form handling,* dan bahkan teknik-teknik optimisasi seperti membagi fail *bundle* sesuai dengan *route*-nya agar suatu halaman dapat dengan cepat dimuat oleh *browser*. Hal-hal tersebut tidak termasuk secara bawaan dalam React, sebab React tidak memiliki opini tentang bagaimana kita menulis kode atau menggunakan pustaka pihak ketiga — *unopiniated*. Kita dibebaskan oleh React, dan di sinilah ekosistem berperan.
+
+Ekosistem React hadir dengan berbagai solusi *framework* dengan fitur-fitur yang umumnya kita perlukan untuk membangun aplikasi web, dan Next.js merupakan salah satu solusi *framework* yang saat ini tengah populer.
+
+## Next.js
+
+Next.js (selanjutnya disebut Next) merupakan sebuah *framework* berbasis React untuk membangun aplikasi web *full-stack*. Next menyediakan fitur-fitur yang umum kita perlukan untuk membangun aplikasi web, seperti *routing, data fetching,* dan *form handling*.
+
+Kita dapat membangun pelbagai jenis proyek aplikasi web dengan Next, mulai dari yang paling sederhana seperti *todo list, blog,* hingga aplikasi web yang kompleks seperti produk-produk *enterprise* yang kami produksi di [Kredibel for Enterprise](https://enterprise.kredibel.com/).
+
+Dengan menggunakan Next, kita tidak perlu khawatir untuk menulis konfigurasi-konfigurasi apapun di awal untuk membuat sebuah aplikasi Next berjalan. Sekali kita sudah menginstal Next, semuanya beres. Kita bisa fokus membangun aplikasi web, alih-alih menyiapkan konfigurasi alat-alat seperti *bundler*, *compiler*, dan masih banyak lagi.
+
+Next juga mudah dipelajari, bila kita menguasai React maka akan semakin mudah mempelajari *framework* ini. Sebab, pada dasarnya kita akan merancang aplikasi web dengan React, hanya saja dibantu dengan fitur-fitur spesifik milik Next. Bagi saya ini merupakan pengalaman yang epik!
+
+## Mengapa Next.js?
+
+Pertama kali saya menggunakan Next, saat itu masih versi 9. Satu hal yang membuat saya jatuh hati pada *framework* ini adalah fitur *file system routing* yang dimiliki Next, dengan fitur ini saya hanya perlu membuat sebuah fail JavaScript atau TypeScript untuk membuat sebuah *route* atau halaman. Tidak perlu konfigurasi apapun. Langsung jalan. Fitur tersebut menjadi pintu masuk bagi saya untuk mengeksplor Next lebih jauh lagi hingga sampai hari ini.
+
+Dalam rentang versi 9 hingga versi 14 (versi termutakhir saat ini), terdapat banyak perubahan fitur. Ada beberapa fitur yang dihapus, diubah, hingga ditambahkan. Fitur-fitur ini mempengaruhi bagaimana kita menulis aplikasi web dengan Next. Sebenarnya, secara umum fitur-fitur ini mencapai hal serupa, namun pendekatannya saja yang berbeda.
+
+Bagi pengguna lama, fitur-fitur baru ini seringkali membingungkan, sebab mental model kita masih berkubang pada pemahaman yang lawas. Namun, bagi pengguna baru hal ini seharusnya bukan merupakan suatu kekhawatiran, karena semua fitur-fitur tersebut dapat dipelajari dari awal. Terlepas dari itu, kita akan membahas beberapa fitur utama Next dengan ringkas sebelum memulai proyek pertama Next kita.
+
+### File System Routing
+
+Next memudahkan kita untuk membuat sebuah halaman atau *route* hanya dengan membuat sebuah fail JavaScript (atau TypeScript) dan mengekspor komponen React di dalamnya.
+
+Sebagai contoh kita hendak membuat halaman produk:
+
+```tsx filename="app/products/page.tsx"
+export default function Products() {  
+  return (  
+    <div>  
+      <h1>Produk</h1>  
+    </div>  
+  );  
+}
+```
+
+Kode di atas merupakan komponen React reguler yang berada di dalam sebuah fail *app/products/page.tsx*. Lokasi fail tersebut merupakan konvensi dari Next untuk menandakan suatu direktori adalah *route*.
+
+### Data Fetching
+
+Secara bawaan, Next akan me-*render* setiap komponen React yang kita buat di *server*, bukan di *client* seperti yang selama ini mungkin kamu pelajari. Melakukan *rendering* komponen React di *server* memiliki beberapa manfaat, salah satunya adalah *data fetching* di *server*.
+
+Sebagai contoh kita hendak mengambil data produk di halaman produk:
+
+```tsx filename="app/products/page.tsx"
+async function getProducts() {  
+  const res = await fetch('https://api.myservice.tld/products');  
+  return res.json();  
+}  
+  
+export default async function Products() {  
+  const products = await getProducts();  
+  
+  return (  
+    <div>  
+      <h1>Produk</h1>  
+  
+      {products.map((product) => (  
+        <div key={product.id}>{product.name}</div>  
+      ))}  
+    </div>  
+  );  
+}
+```
+
+Hal ini memungkinkan aplikasi web lebih cepat di-*render,* sebab kita tidak perlu lagi menunggu komponen React di-*render* oleh *browser* untuk mulai melakukan *data fetching*, semuanya sudah selesai di *server* dan akan meringankan beban kerja *browser* dalam me-*render* React.
+
+Fitur ini dibangun di atas fitur baru React, yaitu React Server Components. Next mengadopsi fitur ini, sehingga kita dapat menggunakannya tanpa perlu melakukan konfigurasi apapun.
+
+### Data Mutation
+
+Selain mengambil data, umumnya kita juga akan melakukan perubahan pada data, seperti mengubah, menghapus, atau menambah data. Hal ini disebut juga dengan *data mutation,* kita dapat melakukan aktivitas ini dengan bantuan fitur Server Actions.
+
+Sebagai contoh kita hendak menambah data produk ketika *form* di-*submit*:
+
+```tsx filename="app/products/create/page.tsx"
+export default async function Products() {  
+  async function createProduct(formData: FormData) {  
+    'use server'  
+   
+    const rawFormData = {  
+      name: formData.get('name'),  
+      price: formData.get('price'),  
+    }  
+  
+    // insert into database  
+  }  
+  
+  return (  
+    <div>  
+      <h1>Produk</h1>  
+  
+      <form action={createProduct}>...</form>  
+    </div>  
+  );  
+}
+```
+
+Server Actions merupakan fungsi *asynchronous* yang dieksekusi di *server*, oleh karena itu kita dapat menjalankan kode *server,* seperti mengakses *file system* atau mengakses *database* secara langsung.
+
+### Caching
+
+Next menerapkan beberapa jenis *caching* secara bawaan, salah satu contohnya adalah *request memoization*. Kita dapat melakukan *request* data beberapa kali pada *endpoint* yang sama pada beberapa tempat yang berbeda, dan Next hanya akan mengeksekusinya sekali saja.
+
+Sebagai contoh kita hendak melakukan *request* data pengguna dalam beberapa tempat yang berbeda:
+
+```tsx filename="data/getUser.ts"
+export async function getUser() {  
+  const res = await fetch('https://api.myservice.tld/user');  
+  return res.json();  
+}  
+  
+// components/Sidebar.tsx  
+  
+export async function Sidebar() {  
+  const user = await getUser();  
+  
+  return <div>...</div>;  
+}  
+  
+// components/Setting.tsx  
+  
+export async function Setting() {  
+  const user = await getUser();  
+  
+  return <div>...</div>;  
+}
+```
+
+Dengan seperti ini, bila kita memerlukan data yang sama di beberapa tempat yang berbeda, kita tidak perlu lagi melakukan *request* data tersebut sekali di *root tree* dan membagikannya secara global dengan React Context, alih-alih kita dapat melakukan *request* di komponen yang membutuhkan data tersebut saja.
+
+### Streaming
+
+Fitur Next yang satu ini memungkinkan kita untuk me-*render* secara instan komponen bagian dari halaman yang tidak memerlukan data, dan menampilkan tampilan *loading* untuk bagian lain yang memerlukan data.
+
+Sebagai contoh halaman produk menampilkan data informasi produk dan komponen *navbar*:
+
+```tsx filename="app/products/[slug]/page.tsx"
+import { Suspense } from 'react';  
+import { ProductDetail } from '@/components/Product';  
+  
+export default function Product({  
+  params: { slug },  
+}: {  
+  params: { slug: string }  
+}) {  
+  return (  
+    <div>  
+      <Navbar />  
+      <Suspense fallback={<div>Loading...</div>}>  
+        <ProductDetail slug={slug} />  
+      </Suspense>  
+    </div>  
+  );  
+}
+```
+
+Kendati proses *data fetching* pada komponen `ProductDetail` belum selesai, Next akan tetap me-*render* bagian lain dari halaman tersebut yang tidak memerlukan *data fetching*, dalam contoh di atas adalah komponen `Navbar`.
+
+Fitur ini dapat dimungkinkan berkat jasa fitur React Server Components dan fitur React Suspense.
+
+### Styling
+
+Next memiliki beberapa solusi untuk *styling* yang didukung secara bawaan, mulai dari CSS murni, CSS Modules, Tailwind, Sass, hingga CSS-in-JS. Kita akan menggunakan Tailwind pada proyek Next yang akan kita buat di bagian berikutnya.
+
+### TypeScript
+
+Next mendukung TypeScript secara bawaan dan tidak ada konfigurasi apapun yang perlu kita lakukan. Faktanya, saat kita akan membuat proyek Next, kita dapat memilih apakah hendak menggunakan TypeScript atau tidak. Kita juga akan menggunakan TypeScript di proyek belajar Next ini.
+
+### Ekosistem
+
+Sebenarnya ini bukan spesifik fitur Next, namun ini menjadi bagian yang menjadi pertimbangan ketika kita akan menggunakan *framework* atau *library* pihak ketiga, yaitu ekosistem. Next memiliki ekosistem yang besar, banyak *library* pihak ketiga yang dapat kita gunakan. Misal, untuk membangun antarmuka pengguna, kita dapat menggunakan *shadcn/ui*; atau untuk ORM, kita dapat menggunakan Drizzle; begitu juga untuk *library* React secara umum, biasanya akan berjalan di Next tanpa ragu.
+
+Kita telah membahas beberapa fitur utama Next secara ringkas. Tidak perlu khawatir seandainya kamu masih bingung atau tidak paham sama sekali perihal fitur-fitur Next tersebut, kita akan membahasnya lebih terperinci di bab-bab terkait. Paling tidak, saat ini kamu hanya perlu memahami bahwa Next memiliki beberapa fitur tersebut, selebihnya tidak perlu dibuat bingung. Santai saja, tidak perlu buru-buru.
+
+## Referensi Next.js
+
+Next memiliki web resmi yang dapat diakses di [https://nextjs.org](https://nextjs.org/). Web tersebut berisi beberapa halaman berisi informasi yang dapat dijadikan materi belajar, seperti halaman dokumentasi, dan juga halaman belajar.
+
+Halaman dokumentasi berisi informasi teknikal dari konsep-konsep dan fitur-fitur yang dimiliki Next. Di sisi lain, terdapat halaman belajar yang lebih ramah pemula, karena berisi tutorial bertahap praktis. Tentu, referensi dari materi belajar ini berdasarkan sumber daya dari web tersebut, karena itu merupakan informasi resmi Next.
+
+## Syarat-Syarat
+
+Sebelum mengambil langkah lebih jauh lagi, kita perlu membahas beberapa syarat-syarat untuk belajar Next. Saya membagi dua jenis syarat di sini, yaitu pengetahuan dan sistem.
+
+### Pengetahuan
+
+Ada beberapa pengetahuan dasar untuk memulai belajar Next atau menggunakan Next. Syarat pengetahuan ini juga yang menjadi asumsi saya saat menjelaskan suatu konsep, agar tidak begitu dasar dan juga tidak begitu rumit.
+
+Saya tidak akan memberikan syarat yang begitu kompleks, paling tidak kamu dapat mengoperasikan komputer dan memiliki pengetahuan pengembangan web dasar, seperti HTML, CSS, dan khusunya JavaScript. Bila kamu seorang *web developer* atau *programmer* secara umum maka itu bisa memudahkan kamu memahami materi belajar ini.
+
+Saya juga mengasumsikan kamu memahami React. Seandainya kamu belum memahami React, saya dapat merekomendasikan kamu untuk belajar React terlebih dahulu melalui [tutorial React yang saya unggah di platform YouTube](https://www.youtube.com/watch?v=JS5w4rUbjQE).
+
+Apabila kamu ingin langsung mempelajari Next tanpa paham React, saya tidak melarangnya. Faktanya, saat pertama kali saya menggunakan Next, saya tidak memahami React sama sekali. Justru karena Next, saya mempelajari React secara fundamental. Bagi saya pribadi, cara seperti ini yang seringkali bekerja, kendati banyak kebingungan dalam prosesnya. Tetapi tidak masalah, kebingungan adalah motivasi belajar yang paling ampuh untuk saya.
+
+Terakhir adalah TypeScript, karena kita akan menggunakan TypeScript pada materi ini, jadi saya asumsikan kamu sudah memahami TypeScript atau paling tidak kamu paham bahwa TypeScript secara sederhana merupakan JavaScript yang memiliki *type*.
+
+Tidak perlu khawatir, saya akan berusaha semampu saya untuk menjelaskan setiap konsep-konsep baru yang ada di materi belajar ini secara komprehensif dan sesederhana mungkin.
+
+### Sistem
+
+Untuk menggunakan Next dan menjalankannya, terdapat dua syarat sistem yang perlu kita penuhi:
+
+-   Node.js versi 18.17 atau di atasnya
+-   Sistem operasi macOS, Windows (termasuk WSL), dan Linux
+
+Bila belum memiliki Node.js, kamu dapat [mengunduhnya di web resmi mereka](https://nodejs.org/en/download) dan memasangnya di komputermu. Saya tidak akan menjelaskan secara terperinci mengenai hal ini, sebab setiap sistem operasi dan *distro* memiliki proses instalasi yang berbeda dan juga ini merupakan hal dasar.
+
+Bagi pengguna Windows, mungkin saya dapat merekomendasikan kamu untuk menggunakan WSL untuk mendapatkan pengalaman menggunakan Linux di dalam Windows.
+
+> Di luar Node.js, kita juga dapat menggunakan *runtime* JavaScript lain seperti Bun. Namun, di materi ini kita akan menggunakan Node.js karena Next bekerja dengan baik di Node.js dan sesuai dengan rekomendasi dari dokumentasi resemi Next. Tentu, kamu dapat bereksplorasi dengan *runtime* lain setelah membaca materi ini.
+
+### Alat-Alat
+
+Selain syarat sistem, terdapat beberapa alat-alat yang kita perlukan dalam materi belajar ini:
+
+-   **Editor teks**: kamu dapat menggunakan editor teks favoritmu seperti VS Code atau Neovim. Saya akan menggunakan Zed pada materi kali ini.
+-   **Browser**: sudah pasti kamu memerlukan *browser* untuk mengakses aplikasi web Next yang akan kita pelajari. Saya menggunakan Chrome.
+-   **Terminal Emulator**: kita perlu aplikasi *terminal emulator* untuk menjalankan perintah-perintah, seperti perintah untuk membuat proyek Next salah satunya. Saya menggunakan *terminal* yang terintegrasi di dalam editor teks. Bila kamu menggunakan VS Code kamu juga dapat melakukan hal yang sama.
+
+Saya tidak memiliki opini apapun tentang bagaimana caramu menyiapkan alat-alat tersebut, yang pasti ketiganya adalah wajib ada.
+
+## Rangkuman
+
+Pada bab ini kita sudah membahas beberapa hal dasar dari Next:
+
+-   React merupakan *unopiniated library*, ini artinya React tidak memiliki opini apapun tentang bagaimana kita menulis kode dalam membangun aplikasi
+-   React tidak memiliki fitur-fitur umum yang dibutuhkan seperti *router* untuk membangun aplikasi web
+-   Next merupakan *framework* berbasis React yang menjadi solusi ekosistem untuk membangun aplikasi web tingkat produksi
+-   Next memiliki beberapa fitur yang umumnya kita perlukan dalam membangun aplikasi web, seperti *routing, data fetching,* dan *form handling*
+-   Next mengadopsi fitur-fitur React termasuk fitur baru seperti React Server Components, React Suspense, dan *streaming*
+-   Kita dapat menggunakan Next di macOS, Windows (termasuk WSL), dan juga Linux
+-   Kita membutuhkan Node.js untuk menggunakan Next, karena Next berjalan di atas Node.js

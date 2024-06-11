@@ -1,0 +1,251 @@
+import { Image } from '@/components/image';
+
+# Styling & Font
+
+Terdapat dua fitur *styling* mendasar saat kita membuat proyek Next.js, yaitu CSS dan *font*. Next menawarkan dukungan CSS dengan memberikan opsi *styling* populer, mulai dari CSS Modules, Tailwind CSS, CSS-in-JS, Sass, hingga CSS reguler.
+
+Ketika kita membuat proyek Next, terdapat beberapa pertanyaan yang perlu dijawab dan salah satunya adalah opsi *styling* dengan Tailwind. Pada proyek Next yang kita buat, kita menggunakan Tailwind. Kendati demikian, kita bebas memilih opsi *styling* apapun yang kita sukai. Hanya saja, karena kita memilih *styling* dengan Tailwind, maka kita akan persempit bahasan kita menjadi untuk Tailwind saja.
+
+## Tailwind CSS
+
+Tailwind CSS merupakan sebuah *framework* CSS yang tengah populer saat ini. Ia memiliki pendekatan *styling* yang berbeda dibanding *framework* lawas seperti Bootstrap atau Foundation. Tailwind tidak memiliki komponen-komponen pradesain, seperti *button*, *alert, navbar,* atau *carousel.* Alih-alih, Tailwind memiliki sekumpulan *class-class* kecil yang memiliki satu tujuan dan kita dapat kombinasikan *class-class* tersebut hingga menciptakan sebuah visual.
+
+Pada *framework* CSS konvensional, biasanya kita hanya perlu menggunakan satu nama *class* untuk menciptakan visual komponen tertentu. Misal, komponen *button*, di Bootstrap kita dapat menggunakan *class* `.btn` dan dikombinasikan dengan *modifier* seperti `.btn-primary` atau `.btn-danger` untuk mengubah warnanya.
+
+Di sisi lain, Tailwind memiliki pendekatan yang berbeda, kita dibawa pada pandangan yang lebih konseptual terhadap suatu komponen. Anggap saja kita ingin membuat *button*, gambarannya seperti ini:
+
+<Image src="/next-js-pragmatis-styling-font/j-l0lt02a8Hc0u07vX97rA.webp" alt="Contoh komponen button" />
+
+Untuk membuat *button* seperti visual di atas dengan Tailwind, kita perlu mendeskripsikan visualnya, mulai dari warna latar hingga ukuran *padding*-nya. Komponen di atas memiliki deskripsi sebagai berikut:
+
+-   Memiliki warna latar `#6100FF`
+-   Memiliki *padding* horisontal `28px` dan vertikal `14px`
+-   Memiliki *border radius* `8px`
+-   Memiliki ukuran teks `24px` dengan *weight* `medium` dan warna `#FFFFFF`
+
+Setelah kita memiliki deskripsinya, kita hanya perlu mencari *class-class* yang dapat kita gunakan untuk mewakili deskripsi tersebut. Dalam kasus di atas, jadinya seperti ini:
+
+-   Warna latar dapat diwakili dengan *class* `bg-[#6100FF]`
+-   Ukuran *padding* dapat diwakili dengan *class* `px-7` untuk horisontal dan `py-3.5` untuk vertikal
+-   Ukuran *border radius* dapat diwakili dengan *class* `rounded-lg`
+-   Ukuran teks dapat diwakili dengan *class* `text-2xl`, `font-medium` untuk *weight-*nya, dan `text-white` untuk warnanya
+
+Beberapa *class-class* tersebut dapat kita gabungkan dan diterapkan terhadap suatu elemen, misal, `button`:
+
+```tsx
+<button class="bg-[#6100FF] px-7 py-3.5 rounded-lg text-2xl font-medium text-white">  
+  Button  
+</button>
+```
+
+Begini hasilnya:
+
+<Image src="/next-js-pragmatis-styling-font/9Tj5nNlfEwhn6B6xBLkjWw.webp" alt="Implementasi button dengan Tailwind" />
+
+Kita juga dapat membuatnya menjadi komponen React seperti ini:
+
+```tsx filename="app/Button.tsx"
+type ButtonProps = {  
+  children: React.ReactNode;  
+};  
+  
+export default function Button({ children }: ButtonProps) {  
+  return (  
+    <button className="bg-[#6100FF] px-7 py-3.5 rounded-lg text-2xl font-medium text-white">  
+      {children}  
+    </button>  
+  );  
+}
+```
+
+Tentu, ini adalah contoh yang paling sederhana. Semakin visual yang kita ciptakan kompleks, itu berarti semakin banyak juga *class-class* Tailwind yang kita perlu gunakan.
+
+### Konfigurasi
+
+Kita dapat menggunakan Tailwind di dalam proyek Next saat ini karena kita memilih opsi *styling* Tailwind saat membuat proyek Next, sehingga Next menginstal *dependencies* Tailwind dan juga melakukan beberapa konfigurasi agar membuatnya dapat digunakan.
+
+Kita dapat lihat beberapa fail terkait konfigurasi Tailwind, seperti *tailwind.config.ts* dan *postcss.config.js.* Keduanya merupakan fail-fail konfigurasi Tailwind agar dapat berjalan. Fail konfigurasi yang akan sering berinteraksi dengan kita adalah *tailwind.config.ts*. Fail ini berisi *constraint* atau aturan-aturan *styling* yang digunakan oleh Tailwind, seperti warna, ukuran *font,* ukuran *padding*, dan masih banyak lagi. Kita dapat mengubahsuaikan fail ini.
+
+Selain kedua fail tersebut, kita juga perlu mengimpor fail CSS dari Tailwind ke dalam aplikasi Next kita. Hal ini sudah dilakukan oleh Next dan kita dapat melihatnya di dalam fail *app/layout.tsx*. Di dalam fail tersebut, kita dapat melihat sebuah impor fail *globals.css* yang bila kita lihat isinya merupakan kode Tailwind beserta beberapa aturan-aturan CSS reguler dari Next:
+
+```sass filename="app/globals.css"
+@tailwind base;  
+@tailwind components;  
+@tailwind utilities;  
+  
+:root {  
+  --foreground-rgb: 0, 0, 0;  
+  --background-start-rgb: 214, 219, 220;  
+  --background-end-rgb: 255, 255, 255;  
+}  
+  
+@media (prefers-color-scheme: dark) {  
+  :root {  
+    --foreground-rgb: 255, 255, 255;  
+    --background-start-rgb: 0, 0, 0;  
+    --background-end-rgb: 0, 0, 0;  
+  }  
+}  
+  
+body {  
+  color: rgb(var(--foreground-rgb));  
+  background: linear-gradient(  
+      to bottom,  
+      transparent,  
+      rgb(var(--background-end-rgb))  
+    )  
+    rgb(var(--background-start-rgb));  
+}  
+  
+@layer utilities {  
+  .text-balance {  
+    text-wrap: balance;  
+  }  
+}
+```
+
+Tiga baris kode di awal merupakan bagian dari Tailwind yang akan digantikan menjadi kode CSS reguler oleh *compiler* Tailwind nantinya. Sisanya, kita dapat menulis CSS reguler seperti pada umumnya. Faktanya, ketika orang menggunakan Tailwind, akan sangat jarang berinteraksi dengan fail CSS seperti ini, mereka biasanya lebih banyak berinteraksi dengan fail konfigurasi *tailwind.config.ts*.
+
+Hal yang menakjubkan dari Tailwind adalah ia hanya akan menggenerasi aturan-aturan CSS yang kita gunakan saja. Pada contoh sebelumnya, kita menggunakan beberapa *class* Tailwind seperti `bg-[#6100FF] px-7 py-3.5 rounded-lg text-2xl font-medium text-white`, maka *class-class* tersebut saja yang akan digenerasi, dibarengi dengan konfigurasi CSS *normalize* yang oleh Tailwind disebut dengan *base* atau *preflight*. Ini artinya ukuran fail CSS akan menyesuaikan dengan skala proyek kita.
+
+Bila kita lihat isi fail konfigurasi *tailwind.config.ts*, di dalamnya terdapat konfigurasi `content`:
+
+```tsx filename="tailwind.config.ts" {4-8}
+import type { Config } from "tailwindcss";  
+  
+const config: Config = {  
+  content: [  
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",  
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",  
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",  
+  ],  
+  theme: {  
+    extend: {  
+      backgroundImage: {  
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",  
+        "gradient-conic":  
+          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",  
+      },  
+    },  
+  },  
+  plugins: [],  
+};  
+export default config;
+```
+
+Bagian tersebut yang digunakan oleh *compiler* Tailwind sebagai referensi untuk melakukan pemindaian *class-class* Tailwind di fail-fail tersebut. Ini artinya kita dapat menggunakan *class-class* Tailwind apabila fail tersebut berada di dalam direktori *pages, components,* atau *app*. Di luar dari itu, Tailwind tidak akan membacanya.
+
+### Library
+
+Seperti yang sudah dijelaskan sebelumnya bahwa Tailwind tidak memiliki komponen pradesain bawaan, sehingga kita perlu membuat komponen-komponen tersebut dari awal. Namun, sebagai alternatif kita dapat menggunakan *library* pihak ketiga yang menawarkan koleksi komponen umum, seperti *button*, *alert, avatar* atau *badge*, sehingga kita tidak perlu membuatnya dari awal.
+
+Terdapat beberapa opsi mulai dari yang berbayar hingga gratis:
+
+-   **TailwindUI (*tailwindui.com*)**: sebuah koleksi komponen kualitas tinggi dari tim resmi Tailwind. Koleksi ini berbayar, mulai dari $299 kita sudah bisa mengakses semua komponen di dalamnya. Kendati demikian, terdapat beberapa komponen yang bisa diakses secara gratis.
+-   **Shadcn UI (*ui.shadcn.com*)**: sebuah koleksi komponen yang dibangun di atas *library* Radix UI. Koleksi ini gratis, kita bisa menggunakan banyak komponen yang umumnya kita perlukan, mulai dari *button* hingga *breadcrumb*, semuanya ada di koleksi ini.
+
+Saya pribadi menggunakan opsi kedua untuk beberapa proyek karena selain gratis juga menawarkan lebih banyak komponen.
+
+### Halaman
+
+Secara bawaan, Next mengimpor fail CSS di dalam fail *app/layout.tsx.* Ini berarti *style* di dalamnya akan diterapkan ke seluruh halaman, sebab fail *app/layout.tsx* merupakan *root layout* yang dibagikan ke semua halaman di dalam direktori *app*.
+
+Sebagai alternatif, kita mungkin hendak memberikan *style* spesifik untuk suatu halaman saja. Untuk kasus seperti ini, kita dapat membuat sebuah fail CSS yang berbeda dan mengimpornya di halaman tersebut. Sebagai contoh, kita dapat membuat sebuah fail *app/dashboard/dashboard.css*:
+
+```sass filename="app/dashboard/dashboard.css"
+body {  
+  background-color: blue;  
+  background-image: none;  
+}
+```
+
+Kita dapat mengimpor fail CSS tersebut ke fail *app/dashboard/page.tsx*:
+
+```tsx filename="app/dashboard/page.tsx" {1}
+import './dashboard.css';  
+  
+export default function Dashboard() {  
+  return <h1>Dashboard</h1>;  
+}
+```
+
+Dengan demikian, halaman */dashboard* kini memiliki warna latar biru.
+
+<Image src="/next-js-pragmatis-styling-font/IQbVCvypAOmkIDwH4VG28A.webp" alt="Warna latar halaman dashboard berwarna biru" />
+
+Kita dapat menggunakan cara yang sama untuk kasus serupa pada halaman yang lain.
+
+## Font
+
+Selain *styling*, Next menawarkan dukungan untuk optimisasi *font*. Secara bawaan, Next mengatur *font* menjadi Inter. Kita dapat mengubahnya sesuai dengan *font* favorit kita. Anggap saja kita hendak menggunakan *font* Source Sans 3, kita dapat membuka kembali fail *app/layout.tsx*:
+
+```tsx filename="app/layout.tsx"
+import type { Metadata } from 'next';  
+import { Inter } from 'next/font/google';  
+import './globals.css';  
+import Navbar from '@/app/Navbar';  
+  
+const inter = Inter({ subsets: ['latin'] });  
+  
+export const metadata: Metadata = {  
+  title: 'Create Next App',  
+  description: 'Generated by create next app',  
+};  
+  
+export default function RootLayout({  
+  children,  
+}: Readonly<{  
+  children: React.ReactNode;  
+}>) {  
+  return (  
+    <html lang="en">  
+      <body className={inter.className}>  
+        <Navbar />  
+        {children}  
+      </body>  
+    </html>  
+  );  
+}
+```
+
+Sekarang, alih-alih mengimpor Inter dari `next/font/google`, kita ubah menjadi impor `Source_Sans_3`:
+
+```tsx
+import { Source_Sans_3 } from 'next/font/google';
+```
+
+Lalu kita hapus bagian berikut:
+
+```tsx
+const inter = Inter({ subsets: ['latin'] });
+```
+
+Dan mengubahnya menjadi:
+
+```tsx
+const sans = Source_Sans_3({ subsets: ['latin'] });
+```
+
+Sekarang, kita dapat menerapkan *font* tersebut ke elemen `body` seperti ini:
+
+```tsx
+<body className={sans.className}>
+```
+
+Bila kita akses kembali halaman dari aplikasi Next tersebut, *font* Source Sans 3 sudah diterapkan.
+
+<Image src="/next-js-pragmatis-styling-font/Mc9RbSRdl_YYmen3up5JFg.webp" alt="Font Source Sans 3 sudah diterapkan" />
+
+Next akan secara otomatis mengunduh *font* yang kita gunakan saat *build time*, sehingga tidak akan ada permintaan yang dikirim ke Google Fonts di *browser* seperti cara-cara pada umumnya.
+
+## Rangkuman
+
+Pada bab ini kita sudah mempelajari beberapa hal:
+
+-   Next mendukung beberapa opsi *styling* mulai dari CSS Modules, Tailwind CSS, Sass, CSS-in-JS, hingga CSS reguler
+-   Kita menggunakan Tailwind CSS untuk opsi *styling*
+-   Next secara otomatis menginstal *dependencies* dan melakukan konfigurasi saat membuat proyek Next di awal agar membuat Tailwind dapat digunakan
+-   Fail konfigurasi Tailwind adalah *tailwind.config.ts*
+-   Kita dapat membuat fail CSS baru dan mengimpornya di halaman tertentu untuk memberikan *style* spesifik pada halaman tersebut saja
+-   Next memiliki fitur optimisasi *font* yang memungkinkan kita untuk mengimpor Google Fonts dengan mudah
+-   Next akan mengunduh *font* yang kita gunakan saat *build time* dan ini berarti tidak akan ada permintaan apapun ke Google Fonts di *browser*

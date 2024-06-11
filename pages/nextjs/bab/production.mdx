@@ -1,0 +1,135 @@
+# Production
+
+Setelah membahas fitur-fitur esensial pada bab-bab sebelumnya, sekarang saatnya kita membahas soal produksi atau membangun aplikasi Next untuk mode produksi. Secara garis besar, kita dapat menjalankan aplikasi Next di atas Node.js atau sebagai statis HTML. Namun, pada banyak kasus biasanya aplikasi Next dijalankan di atas Node.js tanpa tambahan konfigurasi apapun.
+
+Sedangkan untuk opsi *deployment*, kita dapat menggunakan layanan *serverless* atau *self-hosting* dengan VPS seharga $5. Bedanya, dengan *serverless* kita tidak banyak melakukan konfigurasi manual secara mandiri, sedangkan dengan *self-hosting* kita perlu melakukan penyiapan semuanya secara mandiri.
+
+Setiap layanan *serverless* memilki langkah-langkah penyiapan yang berbeda, tapi, tetap saja tidak begitu rumit. Sedangkan untuk *self-hosting*, terdapat beberapa penyiapan umum yang perlu dilakukan supaya aplikasi Next dapat berjalan. Dalam bab ini, kita tidak akan membahas secara terperinci langkah-langkah penyiapan tersebut, melainkan membahasnya secara umum saja.
+
+Terlepas layanan *server* yang kita gunakan, berikut ini beberapa penyiapan umum dasar yang diperlukan untuk menjalankan aplikasi Next:
+
+## Penyiapan Lokal
+
+Sebelum menjalankan aplikasi Next dalam mode produksi, ada beberapa hal yang perlu kita lakukan di lokal:
+
+### Menjalankan Linter
+
+Proyek Next yang kita buat dengan *create-next-app* sudah memiliki aturan ESLint bawaan Next. Untuk memeriksa apakah kode yang kita tulis sudah sesuai aturan atau belum, kita dapat menjalankan perintah:
+
+```bash filename="terminal"
+npm run lint
+```
+
+Pada kasus nyata, kita mungkin menambah aturan-aturan lain dengan tujuan untuk membuat kode yang kita tulis semakin konsisten dan berkualitas. Untuk pengalaman pengembangan yang lebih ciamik, biasanya proses ini dikombinasikan dengan alat seperti Git *husky.*
+
+### Menguji Mode Produksi di Lokal
+
+Setelah memeriksa kode dengan ESLint, kita dapat meng-*compile* aplikasi Next dan mengujinya di lokal dengan perintah:
+
+```bash filename="terminal"
+npm run build  
+npm start
+```
+
+Tujuannya adalah untuk mengetahui apakah akan terjadi galat ketika meng-*compile* aplikasi Next tersebut dan memeriksa apakah semuanya sudah berjalan sesuai dengan ekspektasi kita.
+
+### Penyiapan Git
+
+Terlepas *framework* apa yang kita gunakan, melakukan penyiapan Git sudah menjadi wajar. Beruntungnya, setiap aplikasi Next yang dibuat dengan *create-next-app* sudah otomatis menginisiasi *repository* Git. Kita hanya perlu membuat *remote repository* dan menambahkannya ke proyek lokal Next kita dengan perintah `git remote add ...` seperti pada umumnya. Setelahnya kita dapat melakukan `commit` dan `push` untuk mengirimnya ke *remote repository*.
+
+## Penyiapan Server Produksi
+
+Setelah kode aplikasi Next kita berada di *remote repository,* kita dapat dengan mudah meng-*clone* kode tersebut di *server* produksi.
+
+Anggap saja kita sudah memiliki sebuah VPS dengan sistem operasi Linux yang masih segar dan kosong. Di dalamnya, kita dapat melakukan *clone* proyek aplikasi Next dari *remote repository* ke *server* produksi. Kita bisa menaruhnya di *path /var/www* atau juga di *path* yang lain.
+
+Setelahnya, kita perlu menyiapkan beberapa hal agar aplikasi Next tersebut bisa berjalan:
+
+-   **Node.js**: aplikasi Next berjalan di atas Node.js, tentu, kita perlu memasang Node.js di *server* produksi
+-   **PM2**: untuk menjalankan proses aplikasi Next di latar belakang, sekaligus sebagai alat *monitoring*
+-   **Nginx**: untuk *reverse proxy*, sederhananya, untuk meneruskan permintaan dari *client* ke aplikasi Next yang berjalan di atas Node.js
+
+Ketiga alat di atas merupakan kebutuhan dasar yang kita perlu siapkan di *server* produksi kita.
+
+### Compile Aplikasi Next
+
+Setiap sistem operasi memiliki cara yang berbeda untuk memasang Node.js, untuk itu kita dapat pergi ke dokumentasi Node.js. Selain itu, kita juga dapat memasang Node.js menggunakan alat seperti *fnm* atau *nvm*.
+
+Anggap saja kita sudah memiliki Node.js. Hal yang perlu kita lakukan berikutnya adalah meng-*compile* aplikasi Next untuk produksi.
+
+Untuk itu kita perlu menjalankan dua perintah di dalam direktori aplikasi Next tersebut:
+
+-   `npm install`: untuk memasang seluruh *dependencies* yang dibutuhkan oleh aplikasi Next
+-   `npm run build`: untuk meng-*compile* aplikasi Next mode produksi
+
+Setelah aplikasi Next berhasil di-*compile* untuk produksi, di sinilah peran PM2 dibutuhkan.
+
+### Menjalankan Aplikasi Next Dengan PM2
+
+Secara mendasar, kita dapat menjalankan aplikasi Next dengan perintah `next start` atau `npm run start`. Sedangkan untuk membuatnya tidak menginterupsi proses, kita dapat menambahkan `&` diakhir perintah untuk mengirim proses tersebut ke latar belakang. Namun, kita perlu cara yang lebih elegan untuk mengatur ini. Di sinilah peran PM2 dibutuhkan.
+
+Pertama-tama, kita dapat memasang PM2 dengan perintah:
+
+```bash filename="terminal"
+npm install pm2 -g
+```
+
+Setelahnya, kita dapat menjalankan aplikasi Next melalui PM2 dengan perintah seperti ini:
+
+```bash filename="terminal"
+pm2 start npm --name "aplikasi saya" -- start
+```
+
+Untuk melihat daftar aplikasi yang dijalankan dengan PM2, kita dapat menggunakan perintah `pm2 ls`. Sedangkan untuk memberhentikannya, kita dapat menggunakan perintah `pm2 stop [id]` atau `pm2 start [id]` untuk memulainya kembali. Dengan PM2, kita juga dapat melakukan *monitoring* aplikasi Next dengan perintah `pm2 monit`.
+
+Sejauh ini, aplikasi Next yang sudah berjalan dapat diakses melalui *port* 3000 seperti di lokal, hanya saja kita perlu menggunakan IP publik untuk mengaksesnya. Umumnya, aplikasi berbasis web dapat diakses dengan nama *domain,* bukan IP untuk kemudahaan pengguna. Di sinilah pernah Nginx dibutuhkan.
+
+### Penyiapan Reverse Proxy
+
+Sampai pada bagian sebelumnya, aplikasi Next sudah berjalan hanya saja kita perlu sebuah cara untuk membuat aplikasi Next tersebut dapat diakses melalui nama *domain* dan menampilkan aplikasi Next tersebut. Untuk itu, dalam hal ini kita perlu membuat *reverse proxy*. Dengan *reverse proxy,* permintaan ke *server* produksi melalui nama *domain* akan ditangkap oleh Nginx dan diteruskan ke aplikasi Next yang sedang berjalan di atas Node.js.
+
+Bila menggunakan Ubuntu, kita dapat menggunakan perintah berikut untuk memasang Nginx:
+
+```bash filename="terminal"
+sudo apt update  
+sudo apt install nginx
+```
+
+Setelahnya, kita dapat membuat konfigurasi *reverse proxy* paling dasar seperti ini:
+
+```nginx filename="/etc/nginx/sites-available/aplikasisaya.com.conf"
+server {  
+  listen 80;  
+  
+  server_name aplikasisaya.com;  
+    
+  location / {  
+    proxy_pass http://localhost:3000;  
+  }  
+}
+```
+
+Konfigurasi tersebut dapat disimpan di dalam direktori */etc/nginx/sites-available/aplikasisaya.com.conf*. Setelahnya kita dapat menguji apakah terdapat galat atau tidak dari konfigurasi tersebut dengan perintah `nginx -t`. Sedangkan untuk mengaktifkannya, kita dapat menggunakan perintah:
+
+```bash filename="terminal"
+sudo ln -s /etc/nginx/sites-available/aplikasisaya.com.conf /etc/nginx/sites-enabled/aplikasisaya.com.conf
+```
+
+Untuk memulai Nginx dengan konfigurasi baru tersebut, kita dapat me-*restart service* Nginx yang sedang berjalan dengan perintah:
+
+```bash filename="terminal"
+sudo systemctl restart nginx
+```
+
+Dengan demikian, aplikasi Next akan ditampilkan saat pengguna mengaksesnya dengan nama *domain*.
+
+## Rangkuman
+
+Pada bab ini kita sudah mempelajari beberapa hal:
+
+-   Next dapat di-*deploy* di lingkungan *serverless* atau *self-hosting*
+-   Men-*deploy* Next di *self-hosting* perlu penyiapan beberapa kebutuhan secara manual
+-   Untuk menjalanakan aplikasi Next di produksi, beberapa alat yang dibutuhkan adalah Node.js, PM2, dan Nginx
+-   Node.js dibutuhkan untuk meng-*compile* dan sebagai lingkungan aplikasi Next
+-   PM2 dibutuhkan untuk menjalankan proses *server* aplikasi Next
+-   Nginx dibutuhkan untuk menangkap permintaan HTTP dan meneruskannya ke aplikasi Next melalui konfigurasi *reverse proxy*
