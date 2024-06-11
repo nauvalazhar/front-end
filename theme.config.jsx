@@ -8,7 +8,7 @@ export default {
     project: {
         link: 'https://github.com/nauvalazhar/front-end',
     },
-    docsRepositoryBase: 'https://github.com/nauvalazhar/front-end',
+    docsRepositoryBase: 'https://github.com/nauvalazhar/front-end/tree/main',
     toc: {
         title: 'Dalam Bab Ini',
         backToTop: true
@@ -17,7 +17,7 @@ export default {
         text: 'Edit halaman ini →',
     },
     feedback: {
-        content: 'Beri masukan →',
+        content: null,
     },
     footer: {
         text: 'Nauval © 2024',
