@@ -87,6 +87,7 @@ export async function action(prevData: any, formData: FormData) {
 
       img.setAttribute('alt', alt);
       img.setAttribute('src', src);
+      // @ts-ignore
       files.push([originalSrc, src]);
       el.remove();
     }
