@@ -1,0 +1,21 @@
+import { Image } from '@/components/image'
+
+# Mengatur Syntax Highlighter
+
+Kita dapat memeriksa terlebih dahulu status dari fitur *syntax highlighter* di Vim, untuk memeriksanya gunakan perintah `:set syntax?`. Sebelum mengetik perintah tersebut, pastikan Vim sedang berada di mode normal.
+
+<Image src="/vim/image109.png" alt="Memeriksa fitur syntax highlighter" />
+
+Bila hasil yang keluar selain `syntax=on`, maka dapat disimpulkan fitur tersebut sedang tidak aktif. Untuk mengaktifkannya, gunakan perintah `:set syntax=on.`
+
+<Image src="/vim/image111.png" alt="Mengaktifkan fitur syntax highlighter" />
+
+Kita baru saja mengaktifkan fitur *syntax highlighter* di Vim, namun belum memberitahu jenis kode yang kita tulis. Untuk memberitahu Vim jenis kode yang kita tulis adalah JavaScript, gunakan perintah `:set filetype=javascript.`
+
+<Image src="/vim/image113.png" alt="Mengubah jenis fail" />
+
+Mungkin sampai sini kamu akan merasa bahwa Vim semakin *ribet*. Karena untuk "mewarnai" sintaksis saja perlu dilakukan secara manual. Umumnya, hal serupa bisa kamu temui di editor teks konvensional, karena pada dasarnya editor teks menganggap karakter yang kamu tulis hanyalah *plain text*, bukan bahasa pemrograman spesifik.
+
+Sebetulnya, Vim akan mengenali jenis sintaksis dari kode yang kita tulis berdasarkan nama failnya. Seandainya kode yang kita tulis sebelumnya kita simpan terlebih dahulu, maka Vim dapat –secara otomatis– mengetahui jenis sintaksis pada kode tersebut tanpa harus diberitahu secara eksplisit.
+
+Selain itu ketika menyimpan kode yang kita tulis ke dalam sebuah fail, Vim juga akan secara otomatis mengubah jenis sintaksis secara otomatis sesuai nama failnya. Pada kasus nyata, kita tidak akan mengubah jenis sintaksis secara manual kecuali pada kasus-kasus tertentu, seperti *debugging* misalnya.

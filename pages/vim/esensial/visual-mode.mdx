@@ -1,0 +1,101 @@
+import { Image } from '@/components/image'
+
+# Visual Mode
+
+Pada editor teks konvensional kamu dapat menggunakan *mouse* untuk menyeleksi teks atau kode. Sebagai alternatif, kamu juga dapat menggunakan tombol `SHIFT` disertai arah panah.
+
+Di Vim, untuk menyeleksi teks, kamu dapat menggunakan mode *visual*. Pada mode *visual**,* *motion* akan bertindak menyeleksi sesuai dengan perintahnya, dan *operator* tidak perlu lagi menunggu *motion* untuk bertindak.
+
+Perintah `v` untuk masuk ke mode *visual*. Saat berada di mode *visual* kamu dapat menggunakan *motion* seperti `w`, `}` dan sebagainya untuk mulai menyeleksi teks. Mode *visual* ditandai dengan teks "-- VISUAL --" di kiri-bawah jendela *terminal emulator*.
+
+<Image src="/vim/image134.png" alt="Beralih ke mode visual" />
+
+Saat ini warna latar belakang dan warna teks seleksi pada mode *visual* tidak begitu kontras, sehingga teks yang diseleksi tidak begitu terlihat jelas.
+
+<Image src="/vim/image136.png" alt="Warna seleksi tidak kontras" />
+
+Bila kamu mengalami hal yang sama, kita dapat mengubah warna seleksi dengan perintah:
+
+```vi
+:highlight Visual ctermbg=yellow ctermfg=black
+```
+
+Sekarang seharusnya warna seleksi pada mode *visual* akan lebih kontras.
+
+<Image src="/vim/image138.png" alt="Warna seleksi lebih kontras" />
+
+Sekarang kita akan mencoba menyeleksi satu "paragraf" ke depan dan menghapusnya, gunakan perintah `v}d`. Dengan catatan posisi kursor berada pada karakter pertama di awal paragraf. Penjelasannya seperti ini:
+
+- `v` masuk ke mode visual
+
+- `}` memindahkan kursor satu "paragraf" ke depan
+
+- `d` menghapusnya
+
+Sebagai contoh, terdapat kode JavaScript berikut dan posisi kursor berada di karakter `f` dalam kode `function`.
+
+```vi /f /1
+f unction add(a, b) {
+  return a + b;
+}
+
+console.log(add(1, 2));
+```
+
+Jika perintah `v}d` diberikan, maka Vim akan menghapus bagian kode mulai dari `f` hingga spasi kosong di bawah tanda `}`.
+
+Pada mode normal, *operator* seperti perintah `d` akan menunggu *motion* untuk melakukan tugasnya, misal `dw` untuk *delete word*. Tetapi, pada mode *visual*, tidak perlu lagi menunggu *motion*. Karena *operator* tersebut (dalam hal ini adalah `d`) sudah tahu teks yang perlu dihapus, yaitu teks yang sedang berada dalam cakupan seleksi.
+
+Selain menggunakan *operator* `d` untuk menghapus, kamu juga dapat menggunakan *operator* lainnya pada mode *visual*:
+
+- `c` untuk menghapus dan masuk ke mode *insert*
+
+- `y` untuk *yank* (menyalin/*copy*)
+
+- `>` untuk indentasi
+
+Di sampin mode *visual*, terdapat juga mode *visual line*. Mirip seperti mode *visual*, tapi pada mode *visual line* hanya dapat menyeleksi per baris saja. Tidak peduli posisi kursor kamu berada di awal, di tengah, atau di akhir baris, ia akan tetap menyeleksi satu baris tersebut.
+
+Perintah `V` untuk masuk ke mode visual line. Mode *visual* line ditandai dengan teks "-- VISUAL LINE --" di kiri-bawah jendela *terminal emulator*.
+
+<Image src="/vim/image140.png" alt="Beralih ke mode visual line" />
+
+Mode ini berguna ketika kamu memang ingin menghapus satu blok kode namun posisi kursor kamu tidak berada di awal blok kode tersebut.
+
+Selain kedua mode tersebut, terdapat juga mode *visual block*. Mode ini agak sulit dijelaskan, lebih baik kita langsung coba saja.
+
+Misal, kita punya kode JavaScript seperti ini:
+
+```vi
+function welcome(name) {
+  return `Welcome, ${name}`;
+}
+```
+
+Katakanlah kita tidak ingin menggunakannya lagi, kita dapat memberikan komentar seperti ini:
+
+```vi
+// function welcome(name) {
+//   return `Welcome, ${name}`;
+// }
+```
+
+Ya, kita ingin memberikan kode komentar `//` pada setiap baris kode JavaScript tersebut. Dengan mode *visual block* kita tidak perlu memasukkan komentar tersebut satu per satu.
+
+Pertama, posisikan kursor pada awal baris di karakter `f` pada kata `function`, masuk ke mode *visual block* dengan tombol kombinasi `CTRL-v`, pindahkan kursor ke bawah sebanyak dua kali sampai kursor berada di tanda `}`. Kita dapat menggunakan perintah `2j` agar lebih cepat.
+
+Saat ini *visual block* sedang menyeleksi 3 baris, sekarang kita dapat gunakan perintah `I` untuk masuk ke mode *insert* dengan posisi kursor berada pada awal baris. Pada mode *insert* inilah kita masukkan kode komentar `//`. Terakhir kembali lagi ke mode normal.
+
+Seharusnya hasilnya seperti ini:
+
+```vi
+// function welcome(name) {
+//   return `Welcome, ${name}`;
+// }
+```
+
+Untuk menghapus komentar, kita dapat mengulang urutan perintah yang mirip seperti sebelumnya. Posisikan kursor pada awal baris di karakter `f` pada kata `function`, masuk ke mode *visual block* dengan tombol kombinasi `CTRL-v`, pindahkan kursor ke bawah sebanyak dua kali sampai kursor berada di tanda `}`. Kita dapat menggunakan perintah `2j` agar lebih cepat.
+
+Saat ini *visual block* sedang menyeleksi 3 baris, sekarang geser posisi kursor ke kanan sebanyak 2 kali, kita dapat menggunakan perintah `2l`. Terakhir kita dapat hapus teks yang sedang diseleksi dengan perintah `d`. Maka saat ini kode komentar sudah hilang.
+
+Itulah kasus yang paling sering saya gunakan pada mode *visual block*. Pada dasarnya ketiga mode *visual* ini sama saja, yang membedakan adalah bagaimana cara Vim menyeleksi teks pada masing-masing mode *visual*.

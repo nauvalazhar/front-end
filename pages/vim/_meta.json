@@ -1,0 +1,21 @@
+{
+  "index": "Pengantar",
+  "-- Prolog": {
+    "type": "separator",
+    "title": "Prolog"
+  },
+  "tentang-penulis": "Tentang Penulis",
+  "konvensi": "",
+  "-- Pelajaran": {
+    "type": "separator",
+    "title": "Pelajaran"
+  },
+  "dasar": "Dasar",
+  "esensial": "Esensial",
+  "-- Penutup": {
+    "type": "separator",
+    "title": "Penutup"
+  },
+  "penutup": "Penutup",
+  "tautan": "Tautan Bermanfaat"
+}

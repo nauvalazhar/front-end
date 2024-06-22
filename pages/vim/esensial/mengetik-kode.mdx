@@ -1,0 +1,41 @@
+import { Image } from '@/components/image'
+
+# Mengetik Kode
+
+Kita buka kembali program Vim di terminal dengan cara yang sama, yaitu ketik `vim` dan tekan `ENTER`.
+
+<Image src="/vim/image101.png" alt="Membuka kembali Vim" />
+
+Ketika Vim terbuka, maka Vim sudah pada mode normal. Pada mode normal, tombol *keyboard* yang kita tekan di dalam Vim akan diterjemahkan sebagai perintah, bukan untuk ditampilkan pada layar.
+
+Kita bisa tekan tombol `i` pada *keyboard* untuk beralih ke mode *insert*.
+
+<Image src="/vim/image103.png" alt="Beralih ke mode insert" />
+
+Ketika berada di mode *insert* maka terdapat indikator "--INSERT--" yang bisa kita lihat di pojok-kiri-bawah tampilan Vim. Ini untuk memberitahu kita bahwa Vim masih berada di mode *insert*. Pada mode *insert* kita bisa mengetik karakter yang kita mau seperti pada editor teks *non-modal*.
+
+Dalam mode ini, kita sudah dapat mengetik apa saja seperti pada editor teks konvensional.
+
+<Image src="/vim/image105.png" alt="Mengetik di dalam Vim" />
+
+Selain menggunakan perintah `i`, kamu dapat menggunakan beberapa perintah berikut untuk beralih ke mode *insert* dan sekaligus memindahkan posisi kursor:
+
+- `I` memindahkan kursor ke awal baris
+
+- `A` memindahkan kursor ke akhir baris
+
+- `a` memindahkan kursor satu karakter ke depan
+
+- `o` memindahkan kursor ke bawah (menambah baris baru)
+
+- `O` memindahkan kursor ke atas (menambah baris baru)
+
+Kita dapat kembali ke mode normal dengan menggunakan tombol `ESCAPE`.
+
+Ketika kita berada di mode normal, maka indikator yang sebelumnya terlihat akan hilang. Ini artinya kita sudah berada di mode normal kembali. Tombol *keyboard* yang ditekan akan diterjemahkan menjadi perintah oleh Vim.
+
+Sekarang alihkan lagi Vim ke mode *insert* dan kita akan coba menulis kode. Kamu boleh menulis kode apapun. Sebagai contoh, saya akan menulis kode JavaScript singkat.
+
+<Image src="/vim/image107.png" alt="Menulis kode JavaScript di Vim" />
+
+Sampai sini mungkin kamu menyadari ada yang kurang? Ya, tidak ada *syntax highlighting.*

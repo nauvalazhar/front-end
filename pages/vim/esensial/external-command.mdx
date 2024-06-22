@@ -1,0 +1,78 @@
+import { Image } from '@/components/image'
+
+# External Command
+
+Vim memungkinkan kamu untuk menjalankan perintah-perintah atau program CLI yang biasa kamu jalankan di dalam *shell*, seperti `mkdir`, `ls`, `git`, `curl` atau program CLI lainnya tanpa harus keluar Vim.
+
+Kamu dapat menggunakan tanda seru atau *bang* untuk menjalankan program CLI di dalam Vim. Misal, kamu ingin membuat direktori bernama *lib* dengan perintah `mkdir`, kamu dapat menggunakan perintah `:!mkdir lib`. Ketika perintah selesai dieksekusi maka akan *terminal* akan menampilkan teks:
+
+```vi
+Press ENTER or type command to continue
+```
+
+Di Windows akan menampilkan jendela *terminal* baru.
+
+<Image src="/vim/image188.png" alt="Jendela terminal baru" />
+
+Tekan tombol `ENTER` akan membuatmu kembali ke Vim. Saat menjalankan perintah tersebut, kamu akan menjalankan perintah atau *program* eksternal di dalam Vim. Kemudian Vim akan mengalihkan tampilan ke layar *shell* untuk menampilkan STDOUT dari perintah tersebut, di Windows akan membuka jendela *terminal* baru seperti di atas.
+
+Cara lain untuk menjalankan perintah eksternal di dalam Vim adalah menggunakan perintah `:r`. Pada dasarnya perintah `:r` adalah untuk membaca isi fail.
+
+Sebagai contoh kamu memiliki fail dengan nama *welcome.js*. Dengan perintah `:r welcome.js`, Vim akan membaca isi fail tersebut dan menulisnya ke dalam *buffer* saat ini.
+
+Namun, apabila kamu menggunakan tanda seru atau *bang* sebagai argumen perintah `:r`, maka Vim akan membaca STDOUT dari perintah eksternal ke dalam *buffer* saat ini. Misal, kamu ingin mengetahui daftar fail di dalam direktori saat ini menggunakan perintah `:r !ls`.
+
+Hasilnya adalah Vim akan menulis STDOUT dari perintah `ls` ke dalam *buffer* saat ini, kira-kira seperti ini:
+
+```vi
+welcome.js
+hello.js
+file1.txt
+file2.py
+```
+
+Tentu saja ini tergantung dari isi direktori yang kamu miliki.
+
+Contoh lain, misal kamu ingin menjalankan `curl` di dalam Vim, seperti ini:
+
+```vi
+:r !curl -s 'https://jsonplaceholder.typicode.com/todos/1'
+```
+
+Maka hasil dari `curl` tersebut akan ditulis ke dalam *buffer* saat ini:
+
+```vi
+{
+  "userId": 1,
+  "id": 1,
+  "title": "delectus aut autem",
+  "completed": false
+}
+```
+
+Kebalikan dari perintah `:r`, kita dapat menggunakan perintah `:w` untuk menjalankan perintah eksternal di dalam Vim.
+
+Sebelumnya kita mempelajari bahwa perintah `:w` ini untuk menyimpan *buffer* saat ini menjadi fail. Namun, apabila kita menggunakan tanda seru atau *bang* sebagai argumen perintah `:w`, maka Vim akan mengambil isi dari *buffer* saat ini dan dijadikan sebagai STDIN perintah eksternal.
+
+Misal, *buffer* saat ini adalah kode JavaScript seperti ini:
+
+```vi
+const userName = "Nauval";
+function welcome(name) {
+  return `Welcome, ${name}`;
+}
+console.log(welcome(userName));
+```
+
+Dan kamu ingin menjalankan kode JavaScript tersebut di dalam *environment* Node JS dengan program `node`. Kamu dapat menggunakan perintah `:w !node`.
+
+Vim akan memunculkan hasil seperti ini:
+
+```vi
+Welcome, Nauval
+Press ENTER or type command to continue
+```
+
+Baris pertama pada teks di atas adalah STDOUT dari perintah `node` .
+
+Ketiga cara di atas sama saja, karena pada dasarnya untuk menjalankan perintah eksternal di dalam Vim adalah menggunakan tanda seru atau *bang,* yang membedakan adalah bagaimana kita ingin membaca STDOUT atau menulis STDIN pada perintah eskternal tersebut.

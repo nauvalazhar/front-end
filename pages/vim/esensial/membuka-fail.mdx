@@ -1,0 +1,29 @@
+import { Image } from '@/components/image'
+
+# Membuka Fail
+
+Bila kamu sudah keluar dan hendak membuka Vim kembali, kamu dapat menggunakan perintah seperti sebelumnya. Namun, karena sekarang seharusnya kamu sudah memiliki satu fail, maka kamu dapat membuka fail tersebut secara langsung dengan Vim.
+
+Katakanlah terdapat fail dengan nama *welcome.js* yang berisi:
+
+```js filename="welcome.js"
+const userName = "Nauval";
+
+function welcome(name) {
+  return `Welcome, ${name}`;
+}
+
+console.log(welcome(userName));
+```
+
+Ketik `vim namafail` untuk membukanya. Karena nama failnya *welcome.js*, jadi kita menggunakan perintah `vim welcome.js`.
+
+<Image src="/vim/image097.png" alt="Membuka fail dengan Vim" />
+
+Umumnya, Vim akan memberikan *syntax highlighter*. Bila fitur tersebut tidak aktif, kita dapat mengaktifkannya secara mandiri. Ketik `:syntax on` untukmengaktifkannya.
+
+Selain itu, kita juga dapat membuka satu direktori saat ini ke dalam Vim menggunakan perintah `vim .`.
+
+<Image src="/vim/image099.png" alt="Membuka direktori dengan Vim" />
+
+Ketika membuka direktori dengan Vim, maka Vim akan menampilkan isi dari direktori tersebut dengan *plugin* netrw yang sudah tersedia secara bawaan di dalam Vim. Hal ini berguna ketika kita hendak menyunting beberapa fail sekaligus di Vim.

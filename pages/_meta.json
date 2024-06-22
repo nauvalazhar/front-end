@@ -12,10 +12,19 @@
     "display": "hidden",
     "title": "Next.js Esensial"
   },
+  "vim": {
+    "type": "page",
+    "display": "hidden",
+    "title": "Vim Esensial"
+  },
   "pelajaran": {
     "title": "Pelajaran",
     "type": "menu",
     "items": {
+      "vim": {
+        "title": "Vim Esensial",
+        "href": "/vim"
+      },
       "nextjs": {
         "title": "Next.js Esensial",
         "href": "/nextjs"

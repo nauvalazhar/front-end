@@ -1,0 +1,86 @@
+import { Image } from '@/components/image'
+
+# Konfigurasi
+
+Vim memungkinkan kita untuk menulis konfigurasi sendiri untuk mengatur prilaku Vim. Konfigurasi tersebut bernama vimrc. Vi menggunakan nama exrc, sedangkan vimrc adalah nama spesifik dari Vim.
+
+Kita dapat menulis fail konfigurasi ini di dalam direktori `$HOME/.vimrc` atau `$HOME/.vim/vimrc`, bila kita menggunakan Unix atau Unix-*like* seperti macOS atau Linux. Untuk Windows, fail konfigurasi dapat ditaruh di direktori `$HOME/_vimrc` atau `$HOME/vimfiles/vimrc`.
+
+Saya menggunakan macOS, jadi saya akan menulis konfigurasi *vimrc* di dalam direktori `$HOME/.vimrc` atau `~/.vimrc`.
+
+Untuk membuat fail konfigurasi baru di dalam Vim, kita dapat menggunakan perintah `:e ~/.vimrc` Unix dan Unix-*like*, dan `:e ~/_vimrc` untuk Windows. Tanda `~` adalah alias untuk `$HOME`, untuk mengetahui nilai `$HOME`, kita dapat menggunakan perintah `:echo $HOME` di Vim, hasilnya kira-kira seperti ini:
+
+```vi
+/Users/mhdnauvalazhar
+```
+
+Di Windows:
+
+```vi
+C:\Users\mhdnauvalazhar
+```
+
+Vim seharusnya sedang menampilkan fail baru kosong.
+
+<Image src="/vim/image152.png" alt="Fail konfigurasi baru di Vim" />
+
+Konfigurasi pada fail *vimrc* ditulis dengan bahasa Vimscript, walaupun terdapat sebagian orang membenci bahasa ini. Berbeda dengan Vim, Neovim memungkinkan kamu menulis konfigurasi dengan bahasa Lua. Untuk saat ini, karena kita menggunakan Vim, kita akan menulisnya dengan Vimscript.
+
+Di dalam fail *vimrc* kita hanya akan menulis perintah-perintah yang sebelumnya pernah kita gunakan, seperti `:syntax on`, `:set number` dan sebagainya. Perintah-perintah tersebut sebetulnya konfigurasi, namun tidak *persistent* — hanya untuk sementara.
+
+Kita dapat menulis kode seperti ini di dalam fail *vimrc* untuk menghidupkan fitur *syntax highlighting**,* *line numbers*, dan *relative number*.
+
+```vi
+syntax on
+set number
+set
+relativenumber
+```
+
+Lalu simpan fail tersebut dengan perintah `:w`.
+
+Ketika kita melakukan perubahan pada fail konfigurasi *vimrc*, kita perlu memberitahu Vim untuk memuat ulang konfigurasi tersebut dengan perintah `:source`.
+
+<Image src="/vim/image154.png" alt="Memuat ulang konfigurasi Vim" />
+
+Perintah tersebut digunakan apabila kita ingin memuat ulang konfigurasi tanpa keluar Vim, pada dasarnya Vim akan selalu memuat konfigurasi terbaru ketika dimulai – dalam kata lain, kita dapat keluar Vim dan membukanya lagi untuk membuka Vim dengan konfigurasi terbaru.
+
+Kita dapat mengetahui informasi mengenai daftar konfigurasi atau *script* yang dibaca oleh Vim saat ini dengan perintah:
+
+```vi
+:scriptnames
+```
+
+<Image src="/vim/image156.png" alt="Daftar konfigurasi Vim" />
+
+Kita bisa perhatikan, dalam kasus saya, fail *vimrc* berada diurutan pertama. Sisanya adalah *plugin-plugin* yang dimuat oleh Vim secara bawaan. Jika kamu tidak menemukannya, kamu dapat mengeluarkan Vim dan membukanya kembali dan ulangi perintah sebelumnya.
+
+Selain konfigurasi tadi, kita dapat menulis konfigurasi indentasi yang kita sudah lakukan sebelumnya.
+
+```vi
+set expandtab
+set shiftwidth=2
+set softtabstop=2
+set autoindent
+set smartindent
+```
+
+Kamu juga dapat mengatur konfigurasi *color scheme* di *vimrc*, *misal*:
+
+```vi
+colorscheme habamax
+```
+
+Umumnya, pengguna Vim (termasuk saya) membuat pemetaan tombol `ESC` ke tombol `jj`. Ini bertujuan agar mempermudah ketika hendak beralih dari mode *insert* ke mode normal. Karena tombol `ESC` terlalu jauh untuk dijangkau. Bila kamu tertarik juga, kamu dapat melakukannya seperti ini:
+
+```vi
+imap jj <esc>
+```
+
+Ketika kamu berada di dalam mode *insert* dan hendak kembali ke mode normal, kamu hanya perlu menekan tombol `jj`, tidak perlu jauh-jauh ke tombol `ESC`.
+
+Sampai sejauh ini, konfigurasi yang kita tulis sudah bisa digunakan sebagai modal awal untuk mulai beralih ke Vim.
+
+<Image src="/vim/image158.png" alt="Keseluruhan konfigurasi sejauh ini" />
+
+Tentu untuk menyetarakan Vim dengan VS Code, kita perlu menulis konfigurasi yang lebih panjang lagi, serta membutuhkan beberapa *plugin-plugin* tambahan.

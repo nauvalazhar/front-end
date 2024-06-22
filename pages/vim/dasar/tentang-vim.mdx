@@ -1,0 +1,81 @@
+import { Image } from '@/components/image'
+
+# Tentang Vim
+
+Vim adalah program editor teks yang dapat dijalankan dalam CLI maupun GUI. Umumnya orang menggunakan Vim di dalam lingkup CLI melalui [*terminal emulator*](https://en.wikipedia.org/wiki/Terminal_emulator), seperti iTerm, Alacritty, Konsole, GNOME Terminal atau yang lainnya. Apabila tidak memungkinkan, maka Vim dapat diakses melalui GUI, seperti menggunakan gVim atau MacVim.
+
+Vim versi GUI merupakan aplikasi yang mandiri (*standalone application*) – tidak membutuhkan *terminal* untuk jalan. Selain itu, perbedaan mendasar antara Vim versi GUI dan CLI adalah adanya *menubar* di dalam Vim GUI, *menubar* tersebut berisi koleksi perintah-perintah yang memungkinkan kamu untuk berinteraksi dengan Vim melalui *mouse*. Di luar dari kedua hal tadi, cara mengoperasikan Vim versi GUI sama saja seperti di CLI.
+
+Esensi menggunakan Vim adalah efisiensi *keyboard*, jadi lebih baik membiasakan menggunakan Vim di dalam CLI, ketimbang harus memaksakan menggunakan Vim tapi dalam GUI. Bila memang lebih suka dengan GUI, lebih direkomendasikan menggunakan *non-modal editor* seperti VS Code atau semacamnya.
+
+Tidak masalah juga bila menggunakan Vim versi GUI, karena di sistem operasi seperti Windows cukup sulit untuk memasang Vim kecuali menggunakan gVim. Kabar baiknya mulai dari versi 10, Windows memungkinkan kita untuk memasang Linux di dalam Windows, hal ini bernama WSL. Dengan WSL kita dapat memiliki pengalaman penuh menggunakan Linux di dalam Windows tanpa harus melakukan teknik *dual boot*. Karena WSL berjalan di dalam lingkungan Linux sendiri, sehingga kita dapat memasang Vim dengan mudah selayaknya pengguna Linux pada umumnya.
+
+Saat sudah berada di dalam Vim, perbedaan antara versi GUI dan CLI tidak begitu *kentara*, karena setiap perintah Vim sama-sama akan dieksekusi melalui *keyboard* – GUI dan CLI pada akhirnya hanya sebagai perantara saja.
+
+## Sejarah Singkat
+
+Vim terlahir karena adanya editor teks lain bernama Vi (penyebutannya dipisah: v-i dalam Bahasa Inggris) yang dibuat oleh [Bill Joy](https://en.wikipedia.org/wiki/Bill_Joy) dan dirilis pertama kali tahun 1976. Awalnya editor teks ini bernama ex sampai tahun 1979 versi kedua dari ex rilis di bawah nama vi kependekan dari *visual*. Dan nama itulah yang sampai saat ini kita kenal.
+
+Kemudian seseorang bernama [Bram Moolenaar](https://en.wikipedia.org/wiki/Bram_Moolenaar) mem-*fork* sumber kode dari Vi dan melakukan beberapa improvisasi, seperti menambah beberapa fitur yang tidak ada di dalam Vi sebelumnya.
+
+Lalu pada tahun 1991 editor teks Vi yang sudah diimprovisasi dirilis ke publik oleh Bram dan diberi nama Vim kependekan dari ***Vi IMproved*.**
+
+Sederhananya, Vim adalah editor teks yang kodenya berbasis dari Vi dan dilakukan beberapa improvisasi ke dalamnya, seperti *syntax highlighter, multi-level undo,* menambahkan fitur *macros*, dan masih banyak lagi. Vim berlisensi GPL-compatible.
+
+Selain Vim, ada juga editor teks bernama Neovim. Seperti Vim, Neovim adalah versi yang sudah diimproviasi (lagi) dari Vim. Bila diurutkan seperti ini jadinya:
+
+<Image src="/vim/image021.png" alt="Evolusi Vim" />
+
+[Motivasi terciptanya Neovim](https://github.com/neovim/neovim/wiki/Introduction) ini adalah basis kode Vim yang terlalu "menyeramkan" untuk disentuh dan komunitas Vim yang tidak begitu cepat dalam melakukan pengembangan, karena hanya satu orang yang bertanggung jawab atas segala perubahan pada kode Vim, yaitu Bram Moolenaar.
+
+Walaupun arsitektur Vim sudah diubah di dalam Neovim, ekosistem *plugin* Vim dan Neovim tidak berbeda jauh. Karena banyak *plugin-plugin* dari Vim dapat dipasang di Neovim. Dan keduanya memiliki *keybinding* yang serupa.
+
+Vim ataupun Neovim, keduanya sama-sama *extensible* dan *customizable*. Jadi keduanya bisa dipasangkan *plugin* pihak ketiga ataupun dikustomisasi untuk menyesuaikan kebutuhan kita.
+
+Saya pribadi saat ini menggunakan Neovim, setelah sebelumnya menggunakan Vim. Karena saya merasa Neovim memiliki *plugin-plugin* dan fitur menarik untuk dicoba, dan salah satu yang membuat saya pindah ke Neovim adalah prihal *floating window*.
+
+<Image src="/vim/image023.png" alt="Neovim floating window" />
+
+Kamu lihat kotak yang sedang melayang di atas? Ya, itu maksudnya! Mungkin kamu akan berpikir bahwa hal itu biasa saja, tapi bila dilakukan di dalam CLI maka butuh *effort* untuk melakukannya dan terlihat lebih keren.
+
+Dan, ya, saya mencoba mem-VS-code-kan Neovim saya di dalam CLI!
+
+## Neovim
+
+Cara mengoperasikan Vim dan Neovim sama saja. Katakanlah kamu sudah ahli menggunakan Vim selama bertahun-tahun dan tiba-tiba beralih ke Neovim, maka perintah-perintah umum yang biasa kamu gunakan di Vim, juga akan bekerja di dalam Neovim – tanpa harus belajar lagi dari awal.
+
+Dalam hal arsitektur Neovim dirancang agar lebih berkinerja dan dapat dipelihara. Ini juga yang menjadi alasan mengapa Neovim menggunakan Lua ketimbang bahasa yang lebih berat seperti JavaScript atau Python. Basis kode Neovim yang dapat dipelihara menghasilkan komunitas yang lebih cepat berkembang.
+
+Selain itu, konfigurasi Vim dapat kita gunakan di dalam lingkup Neovim. Sebagai tambahan, kita juga dapat menulis konfigurasi Vim dengan bahasa Lua. Saya pribadi menulis konfigurasi Neovim dengan Lua karena lebih rapih dan terorganisasi dengan baik secara subjektif. *Plugin-plugin* Neovim yang ditulis dengan bahasa Lua juga banyak.
+
+Neovim mendukung LSP (Language Server Protocol) secara bawaan. LSP memungkinkan Neovim berkomunikasi dengan *server* bahasa pemrograman untuk mengaktifkan fitur seperti *code completion, documentation, code formatting* atau *go-to-definition*.
+
+Pada materi belajar ini kita akan belajar menggunakan Vim, setelahnya kita akan menggunakan Neovim dan mengkustomisasinya agar dapat digunakan sebagai editor teks sehari-hari, bahkan dapat menjadi IDE (Integrated Development Environment) andalan kita untuk bekerja.
+
+Mungkin kamu ingin bertanya mengapa kita tidak langsung menggunakan Neovim saja, sehingga tidak perlu pindah-pindah. Hal ini dilakukan agar memberi pemahaman bahwa pada dasarnya kedua program Vim dan Neovim tidak banyak berbeda, kecuali dari sisi arsitektur seperti yang disebutkan sebelumnya.
+
+## Konfigurasi
+
+Ketika membuka Vim pertama kali, tidak perlu berekspektasi banyak hal, seperti terdapat *syntax highlighter, line number,* apalagi *code completion*. Semua itu tidak ada. Vim maupun Neovim adalah editor teks yang *unopinionated,* yang berarti mereka tidak punya pandangan apapun terhadap bagaimana kita menggunakan editor teks.
+
+Bila kita menginginkan *syntax highlighter* pada kode yang kita tulis, maka kita perlu mengaktifkannya melalui konfigurasi, begitu juga dengan fitur lain seperti *line number*. Untuk fitur-fitur yang lebih lanjut seperti *file explorer, code formatting, code completion*, atau *code linting* kita perlu mengaturnya secara mandiri.
+
+Memang benar LSP sudah tersedia secara bawaan pada Neovim, tapi ia hidup di dalam repositori yang berbeda, sehingga kita perlu memasangnya dan melakukan konfigurasi secara mandiri hingga dapat menggunakan fitur-fitur seperti *autocompletion*, *documentation*, *go-to-definition*, *format* hingga *diagnostic*.
+
+Terlihat lebih repot ketimbang editor teks seperti VS Code yang pada dasarnya semuanya sudah ada tanpa harus kita konfigurasi secara mandiri. Namun hal ini justru yang membuat saya pribadi semakin tertarik dengan ekosistem Vim. Saya merasa lebih bebas dan merasa keren ketika menulis konfigurasi yang membuat Vim maupun Neovim saya terlihat cantik dan dapat diandalkan.
+
+Pada dasarnya editor teks seperti VS Code juga berdasarkan konfigurasi, namun bedanya semua konfigurasi itu sudah ada secara bawaan. Kita tidak perlu melakukannya secara mandiri, kecuali bila kita ingin mengkustomisasinya – kita dapat mengubah konfigurasi bawaannya. Ini yang membuat editor teks seperti VS Code terlihat lebih sederhana untuk digunakan dibanding dengan Vim.
+
+Menulis konfigurasi Vim secara mandiri kedengarannya merepotkan, tapi faktanya memang seperti itu. Kendati merepotkan, kita tidak melulu menulis konfigurasi Vim keseluruhan dari awal. Umumnya pengguna Vim menggunakan konfigurasi dari sesama pengguna Vim lain sebagai *starting point* konfigurasinya, setelah itu disesuaikan lagi.
+
+Dengan seperti ini kita memiliki kendali penuh atas editor teks yang kita gunakan, kita dapat menyesuaikan fitur apa saja yang ada di dalam Vim.
+
+Banyak konfigurasi Vim yang dapat kita gunakan dan tersebar di internet, mulai dari yang minimal hingga yang kaya akan fitur seperti AstroNvim. Tidak seperti Neovim, AstroNvim bukanlah *program* terusan dari Vim, melainkan sebuah *layer* IDE untuk Neovim yang berisi koleksi konfigurasi Neovim agar dapat dijadikan sebagai IDE.
+
+AstroNvim menyediakan banyak fitur-fitur dasar yang dibutuhkan, seperti *code completion, file explorer, fuzzy finder,* *linting, formatting, debugging,* dan yang terpenting adalah kecepatan. Kedengarannya memang menjadi *opinionated,* tapi AstroNvim memungkinkan kita untuk mengkustomisasi konfigurasi bawaan mereka – kendali penuh masih ada di tangan kita. Lagipula hidup terlalu pendek untuk menulis konfigurasi Neovim dari awal.
+
+## Case Sensitive
+
+Perintah-perintah pada Vim bersifat *case-sensitive.* Sebagai contoh, perintah `d` dengan `D` itu berbeda. Itu berarti apabila tombol `CAPSLOCK` *keyboard* kamu menyala dan kamu menekan tombol `d`, maka kamu menjalankan perintah `D`. Karena menekan tombol `d` pada saat `CAPSLOCK` menyala akan menghasilkan `D`.
+
+Begitu juga dengan perintah-perintah yang lain yang saya akan jelaskan di bagian-bagian berikutnya. Hal ini saya sampaikan di awal agar tidak terjadi salah paham dan membingungkan di kemudian waktu.

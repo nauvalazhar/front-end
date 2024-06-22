@@ -1,0 +1,86 @@
+import { Image } from '@/components/image'
+import { Callout } from 'nextra/components'
+
+# Operator
+
+Pada dasarnya, menghapus teks pada Vim sama seperti editor teks pada umumnya. Kita dapat menggunakan tombol `BACKSPACE` atau `DELETE` di macOS. Namun, bila kita mencoba menekan `BACKSPACE` di mode normal, maka teks tidak akan terhapus. Hal ini hanya berlaku di mode *insert* saja.
+
+Apakah harus pergi ke mode *insert* terlebih dahulu untuk menghapus teks di Vim? Jawabannya adalah iya bila kamu ingin merepotkan diri sendiri. Vim memiliki perintah untuk menghapus teks pada mode normal.
+
+Sebenarnya, ketika kamu di Vim kamu akan selalu berada di mode normal. Kamu akan berpindah ke mode lain sesekali saja ketika memang membutuhkannya. Sebagai contoh, kamu akan pergi ke mode *insert* untuk menulis teks atau kode. Setelah menuliskannya, kamu akan kembali ke mode normal. Hal seperti ini akan menjadi *habit*.
+
+Di Vim perintah untuk menghapus adalah `d`. Ketika kamu menekan tombol `d` di *keyboard* maka tidak akan terjadi apa-apa. Karena perintah `d` tersebut adalah *operator*. Di Vim, *operator* menunggu perintah lain untuk melaksanakan tugasnya.
+
+Dalam kata lain, ketika kamu menekan tombol  `d`, kamu hanya memberitahu Vim bahwa kamu *hendak* menghapus sesuatu, tapi kamu tidak memberitahu Vim mengenai apa yang hendak dihapus. Vim pasti bingung, *‘kan*? Pada saat itulah *motion* berguna. Kamu dapat menggunakan salah satu *motion* yang kamu perlukan untuk menghapus teks.
+
+Sebagai contoh, kamu dapat menggunakan `w` untuk menghapus satu "kata" ke depan dari posisi kursor saat ini. Bila dikombinasikan, maka perintahnya menjadi  `dw`. Perintah `dw` berarti *delete word*.
+
+<Callout type="info" emoji="💡">
+Sebagai informasi, kamu dapat menggunakan perintah `x` untuk menghapus satu karakter di bawah posisi kursor saat itu. Juga dapat menggunakan `s` untuk sekaligus masuk ke mode *insert*.
+</Callout>
+
+Bukan hanya `w`, kita belajar *motion* yang lain juga. Kita dapat menggunakan *motion* yang kita telah pelajari sebelumnya sebagai kombinasi dengan *operator* *delete*.
+
+Untuk menghapus satu "kata" ke belakang, misalnya, kita dapat menggunakan `db`. Begitu juga dengan *motion* yang lain, seperti:
+
+- `d}` menghapus satu paragraf ke depan
+
+- `d{` menghapus satu paragraf ke belakang
+
+- `dit` menghapus teks di dalam *tag block*
+
+- `d)` menghapus satu kalimat ke depan
+
+- `d(` menghapus satu kalimat ke belakang
+
+- `d%` menghapus teks dalam cakupan tanda yang ditemukan (contoh: *()*)
+
+- dan seterusnya
+
+Ya, itulah bahasa Vim. Bahasanya lebih ringkas dari bahasa manusia, namun bagian sulitnya adalah mencoba mengingatnya. Bagaimana tidak ringkas, tata bahasa Vim hanya terdiri dari: kata kerja + kata benda.
+
+Kata kerja di Vim itu diisi dengan *operator:*
+
+- `d` untuk menghapus
+
+- `c` untuk menghapus dan masuk ke mode *insert*
+
+- `y` untuk *yank* (menyalin/*copy*)
+
+- `>` untuk indentasi
+
+Sedangkan kata benda di Vim itu diisi dengan *motion:*
+
+- `w` untuk satu kata ke depan
+
+- `b` untuk satu kata ke belakang
+
+- `it` untuk dalam *tag block*
+
+- dan sebagainya
+
+Sampai sini mungkin intelegensi kamu dapat memahami dari contoh sebelumnya bahwa perintah `d` dapat diganti dengan `c`, `y` atau *operator* lainnya. Ya, memang benar! Karena begitulah cara kita berkomunikasi dengan Vim.
+
+Mungkin kamu akan menggunakan `cw` untuk menghapus "kata" dan beralih ke mode *insert*; mungkin kamu menggunakan `y)` untuk menyalin satu "kalimat" ke depan; mungkin kamu menggunakan `>}` untuk menambah indentasi satu "paragraf" ke depan. Begitu seterusnya.
+
+Bila kamu mengulang *operator* sebagai kata benda di Vim, maka Vim akan melakukan sesuatu pada satu baris di mana kursor berada. Misal, seperti ini:
+
+- `dd` akan menghapus satu baris
+
+- `yy` akan menyalin satu baris
+
+- `cc` akan menghapus satu baris dan masuk ke mode *insert*
+
+- `>>` akan memberikan indentasi pada satu baris
+
+Selain itu, kamu juga dapat mengulang *operator* atau *motion* dengan menambahkan angka di awal. Misal, kamu dapat menggunakan `3dd` untuk mengulang perintah `dd` sebanyak 3 kali. Begitu juga dengan *motion*, kamu dapat menggunakan `8j` untuk memindahkan kursor 8 kali ke bawah.
+
+Tidak hanya itu, seandainya kamu ingin menghapus 2 kata ke depan, kamu dapat menggunakan perintah `d2w` yang berarti *delete 2 words*. Atau kamu juga dapat menggunakan `4d2w` yang berarti 4 kali *delete 2 words*.
+
+Kamu hanya perlu mengkombinasikan *operator* dengan *motion* agar Vim dapat melakukan sesuatu yang kamu inginkan.
+
+Hal yang perlu kamu ketahui adalah ketika kamu menggunakan *operator* untuk menghapus teks, seperti `d` atau `c`, *operator* juga akan menaruh teks yang dihapus ke dalam ruang memori di Vim benama *registers*.
+
+Jadi saat kamu menghapus teks dengan *operator* `d`, misalnya. Teks tersebut akan hilang, dan teks tersebut juga akan ditaruh ke dalam *registers*, jadi saat kamu melakukan paste, maka akan muncul teks terakhir yang kamu hapus. Kita akan belajar mengenai *registers* di bagian berikutnya.
+
+Sampai sejauh ini kita sudah belajar hal yang paling penting di Vim, yaitu *operator* dan *motion*. Karena dengan keduanya kita dapat berkomunikasi dengan Vim.

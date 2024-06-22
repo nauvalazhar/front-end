@@ -1,0 +1,29 @@
+# Registers
+
+Pada bagian *operator* kita sudah membahas sedikit tentang *registers*. Kamu dapat berpikir bahwa *registers* ini seperti *clipboard*. Saat kamu menyalin teks di komputer, teks tersebut akan ditaruh ke dalam *clipboard*. Begitu juga di Vim, saat kamu menyalin dengan perintah `y`, teks akan ditaruh di *registers*.
+
+Bisa dibilang *registers* adalah beberapa ruang memori di Vim. Bila di *clipboard* kamu hanya memiliki satu ruang, di Vim kamu dapat menaruh teks di beberapa ruang yang berbeda dengan *registers*. Beberapa ruang tersebut masing-masing memiliki *identifier* atau nama sebagai referensi agar *registers* bisa diakses nanti.
+
+Saat kamu menghapus teks menggunakan perintah `c`, `d`, `x`, atau `s`, teks tersebut akan dihapus dan juga akan ditaruh ke dalam *registers*. Ya, secara teksnis sama seperti fitur *cut* pada komputer. Itu kenapa saat kamu menghapus teks, misal menggunakan `d`, lalu kamu tekan `p`untuk mem-*paste*, teks yang dihapus akan muncul.
+
+Selain menghapus, menyalin (*yank*) dengan perintah `y` juga akan menaruh teks yang disalin ke dalam *registers*, itu cara Vim "mengingat". Untuk melihat daftar *registers* saat ini, kita dapat menggunakan perintah `:reg`.
+
+Kita dapat mengakses registers dengan perintah tanda petik `"` sebelum nama atau *identifier*-nya, misal `"a`, kita berarti mengakses *registers* bernama `a`. Perintah mengakses *registers* ditulis sebelum perintah yang kita inginkan. Jadi bila kita menggunakan perintah `"ayy`, artinya kita menyalin satu baris teks dan menaruhnya ke dalam *registers* `a`.
+
+Mengakses *registers* maksudnya menaruh dan mengambil teks di dalamnya. Tidak memahami konsep *registers* di Vim tidak akan membuat kamu masuk neraka, tapi memahami konsep ini memungkinkan kamu menggunakan Vim lebih efisien lagi.
+
+Kasus yang paling sering terjadi di kalangan pengguna Vim adalah ketika sudah menyalin teks `A`, lalu menghapus teks `B`, saat ingin mem-*paste* teks `A`, yang muncul malah teks `B`, karena sebelumnya menghapus teks `B`.
+
+Hal seperti itu umum dan wajar terjadi, karena saat menghapus, Vim juga menaruh teks yang dihapus ke dalam *registers*. Menghapus dan menyalin di Vim akan menaruh teks ke dalam sebuah ruang *registers* bawaan yang sama. Ruang *registers* tersebut dinamakan *the* *unnamed register*. Jadi, saat kamu menyalin, kemudian menghapus, teks sebelumnya yang ada di *register* ini akan digantikan dengan yang baru.
+
+Ruang *registers* tersebut dapat diakses dengan `""` (tanda petik ganda dua kali). Sebagai contoh kita dapat menggunakan perintah `""p` untuk mengambil (mem-*paste*) isi teks di *registers* tersebut. Perintah itu juga sama saja dengan perintah `p`. Itu kenapa perintah `p` bisa dibilang semacam *shorthand* untuk perintah `""p`, karena akan mengakses *registers* *`""`*.
+
+Selain *the* *unnamed register*, ada juga ruang *register* lain, yaitu *10 numbered registers*. Seperti namanya, *registers* ini memiliki 10 ruang yang berbeda sesuai nomor urutnya (0–9).
+
+Untuk nomor urut 0 atau *registers* `"0` akan diisi oleh teks yang terakhir disalin (*yank*) dengan perintah `y`. Untuk yang lainnya *registers* `"1` sampai `"9` akan diisi oleh 9 teks terakhir yang dihapus. *Registers* `"1` yang paling terbaru, sedangkan `"9` yang paling terakhir.
+
+Kita juga dapat membuat *registers* dengan nama sesuai alfabet, yaitu a-z. Dengan *registers* ini kita dapat mengatasi masalah yang paling umum terjadi seperti yang saya jelaskan sebelumnya. Karena menyalin dan menghapus akan menaruh ke dalam *registers* yang sama, maka kita dapat menyalin teks ke *registers* yang lain agar tidak terganti teksnya.
+
+Misal, kita ingin menyalin satu baris dan menaruhnya ke dalam *registers* `z`, kita dapat menggunakan `"zyy`, atau hanya ingin menyalin satu kata, `"zyiw` untukmu. Untuk mengambil teks yang disalin tersebut, kita dapat menggunakan `"zp` artinya *paste* dari *registers* `z`.
+
+Selain ketiga *registers* yang saya bahas di atas, Vim memiliki 7 jenis *registers* yang lain, jadi 10 jumlahnya. Tapi mempelajari ketiga *registers* adalah modal yang bagus untuk menjelajah Vim lebih jauh lagi.

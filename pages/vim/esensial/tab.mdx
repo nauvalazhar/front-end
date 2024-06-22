@@ -1,0 +1,61 @@
+import { Image } from '@/components/image'
+
+# Tab
+
+Memahami *tab* akan sangat mudah seandainya kamu sudah paham *buffer* dan *window*. Konsep *tab* di Vim berbeda dengan konsep *tab* yang ada di editor teks konvensional.
+
+Editor teks seperti VS Code memiliki konsep *tab* umumnya berarti untuk membuka sebuah fail. Jadi bisa dibilang satu *tab* itu mewakili satu *fail*, ketika kita tutup *tab* tersebut, maka failnya juga akan pergi.
+
+Sedangkan di Vim, *tab* tidak ada kaitannya sama sekali dengan *fail*. Sebelumnya kita sudah belajar bahwa fail diwakili oleh *buffer*. Di Vim, *tab* bersifat layaknya halaman atau tata letak saja.
+
+Sebelumnya kita sudah membuat beberapa *window*, bukan? Mari kita lakukan lagi.
+
+```vi
+vim welcome.js add.js
+```
+
+Lalu bagi menjadi beberapa *window*.
+
+```vi
+:vsplit add.js
+```
+
+Sekarang seharusnya kamu memiliki dua *window* yang dibagi secara vertikal.
+
+<Image src="/vim/image182.png" alt="Membuka buffer add.js ke dalam window berbeda" />
+
+Sampai sini tidak ada yang baru, kita sudah pelajar itu semua pada bagian sebelumnya.
+
+Sekarang kita akan buat *tab* baru dengan perintah `:tabnew` .
+
+<Image src="/vim/image184.png" alt="Sebuah tab baru" />
+
+Dengan perintah tersebut kita sudah memiliki sebuah *tab* baru dan satu *buffer* baru kosong. Bila kamu perhatikan, kamu akan melihat daftar *tab* yang kamu miliki di atas layar Vim. Saat ini, seharusnya kamu sudah memiliki dua *tab* sama seperti saya.
+
+Di *tab* ini, kita juga dapat membuat beberapa *window* seperti sebelumnya. Misal, sebelumnya kita menggunakan `:vsplit`, sekarang kita dapat menggunakan `:split welcome.js` agar membagi *window* secara horizontal.
+
+<Image src="/vim/image186.png" alt="Membagi window secara horizontal" />
+
+Sekarang kita akan pergi ke *tab* sebelumnya dengan perintah `:tabp` sebagai *tab-previous*; atau juga pergi ke tab berikutnya dengan perintah `:tabn` sebagai *tab-next*.
+
+Kamu bisa perhatikan, di *tab* pertama kita memiliki 2 *window* yang dibagi secara vertikal; di *tab* kedua kita memiliki 2 *window* yang dibagi secara horizontal.
+
+Inilah yang dimaksud dengan *tab* di Vim. Vim juga menyebut *tab* sebagai *tab page*, memang sifatnya seperti halaman. Ia tidak ada kaitannya dengan fail yang sedang dibuka, *tab* hanya tata letak saja.
+
+Kamu juga dapat membuka sebuah fail di *tab* baru dengan perintah `:tabnew namafail`, misal, `:tabnew welcome.js`. Begitu juga dengan menutup *tab*, kamu dapat melakukannya dengan perintah `:tabclose` atau `:tabc` untuk versi yang lebih ringkas.
+
+Ketika *tab* ditutup, *buffer* untuk fail *welcome.js* tetap masih ada di dalam daftar *buffer*. Ini sama halnya ketika kamu menutup *window* yang sedang menampilkan *buffer*, ketika kamu menutupnya, *buffer* masih ada. Artinya ketiga hal antara *buffer*, *window* dan *tab* memang independen.
+
+Walaupun kita memiliki beberapa *tab* yang berbeda, tetapi kita tetap saja memiliki satu daftar *buffer* yang sama. Saat kita menjalankan perintah untuk melihat daftar *buffer* saat ini di beberapa *tab* yang berbeda, maka hasilnya akan tetap sama saja.
+
+Di dalam satu *tab* kita bisa memiliki satu atau lebih dari satu *window*, begitu juga di *tab* yang lain. Secara singkat seperti ini kira-kira:
+
+- Fail diwakili oleh *buffer*
+
+- *Buffer* ditampilkan oleh *window*
+
+- Satu atau lebih dari satu *window* dapat dibuat di dalam satu *tab*
+
+- Vim dapat memiliki beberapa *tab* yang berisi beberapa *window*
+
+Apakah sudah mulai pusing? Atau memang sudah pusing sejak tadi? Tidak apa-apa, ambil waktumu untuk memahami konsep ini.

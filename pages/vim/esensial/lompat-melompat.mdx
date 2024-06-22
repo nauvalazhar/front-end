@@ -1,0 +1,35 @@
+import { Image } from '@/components/image'
+
+# Lompat-Melompat
+
+Kamu dapat memindahkan posisi kursor ke suatu tempat dengan cepat, seperti pindah ke atas fail, ke bawah fail, atau pergi ke spesifik nomor baris. Selain itu kamu juga dapat men-*scroll* layar Vim ke atas atau ke bawah. Semua itu dilakukan hanya dengan *keyboard*.
+
+Berikut ini saya rangkum perintah-perintahnya:
+
+- `gg` untuk memindahkan kursor ke atas dokumen
+
+- `G` untuk memindahkan kursor ke bawah dokumen
+
+- `:n` di mana `n` adalah angka — untuk lompat ke spesifik baris
+
+- `nGG` di mana `n` adalah angka — sama seperti `:n`
+
+- `CTRL-y` untuk men-*scroll* Vim satu baris ke atas
+
+- `CTRL-e` untuk men-*scroll* Vim satu baris ke bawah
+
+- `CTRL-u` untuk memindahkan kursor dan layar ½ halaman
+
+- `CTRL-d` untuk memindahkan kursor dan layar ½ halaman
+
+Agar lebih cepat lagi, biasanya pengguna Vim menggunakan *relative number*. Dengan *relative number*, nomor baris di atas dan di bawah kursor akan selalu 1, 2, 3 dan seterusnya.
+
+Fitur ini sangat berguna, karena kita memiliki referensi nomor yang bisa digunakan untuk melompat ke atas dan ke bawah. Untuk mengaktifkan fitur *relative number*, kita dapat menggunakan perintah `:set relativenumber` dan perintah `:set number` untuk menampilkan nomor baris.
+
+<Image src="/vim/image142.png" alt="Mengaktifkan fitur relative number dan nomor baris" />
+
+Lihat kembali kode pada tangkapan layar di atas. Sebagai contoh, saya ingin melompat ke kode `throw new TypeGalat(node.type);`, saya dapat menggunakan perintah `12k` untuk mencapainya. Karena kode tersebut berada di nomor baris 12 di atas posisi kursor saat ini. Jadi, perintah `12k` berarti memindahkan kursor ke atas sebanyak 12 kali.
+
+Karena nomor baris saat ini relatif, maka setiap posisi kursor berpindah ke atas atau ke bawah, referensi nomor baris akan berubah-ubah.
+
+Dengan seperti ini, kita akan semakin lebih cepat memindahkan posisi kursor ke atas atau ke bawah.

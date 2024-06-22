@@ -1,0 +1,79 @@
+import { Image } from '@/components/image'
+
+# Indentasi
+
+Pada Vim yang saya gunakan, untuk indentasinya menggunakan karakter *tab* ketimbang spasi. Lebar *tab*-nya setara dengan 8 spasi. Untuk mengetahui informasi ini, kamu dapat menggunakan perintah `:set syntax=whitespace` .
+
+<Image src="/vim/image144.png" alt="Mengubah jenis sintaksis menjadi whitespace" />
+
+Ini adalah aturan *syntax highlighting* untuk bahasa [pemrograman Whitespace](https://en.wikipedia.org/wiki/Whitespace_%28programming_language%29). *Tab* ditampilkan dengan warna hijau, sedangkan spasi ditampilkan dengan warna merah.
+
+Tentu saja angka 8 adalah angka yang sangat lebar untuk ukuran indentasi. Umumnya, orang-orang menggunakan ukuran 4 atau 2. Dan sampai hari ini masih tetap menjadi perdebatan antara menggunakan spasi atau *tab* untuk karakter indentasi.
+
+Secara bawaan, seperti yang saya tampilkan di atas, Vim menggunakan *tab* ketimbang spasi. Apabila kamu sudah terbiasa dengan *tab* dan hendak mengubah ukurannya saja, maka kamu dapat mengaturnya dengan perintah `:set tabstop=n`, sedangkan `n` adalah lebar dari *tab*.
+
+<Image src="/vim/image146.png" alt="Kode dengan ukuran tab 2" />
+
+Seandainya kamu satu selera dengan saya dan ingin mengubah dari *tab* menjadi spasi, maka kamu dapat mengaturnya dengan perintah `:set expandtab`.
+
+- Konfigurasi tabstop=n akan mengatur lebar dari karakter tab.
+
+- Konfigurasi expandtab akan mengubah karakter tab menjadi spasi
+
+Walaupun ukuran indentasinya sudah disesuaikan, namun karakter saat ini yang masih digunakan adalah *tab* bukan spasi. Untuk mengubahnya, kita dapat menggunakan perintah `:retab`.
+
+<Image src="/vim/image148.png" alt="Mengubah tab menjadi spasi" />
+
+Karena kita menggunakan konfigurasi `expandtab`, jadi kita perlu menggunakan konfigurasi `softtabstop=n` ketimbang `tabstop=n`. Karena ketika kita menekan tombol `TAB`, Vim akan memasukkan jumlah karakter spasi sesuai dengan jumlah `softtabstop`.
+
+Untuk melakukan indentasi manual, kita dapat menggunakan *operator* *`>`**,* *`<`* dan *`=`*.
+
+- `>` untuk menambah indentasi
+
+- `<` untuk mengurangi indentasi
+
+- `=` untuk memperbaiki indentasi
+
+Sebagai contoh, kita dapat menggunakan perintah `>i{` untuk menambah indentasi semua kode yang berada di dalam tanda kurung kurawal `{ ... }` ; atau menggunakan perintah `>>` untuk menambah indentasi satu baris pada posisi kursor berada; atau menggunakan mode *visual*.
+
+<Image src="/vim/image150.png" alt="Memberikan indentasi pada baris kedua dengan perintah >>" />
+
+Indentasi yang diberikan tetap terlalu lebar, tidak sesuai dengan konfigurasi yang kita berikan sebelumnya. Apakah konfigurasinya tidak terbaca? Tentu bukan. Konfigurasi untuk mengatur lebar indentasi pada saat menekan tombol `TAB` dan pada saat menggunakan perintah `>`, `<`, atau `=` itu berbeda konfigurasinya.
+
+Sebelumnya kita hanya mengatur lebar indentasi pada saat menekan tombol `TAB` saja. Untuk mengatur lebar indentasi pada saat menggunakan perintah `>`, `<`, atau `=`, kita dapat menggunakan konfigurasi `shiftwidth=n`.
+
+Konfigurasi terakhir untuk saat ini prihal indentasi adalah *autoindent* dan *smartindent*. Kedua konfigurasi ini penting dan membantu. Tanpa konfigurasi ini, kita perlu memberikan indentasi secara manual dengan menekan tombol `TAB` setiap kali menulis kode pada baris baru.
+
+Misal, kita memiliki kode JavaScript berikut dan posisi kursor berada di tanda kurawal `{`.
+
+```vi /{ /1
+function add(a, b) { 
+  return a + b;
+}
+```
+
+Jika kita ingin membuat baris dengan menggunakan perintah `o` pada mode normal, maka kursor akan berada di baris baru namun tanpa indentasi yang sama dengan bagian kode `return ...`.
+
+```vi /  /1
+function add(a, b) {
+  
+  return a + b;
+}
+```
+
+Posisi kursor akan lebih memudahkan bila memiliki indentasi sama seperti bagian kode `return`.
+
+```vi /  /1
+function add(a, b) {
+    
+  return a + b;
+}
+```
+
+Pada beberapa kasus mungkin fitur ini sudah otomatis aktif, namun, bila seandainya belum aktif hal seperti di atas akan terjadi. Kita dapat mengaktifkan fitur *autoindent* dengan perintah `:set autoindent` atau `:set ai` versi yang lebih ringkas. Konfigurasi ini akan memberitahu Vim untuk menerapkan indentasi dari baris saat ini ke baris berikutnya (atas dan bawah; dengan menekan tombol `ENTER`, `o` atau `O`).
+
+Sedangkan untuk mengaktifkan fitur *smartindent*, kita dapat menggunakan perintah `:set smartindent` atau `:set si` untuk versi yang lebih ringkas. Seperti namanya *smart*, fitur ini akan menyesuaikan gaya indentasi sesuai dengan jenis sintaksis yang kita sedang gunakan.
+
+Kita juga dapat menyeleksi semua kode dan menggunakan *operator* `=` untuk menyesuaikan indentasi dengan konfigurasi saat ini.
+
+Untuk menyeleksi semua kode, pindahkan kursor ke paling atas, beralih ke mode *visual*, pindahkan kursor ke paling bawah, lalu beri perintah `=`. Bila digabungkan, maka perintahnya seperti ini `ggvG=`.

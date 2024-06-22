@@ -1,4 +1,9 @@
 export default {
+    useNextSeoProps() {
+        return {
+            titleTemplate: '%s – belajarfrontend.org',
+        }
+    },
     logo: (
         <div style={{ display: 'flex', alignItems: 'center' }}>
             <img src="/logo.png" width="35" />
