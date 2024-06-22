@@ -1,0 +1,76 @@
+import { Image } from '@/components/image'
+
+# Windows
+
+Kita sudah belajar bahwa ketika membuka fail ke dalam Vim, maka Vim akan membaca isinya dan menahannya ke dalam *buffer*. Kemudian kita juga dapat melihat isi dari fail tersebut di Vim. Hal ini bisa terjadi karena adanya *window*.
+
+Di Vim, *window* adalah *viewport* atau area pandang pada *buffer*. Jadi, saat kita membuka fail pada Vim, Vim akan memuat isi fail tersebut ke dalam *buffer*, dan isi *buffer* tersebut akan ditampilkan kepada kita melalui *window**.*
+
+Saat kita membuka Vim seperti ini:
+
+```vi
+vim welcome.js
+```
+
+Vim akan membaca isi dari fail *welcome.js* dan menaruhnya ke dalam *buffer*. Sampai sini hanya Vim yang tahu isi dari *buffer* tersebut. Kemudian Vim akan membuat sebuah *window* untuk menampilkan isi dari *buffer* tersebut kepada kita.
+
+<Image src="/vim/image174.png" alt="Membuka fail welcome.js di Vim" />
+
+Kamu dapat melihat tangkapan layar di atas. Apa yang kamu lihat sekarang adalah sebuah *buffer* dan sebuah *window* untuk menampilkan isi *buffer* dari fail *welcome.js*.
+
+> Window adalah sebuah area pandang untuk melihat isi buffer
+
+Faktanya, ketika kita membuka Vim, selain ia akan membuat sebuah *buffer* kosong tanpa nama, ia juga akan membuat sebuah *window* baru.
+
+Di Vim, *buffer* dan *window* adalah hal yang berbeda dan mereka independen. Kamu dapat membuat beberapa *window* di Vim untuk menampilkan satu *buffer* yang sama. Atau kamu juga dapat membuat beberapa *window* di Vim untuk menampilkan beberapa *buffer* yang berbeda.
+
+Sekarang kita buka 2 fail yang berbeda pada satu sesi Vim yang sama:
+
+```vi
+vim welcome.js add.js
+```
+
+Sekarang kita memiliki 2 *buffer* dan satu *window.* Sekarang kita akan membuat *window* lainnya dengan perintah `:split`.
+
+<Image src="/vim/image176.png" alt="2 window menampilkan buffer yang sama" />
+
+Kamu dapat melihat sekarang bahwa 2 *window* yang berbeda menampilkan *buffer* yang sama. Perintah `:split` akan membagi *window* saat ini menjadi dua secara horizontal. Saat ini perintah `:q` tidak akan menutup Vim, melainkan akan menutup *window* yang sedang aktif.
+
+Sebagai alternatif, kamu dapat menggunakan perintah `:vsplit` untuk membagi *window* saat ini menjadi dua secara vertikal.
+
+<Image src="/vim/image178.png" alt="Membagi window secara vertikal" />
+
+Walaupun kamu melihat dua *window* menampilkan isi *buffer* yang sama, bukan berarti *buffer* untuk fail *welcome.js* menjadi ganda. Kedua *window* tersebut tetap merujuk pada *buffer* yang sama.
+
+<Image src="/vim/image180.png" alt="Daftar buffer saat ini" />
+
+Seperti yang saya bilang sebelumnya, *buffer* dan *window* itu berbeda.
+
+Perintah `:split` maupun `:vsplit` dapat kita berikan argumen nama fail, misal seperti ini:
+
+```vi
+:split hello.py
+:vsplit add.js
+```
+
+Bila belum terdapat *buffer* yang mewakili nama fail tersebut, maka Vim akan membaca fail tersebut ke dalam *buffer* baru. Selain itu, Vim akan membaca *buffer* yang ada yang mewakili fail tersebut.
+
+Sebagai alternatif, kamu juga dapat menggunakan perintah berikut:
+
+- `:new` untuk membuat sebuah *window* baru dengan sebuah *buffer* kosong
+
+- `:vnew` sama seperti `:new`, namun secara vertikal
+
+Untuk navigasi *window*, kita dapat menggunakan beberapa perintah berikut:
+
+- `CTRL-w j` untuk memindahkan kursor ke bawah dari *window* saat ini
+
+- `CTRL-w k` untuk memindahkan kursor ke atas dari *window* saat ini
+
+- `CTRL-w h` untuk memindahkan kursor ke kiri dari *window* saat ini
+
+- `CTRL-w l` untuk memindahkan kursor ke kanan dari *window* saat ini
+
+- `CTRL-w CTRL-w` untuk memindahkan kursor ke bawah atau ke kanan dari *window* saat ini
+
+Sejauh ini kita sudah belajar prihal *buffer* dan *window*. Saya harap kamu sudah paham mengenai kedua hal ini, seandainya belum paham juga tidak apa-apa, tidak perlu terburu-buru. Ambil waktumu.

@@ -1,0 +1,121 @@
+import { Image } from '@/components/image';
+
+# Introduksi
+
+Sekitar 2 tahun lalu saya mulai menjadikan Vim sebagai editor teks sehari-hari. Sebelum itu, saya udah mencoba pelbagai editor teks, mulai dari Notepad, Sublime Text, Atom, VS Code, bahkan Dreamweaver pun saya sudah pernah coba.
+
+Pada dasarnya mereka semua sama saja, sama-sama editor teks. Yang membedakan satu dengan yang lain hanyalah fitur, *keybinding*, dan komunitas. Dari beberapa editor teks yang saya sebutkan tadi, [VS Code yang paling banyak digunakan sekarang](https://survey.stackoverflow.co/2022/#most-loved-dreaded-and-wanted-new-collab-tools-love-dread). Sisanya berusaha untuk menjadi relevan dan bahkan [Atom sudah mau "pensiun" akhir tahun ini](https://github.blog/2022-06-08-sunsetting-atom/).
+
+Yang membuat VS Code ini banyak peminat adalah selain gratis ia juga memiliki komunitas yang besar, itu yang membuat editor teks ini banyak memiliki pilihan ekstensi dan membuat para *coder* jadi jatuh cinta.
+
+Selain yang saya sebutkan tadi, tentunya masih banyak editor teks di luar sana, ya! Apalagi produknya JetBrains~
+
+Menggunakan editor teks jenis apa saja tidak masalah, selama editor teks tersebut dapat membuatmu lebih produktif
+
+## Alasan Menggunakan Vim
+
+Setelah berkelana mencoba beberapa editor teks tadi, akhirnya saya memutuskan untuk belajar dan menggunakan Vim sampai saat ini. Alasannya sederhana saja: ringan dan lebih produktif.
+
+### VS Code Lambat
+
+Dua editor teks terakhir yang saya gunakan sebelum Vim adalah Sublime Text dan VS Code. Sublime Text adalah editor teks yang saya gunakan sejak saya masih sekolah. Sampai akhirnya saya beralih ke VS Code karena banyak *package-package* dari Sublime Text yang mulai kadaluarsa dan tidak dikembangkan lagi.
+
+VS Code memiliki komunitas yang besar dan aktif, sehingga banyak sekali ekstensi-ekstensi yang bisa kita gunakan. Namun, yang tidak saya sadari saat itu adalah semakin banyak ekstensi yang digunakan maka semakin banyak sumber daya komputer yang dibutuhkan.
+
+Pada titik itulah VS Code mulai terasa lebih lambat. Tanpa menggunakan ekstensi yang banyak pun, sebetulnya VS Code sudah cukup lambat pada komputer saya saat itu.
+
+Alasan yang paling masuk akal kenapa VS Code lambat adalah karena berbasis web – di dalamnya terdapat *browser*, sehingga butuh sumber daya yang cukup banyak dan komputer saya tidak bisa memberikannya.
+
+Itu alasan pertama dan yang terpenting kenapa saya akhirnya memutuskan untuk beralih ke Vim. Tentu saja Vim lebih cepat ketika dibuka dan lebih responsif. Saya hanya membutuhkan *terminal emulator* dan langsung bisa membuka program editor teks bernama Vim tersebut.
+
+Jujur saja, saya tidak memiliki alasan lain yang lebih *urgent* dari alasan sebelumnya. Dipikiran saya saat itu hanyalah bagaimana caranya saya masih bisa *ngoding* dengan performa yang lebih *ngebut*. Saat itulah saya bertemu dengan Vim, menyesatkan diri ke Vim, dan ingin terus bersama Vim~
+
+> Bila menggunakan Vim adalah salah, maka selamanya saya tidak ingin benar
+
+Saya tidak punya *benchmark* untuk seberapa cepat Vim, tapi setidaknya ia lebih cepat dari VS Code di komputer saya. Ini sudah pasti kedengarannya subjektif, tapi memilih editor teks pada dasarnya tidak lebih dari melibatkan perasaan saja. Mana yang dirasa cocok itu yang akan dipilih.
+
+### Lebih Produktif
+
+Ketika sudah tersesat di Vim, akhirnya saya mulai terbiasa dengan Vim dan bagaimana cara mengoperasikannya. Dari sinilah saya baru merasakan bahwa ternyata ngoding bisa lebih cepat dengan Vim.
+
+Bagaimana tidak, pada saat saya menggunakan editor teks semacam VS Code, Sublime Text dan semacamnya, saya masih sering menggunakan *mouse.* Tangan saya bolak-balik dari atas *keyboard* ke atas *mouse* dan itu berulang. Sedangkan dengan Vim semuanya bisa selesai dengan perintah-perintah yang saya ketik di atas *keyboard.*
+
+Hal ini yang saya baru sadari ternyata menggunakan *mouse* pada saat *ngoding* itu cukup membuang waktu walaupun hanya sekitar beberapa detik saja. Tapi tetap saja artinya ada sekian detik yang terbuang. Lagipula untuk apa pindah ke *mouse* apabila bisa diselesaikan di atas *keyboard*?
+
+Sebagai contoh, saya ingin mengganti teks konten dari *tag* HTML `<title>` dari "Untitled Document" menjadi "Kredibel" dan posisi kursor saat itu ada di atas tanda `<` pada pembuka *tag* `<title>`.
+
+Umumnya, di editor teks seperti VS Code, saya setidaknya perlu melakukan:
+
+- Menggeser kursor ke posisi di antara tag `<title>`, entah menggunakan arah panah keyboard atau menggeser mouse
+
+- Memblok dan menghapus isi teks "Untitled Document"
+
+- Menulis teks "Kredibel"
+
+Tapi, di Vim saya hanya perlu menulis perintah `cit` dan menulis "Kredibel", selesai.
+
+<Image src="/vim/image005.png" alt="Vim changes inner tag" />
+
+Contoh di atas hanyalah satu hal dari sekian banyak hal yang bisa kita lakukan lebih cepat dengan Vim.
+
+Perintah `cit` di Vim artinya *change-inner-tag-block.* Dan Vim juga paham konteks (*tag*) yang dimaksud. Karena posisi kursor saya pada saat memberikan perintah `cit` berada di atas tanda `<` *tag* `<title>`. Maka tag yang dimaksud adalah *tag* `<title>` tersebut.
+
+Mungkin kamu bertanya-tanya, bukankah bila mengetik `cit` di *keyboard* akan memunculkan tulisan "cit" secara harfiah di layar? Hal itu benar bila di editor teks *non-modal* seperti VS Code. Tapi, di Vim tidak seperti itu, karena Vim ini termasuk ke *modal editor*.
+
+*Modal editor* merupakan sebuah editor yang memiliki beberapa mode. Sebagai contoh Vim, editor teks ini memiliki beberapa mode di ataranya: normal, *insert*, *visual*, *command,* dan beberapa mode tambahan lainnya.
+
+Berbeda dengan editor teks konvensional seperti VS Code, Sublime Text, Atom, Emacs, atau Nano mereka termasuk ke *non-modal editor*, karena hanya memiliki satu mode saja yaitu *insert mode.*
+
+Sudah kelihatan perbedaan signifikan dari kedua jenis editor ini, kan? Ya, masalah mode!
+
+Begini, umumnya bila kita menggunakan editor teks seperti VS Code atau sejenisnya, ketika kita buka editor teks tersebut, kita sudah bisa langsung mengetik apa saja yang kita mau.
+
+<Image src="/vim/image007.png" alt="Pratinjau Editor Teks Visual Studio Code" />
+
+Sedangkan pada *modal editor* seperti Vi, Vim, atau Neovim, ketika kita membuka editor tersebut, umumnya kita tidak bisa langsung mengetik teks apapun yang kita inginkan. Ini disebabkan oleh editor tersebut diawali oleh mode normal.
+
+<Image src="/vim/image009.png" alt="Pratinjau Vim" />
+
+Kamu lihat tulisan "NORMAL" di pojok-kiri-bawah? Ya, itu adalah indikator mode dari Vim. Pada mode normal ini, kita tidak bisa mengetik tulisan apapun di dalamnya, bila kita mencoba menekan tombol di *keyboard* maka Vim akan menerjemahkannya sebagai perintah atau *command* ketimbang memunculkan karakter yang kita tekan.
+
+Sebagai contoh, bila kita tekan tombol `i` di *keyboard,* ini akan memunculkan huruf "i" secara harfiah pada editor teks *n*on-*modal* seperti VS Code. Tapi, bila kita lakukan hal yang sama di dalam Vim, maka tidak akan muncul huruf "i" di layar, yang terjadi adalah Vim akan berganti mode dari normal menjadi *insert mode*.
+
+<Image src="/vim/image011.png" alt="Vim mode insert" />
+
+Karena *i* diterjemahkan sebagai perintah berganti mode menjadi *insert* oleh Vim. Di mode inilah kita bisa mengetik apapun seperti yang kita bisa lakukan di editor teks *non-modal.*
+
+<Image src="/vim/image013.png" alt="Vim mode insert dengan kode JavaScript di dalamnya" />
+
+Bila ingin kembali ke mode normal, kita bisa menekan tombol `ESCAPE` di *keyboard*. Dan pertanyaan yang paling sering ditanyakan pada Vim: [bagaimana cara saya keluar dari Vim?](https://stackoverflow.com/questions/11828270/how-do-i-exit-vim)
+
+<Image src="/vim/image015.png" alt="Pertanyaan di situs Stack Overflow mengenai cara keluar dari program Vim" />
+
+Untuk keluar dari Vim itu sederhana saja: *restart computer* dan Vim akan keluar dengan sendirinya. Becanda, ya!
+
+Tapi, serius, untuk keluar dari Vim ini memang sederhana, cukup tulis perintah `:q` di *command mode* maka kita akan keluar dari Vim. Untuk melakukannya:
+
+- Pertama, tekan tombol `SHIFT+;` untuk mencapai tanda titik dua
+
+- Sampai sini sudah ada di dalam *command mode*
+
+- Lalu tekan tombol `q` dan tekan `ENTER`
+
+Bila kita memiliki tulisan di dalam Vim yang sebelumnya kita ketik, maka Vim tidak akan keluar begitu saja dengan perintah sebelumnya.
+
+<Image src="/vim/image017.png" alt="Galat Vim karena perubahan belum disimpan" />
+
+Galat tersebut setara dengan dialog peringatan pada *non-modal editor*.
+
+<Image src="/vim/image019.png" alt="Dialog peringatan fail belum disimpan pada VS Code" />
+
+Perbedaannya adalah di Vim tidak ada tombol sama sekali, hanya ada tulisan galat. Ketika muncul galat seperti itu di Vim, setidaknya kita memiliki dua pilihan: simpan perubahan dan keluar; atau membatalkan perubahan dan langsung keluar.
+
+Untuk memilih opsi yang pertama, kita bisa menggunakan perintah `:wq` di Vim yang bermaksud *write-(and)-quit*. Dan bila kita ingin opsi yang kedua, cukup tambahkan tanda seru diakhir perintah *quit*, jadi `:q!`.
+
+Keduanya akan membuat kita keluar dari Vim, yang membedakan hanyalah kita ingin menyimpan atau tidak perubahan yang sudah dibuat.
+
+Sampai sejauh ini mungkin kamu sudah merasakan betapa "ribet"-nya Vim ini!
+
+Saya ingin jujur, sebenarnya kita memiliki reaksi serupa pada saat pertama kali berinteraksi dengan Vim. Bagaimana tidak, di editor teks seperti VS Code itu lebih mudah karena kita tinggal tekan-tekan tombol maka semuanya selesai. Di Vim, kita harus ketik-ini-ketik-itu baru selesai. Karena semua interaksinya dilakukan dengan *keyboard*.
+
+Tapi, itulah poin penting menggunakan Vim, membuat tangan kita tidak berpindah dari atas *keyboard* ke *mouse*. Percayalah itu hanya soal kebiasaan saja, sekali kita sudah terbiasa dengan Vim maka semuanya akan lebih *ngebut!*

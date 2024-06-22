@@ -1,0 +1,46 @@
+# Konvensi
+
+Teks yang ditulis dengan *font* `monospace` akan merepresentasikan kode keseluruhan, alamat fail/direktori, bagian kode, dan perintah-perintah Vim atau CLI. Selain kode, penulisan teks dengan *font* `monospace` juga diterapkan untuk merepresentasikan teks yang berada di dalam Vim (tidak semua contoh menggunakan bahasa pemrograman, kadang-kadang menggunakan teks biasa), contoh penulisannya seperti ini:
+
+```vi
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+Proin semper convallis dolor, in bibendum nulla laoreet ac. 
+Fusce rutrum nisi ac ultrices iaculis. Sed imperdiet nisi quis ligula semper euismod.
+```
+
+Contoh penulisan blok kode *program*:
+
+```vi
+function add(a, b) {
+  return a + b;
+}
+console.log(add(1, 2));
+```
+
+Pada materi belajar ini blok kode sengaja tidak akan diberi warna, hal ini demi memberikan fokus terdahap elemen yang lebih penting seperti posisi kursor.
+
+Tidak semua yang ditulis pada blok kode seperti di atas adalah kode *program*, kadang-kadang hasil dari perintah CLI atau Vim ditulis dengan konvensi yang sama, seperti ini:
+
+```
+Press ENTER or type command to continue
+```
+
+Posisi kursor pada Vim direpresentasikan dengan karakter yang diberi warna latar belakang merah dan warna teks putih:
+
+```vi /s /1
+cons ole.log("Hello");
+```
+
+Contoh di atas menunjukkan bahwa posisi kursor berada di huruf `s` pada bagian kode `console`. Bila posisi kursor berada karakter kosong, seperti spasi atau baris baru maka akan direpresentasikan seperti ini:
+
+```vi /  /1
+// kode bagian atas
+  
+// kode bagian bawah
+```
+
+Penulisan URL, istilah Vim, nama fail atau ekstensi dari sebuah fail akan ditulis dalam huruf miring, seperti *welcome.js*, *bufferline,* *vimrc*, atau *https://vim.org*.
+
+Setiap perintah yang ditulis di materi belajar ini pada dasarnya untuk pengguna Unix atau Unix-*like*, seperti macOS, Linux, atau WSL. Perintah yang berbeda untuk sistem operasi Windows akan dituliskan setelahnya dengan kalimat semacam "Untuk Windows ...".
+
+Penyebutan Windows di materi belajar ini merujuk pada *program* gVim yang akan dibahas pada bagian berikutnya, pengguna Windows dengan WSL diklasifikasikan menjadi pengguna Linux. Namun, untuk beberapa kasus tertentu tetap perlu mengikuti panduan untuk Windows, seperti pengaturan *font* salah satunya, karena *terminal emulator* yang digunakan untuk menjalankan WSL berjalan pada lingkungan Windows.  

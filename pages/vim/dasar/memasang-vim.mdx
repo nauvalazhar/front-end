@@ -1,0 +1,195 @@
+import { Image } from '@/components/image'
+
+# Memasang Vim
+
+Vim tersedia secara luas di berbagai sistem operasi. Bila kamu menggunakan sistem operasi berbasis Unix atau Unix-like seperti macOS atau Linux, maka umumnya sudah terpasang Vim di dalamnya.
+
+Bila kamu menggunakan sistem operasi seperti Windows, maka kamu bisa menggunakan gVim atau bila kamu menggunakan Git Bash, di dalamnya juga tersedia Vim. Tapi bila kamu menggunakan Windows 10 atau di atasnya, saya lebih menyarankan untuk menggunakan WSL (Windows Subsystem Linux) untuk mendapatkan pengalaman Linux yang lebih baik.
+
+Pada materi belajar ini kita akan menggunakan Vim di dalam Terminal jika memungkinkan, dan menggunakan versi GUI bila tidak memungkinkan.
+
+Membuat langkah-langkah yang rinci untuk sistem operasi Unix-like seperti Linux akan terlalu luas jangkauannya, mengingat Linux memiliki banyak sekali distribusi yang berbeda-beda. Masing-masing distro memliki *package manager* yang berbeda, sehingga akan membuat langkah-langkahnya pun berbeda dari yang lain.
+
+Di materi belajar ini, saya hanya mencontohkan memasang Vim pada distribusi Ubuntu. Untuk distribusi yang lain seharusnya langkah-langkahnya tidak berbeda jauh. Untuk itu saya menyarankan untuk pergi ke [halaman unduh Vim](https://www.vim.org/download.php) untuk informasi yang lebih lengkap.
+
+## macOS
+
+Biasanya Vim sudah tersedia di banyak versi macOS, untuk memverifikasi ketersediaan Vim, kita dapat membuka program Terminal dan mengetik perintah `vim`.
+
+<Image src="/vim/image025.png" alt="Memeriksa ketersediaan program Vim" />
+
+Bila Terminal menampilkan hasil kira-kira seperti di atas, Vim berarti tersedia. Terminal mungkin menampilkan hasil yang lain seperti mengindikasikan bahwa perintah `vim` tidak dapat ditemukan, itu berarti Vim tidak tersedia. Jika demikian, kita dapat [memasang Vim di mesin macOS melalui Homebrew](https://brew.sh) dengan tahap-tahap berikut:
+
+1. Tetap berada di dalam program Terminal
+
+2. Jalankan perintah `xcode-select --install` untuk memasang alat-alat *command-line* di macOS
+
+3. Untuk memasang Homebrew gunakan perintah `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
+
+4. Dalam kasus tertentu, mungkin kamu perlu menambahkan alamat *bin* Homebrew secara manual ke dalam fail konfigurasi Shell kamu, misal *~/.zprofile* bila kamu menggunakan Zsh
+
+<Image src="/vim/image027.png" alt="Instruksi untuk mendaftarkan Homebrew ke PATH" />
+
+5. Sekarang kita dapat memasang Vim melalui Homebrew dengan perintah `brew install vim`
+
+<Image src="/vim/image029.png" alt="Memasang Vim melalui Homebrew" />
+
+6. Tunggu proses instalasi hingga selesai. Ketik kembali perintah `vim --version` untuk memverifikasi program Vim sudah terpasang
+
+<Image src="/vim/image031.png" alt="Memeriksa ketersediaan Vim setelah dipasang" />
+
+Bagian "9.0" pada hasil perintah `vim --version` adalah versi Vim yang saat ini terpasang. Mungkin kamu memiliki versi yang berbeda saat membaca materi belajar ini, seperti "9.1", "9.2", dan seterusnya – itu tidak masalah.
+
+Selain melalui Homebrew, kita dapat menggunakan MacVim untuk versi GUI dari Vim di macOS, tapi saya tidak merekomendasikan program tersebut, sebab kita sudah dapat memasang Vim di dalam Terminal.
+
+Barangkali kamu penasaran, tampilan MacVim seperti ini:
+
+<Image src="/vim/image033.png" alt="Tampilan MacVim" />
+
+MacVim tidak membutuhkan Terminal untuk dapat dijalankan, itulah salah satu perbedaan antara Vim versi *terminal* dan versi GUI. Sama halnya dengan Vim versi GUI di sistem operasi lain seperti Windows.
+
+## Windows
+
+Bila kamu menggunakan Windows 10, sangat disarankan untuk menggunakan WSL. Namun, seandainya kamu tidak tertarik dengan Linux dan enggan memasang WSL agar dapat menggunakan Vim, kamu dapat memasang program bernama gVim di Windows.
+
+1. Pergi ke halaman rilis installer gVim: (https://github.com/vim/vim-win32-installer/releases)
+
+2. Unduh gVim versi paling baru (saat ini versi 9.0)
+
+3. Klik ganda pada fail exe yang baru saja diunduh, biasanya akan muncul dialog *User Account Control* di Windows, pilih *Yes*
+
+<Image src="/vim/image035.png" alt="Dialog User Account Control di Windows" />
+
+4. Pilih bahasa untuk *installer* dan klik tombol *OK*
+
+<Image src="/vim/image037.png" alt="Pilih bahasa" />
+
+5. Berikutnya akan muncul tampilan *Welcome* dari *installer* gVim, klik tombol *Next >* saja
+
+<Image src="/vim/image039.png" alt="Welcome screen installer" />
+
+6. Untuk memasang gVim, kamu harus setuju dengan *License Agreement* yang dibuat, maka dari itu klik kotak cek bertuliskan "I accept ..." dan klik tombol *Next >* untuk melanjutkan
+
+<Image src="/vim/image041.png" alt="License Agreement" />
+
+7. Bagian ini kita dapat memiliki fitur apa saja yang ingin dipasang, biarkan saja dengan opsi bawaan dan klik tombol *Next >*
+
+<Image src="/vim/image043.png" alt="Memilih fitur-fitur gVim" />
+
+8. Selain itu, kita juga dapat memiliki pengaturan untuk peningkatan fungsionalitas Vim, di bagian ini kita dapat abaikan agar menggunakan opsi bawaan gVim, klik tombol *Next >*
+
+<Image src="/vim/image045.png" alt="Konfigurasi tambahan gVim" />
+
+9. Pilih lokasi pemasangan program gVim, biasanya di `C:\Program Files (x86)\Vim`
+
+<Image src="/vim/image047.png" alt="Lokasi pemasangan gVim" />
+
+10. Tunggu proses pemasangan hingga selesai
+
+<Image src="/vim/image049.png" alt="Proses pemasangan gVim" />
+
+11. Klik tombol Finish untuk menutup program *installer*
+
+<Image src="/vim/image051.png" alt="Pemasangan selesai" />
+
+Buka program gVim yang baru saja dipasang, tampilannya kira-kira seperti ini:
+
+<Image src="/vim/image053.png" alt="Tampilan Program gVim" />
+
+Pada kasus saya, gVim memiliki ukuran huruf yang sangat kecil. Untuk mengubah ukuran huruf kita dapat pergi ke menu *Edit > Select Font*
+
+<Image src="/vim/image055.png" alt="Memilih menu Select Font" />
+
+Maka akan terbuka jendela baru untuk pengaturan jenis, gaya dan ukuran huruf. Saya menggunakan ukuran 16 agar tulisan di gVim dapat terlihat lebih jelas.
+
+<Image src="/vim/image057.png" alt="Jendela pengaturan huruf gVim" />
+
+Sekarang seharusnya gVim sudah memliki ukuran huruf yang lebih besar.
+
+### Windows Subsystem Linux
+
+Mulai dari Windows 10 dan di atasnya, Microsoft memungkinkan kita untuk memasang distribusi Linux di dalam Windows secara langsung tanpa harus melalui metode tradisional seperti menggunakan *virtual machine* atau *dualboot setup*. Dengan seperti itu, kita dapat menikmati lingkungan Windows dan Linux secara bersamaan.
+
+Saya pribadi menyarankan menggunakan Vim di dalam lingkungan Linux melalui WSL, karena selain Vim sudah ada secara bawaan di banyak distro Linux, juga kita dapat mengakses aplikasi, *utilities,* dan *command-line tools* yang tersedia di Linux.
+
+Terdapat beberapa distribusi Linux yang tersedia di WSL, seperti Ubuntu, Debian, OpenSUSE, Kali, Debian, Arch Linux, dan masih banyak lagi. Pada langkah-langkah berikut, saya menggunakan Windows 11 dan akan memilih Ubuntu, tidak masalah seandainya kamu hendak memilih distribusi Linux yang lain, seharusnya langkah-langkahnya tidak jauh berbeda.
+
+Untuk memasang WSL di Windows, berikut langkah-langkahnya:
+
+1.     Buka aplikasi Microsoft Store
+
+<Image src="/vim/image059.png" alt="Aplikasi Microsoft Store" />
+
+2. Ketik "Ubuntu" di kolom pencarian
+
+<Image src="/vim/image061.png" alt="Mencari aplikasi Ubuntu" />
+
+3. Klik tombol "Get" berwarna biru untuk mulai memasangnya dan tunggu proses unduhan hingga selesai
+
+<Image src="/vim/image063.png" alt="Mengunduh dan memasang Ubuntu" />
+
+4. Jika sudah selesai, buka aplikasi tersebut dan akan muncul jendel baru yang menunjukkan bahwa ada fitur yang belum diaktifkan untuk mulai menggunakan WSL
+
+<Image src="/vim/image065.png" alt="Jendela WSL Ubuntu" />
+
+5. Buka aplikasi Control Panel, pergi ke Programs dan klik pada *Turn Windows features on or off*, berikan ceklis pada kedua fitur: *Virtual Machine Platform* dan *Windows Subsystem for Linux*
+
+<Image src="/vim/image067.png" alt="Mengaktifkan fitur yang dibutuhkan WSL" />
+
+6. Buka kembali aplikasi Ubuntu, sekarang tunggu proses instalasi selesai
+
+<Image src="/vim/image069.png" alt="Memulai proses instalasi Ubuntu" />
+
+7. Masukkan *username* dan *password* untuk instalasi Ubuntu kamu
+
+<Image src="/vim/image071.png" alt="Instalasi WSL Ubuntu selesai" />
+
+8. Verifikasi ketersediaan Vim di dalam WSL Ubuntu dengan perintah `vim --version`
+
+<Image src="/vim/image073.png" alt="Memeriksa ketersediaan Vim di WSL Ubuntu" />
+
+9. Selesai
+
+Kamu dapat menggunakan aplikasi Ubuntu untuk mengakses WSL Ubuntu di dalam Windows, atau menutupnya dan menggunakan media lain seperti PowerShell atau Command Prompt.
+
+Untuk menjalankan WSL di Command Prompt dapat menggunakan perintah `wsl`.
+
+<Image src="/vim/image075.png" alt="WSL di Command Prompt" />
+
+Untuk PowerShell juga sama seperti sebelumnya.
+
+<Image src="/vim/image077.png" alt="WSL di PowerShell" />
+
+Selain itu, kamu juga dapat menggunakan aplikasi Terminal di Windows untuk mendapatkan pengalaman CLI yang lebih baik.
+
+<Image src="/vim/image079.png" alt="WSL di dalam PowerShell dengan aplikasi Terminal" />
+
+Ketika berada di dalam WSL, sama saja seperti berada di dalam Linux pada umumnya, kamu dapat mengakses *command-line tools* seperti `ls`, `mkdir`, `curl`, dan masih banyak lagi. Pada bagian-bagian berikutnya di materi belajar ini, kamu dapat mengikuti panduan untuk bagian Linux, ketika saya menyebut Windows itu berarti saya merujuk pada gVim bukan WSL.
+
+## Unix-like
+
+Seperti yang sudah dijelaskan sebelumnya, saya hanya membuat langkah-langkah untuk Linux Ubuntu saja. Untuk sistem operasi atau distribusi Linux jenis lain, dapat mengikuti langkah-langkah berikut sebagai referensi namun dengan caranya masing-masing.
+
+Lagipula mengajari pengguna sistem operasi Unix-like untuk memasang Vim seperti mengajari para pecinta alam untuk buang sampah sembarangan.
+
+Berikut ini langkah-langkah untuk memasang Vim di Ubuntu:
+
+1. Buka program Terminal
+
+2. Untuk mendapatkan informasi paket Vim, jalankan perintah `sudo add-apt-repository ppa:jonathonf/vim`
+
+<Image src="/vim/image081.png" alt="Menambahkan informasi paket Vim" />
+
+3. Perbarui informasi paket dengan perintah `sudo apt update`
+
+<Image src="/vim/image083.png" alt="Memperbarui informasi paket" />
+
+4. Sekarang kita dapat memasang Vim malalui APT dengan perintah `sudo apt install vim`
+
+<Image src="/vim/image085.png" alt="Memasang Vim" />
+
+5. Verifikasi pemasangan Vim dengan perintah `vim --version` untuk mengetahui versi Vim yang terpasang
+
+<Image src="/vim/image087.png" alt="Versi Vim yang terpasang" />
+
+Kini kamu sudah siap untuk lebih dalam lagi tersesat di dalam Vim!

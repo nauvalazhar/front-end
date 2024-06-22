@@ -1,3 +1,11 @@
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --window-bg: #1a1b26;
+  --window-fg: #c0caf5;
+}
+
 article figure {
   margin: 20px 0;
   text-align: center;
@@ -14,4 +22,23 @@ article figure {
 .nextra-filetree {
   display: flex;
   justify-content: center;
+}
+
+:is(html[class~='dark'] [data-language='vi'] code .line .highlighted) {
+  --tw-shadow-color: transparent;
+  --shiki-token-keyword: white;
+  --shiki-color-text: white;
+  font-weight: bold;
+  background-color: transparent;
+  margin-right: -7px;
+  position: relative;
+  &::before {
+    content: ' ';
+    position: absolute;
+    inset: 0;
+    width: calc(100% - 7px);
+    height: 100%;
+    background-color: hsl(0, 100%, 40%);
+    z-index: -1;
+  }
 }

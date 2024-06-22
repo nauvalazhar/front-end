@@ -1,0 +1,192 @@
+import { Image } from '@/components/image'
+
+# Motion
+
+Ketika menggunakan editor teks konvensional seperti VS Code, aktivitas memindahkan kursor dengan menggunakan *mouse* adalah hal yang lazim. Berbeda dengan Vim, kamu akan melakukan aktivitas semacam itu hanya dengan *keyboard* saja. Karena memindahkan tangan dari atas *keyboard* ke atas *mouse* itu memakan waktu lama.
+
+Perlu saya katakan sekali lagi, esensi menggunakan Vim adalah efisiensi *keyboard.* Tangan kamu tidak akan pernah pindah dari atas *keyboard* ke atas *mouse.* Kamu akan melakukan semuanya dengan *keyboard,* termasuk memindahkan posisi kursor.
+
+Pada dasarnya, kamu dapat memindahkan posisi kursor dengan tombol panah atas, bawah, kiri, dan kanan seperti pada umumnya. Namun, umumnya pengguna Vim menggunakan tombol `hjkl` untuk memindahkan posisi kursor ke atas, ke bawah, ke atas, dan ke kanan.
+
+- `h` untuk memindahkan kursor ke kiri
+- `j` untuk memindahkan kursor ke bawah
+- `k` untuk memindahkan kursor ke atas
+- `l` untuk memindahkan kursor ke kanan
+
+> *Experienced users prefer the hjkl keys because they are always right under their fingers. Beginners often prefer the arrow keys, because they do not know what the hjkl keys do. The mnemonic value of hjkl is clear from looking at the keyboard. Think of j as an arrow pointing downwards.*
+>
+> – Bram Moolenaar
+
+Sebagai langkah awal, tidak masalah memindahkan kursor dengan tombol arah panah. Karena itu yang saya lakukan juga ketika awal belajar Vim. Tapi, kamu perlu membiasakan menggunakan tombol `hjkl` untuk memindahkan kursor. Semakin lama dan semakin terbiasa, tanganmu tidak akan pernah lepas di tombol tersebut. Serius!
+
+Perlu diingat, kamu perlu berada di mode normal untuk menggunakan perintah `hjkl` untuk memindahkan kursor.
+
+Perintah tersebut, di dalam Vim disebut juga dengan *cursor motions* atau *motion* saja. *Motion* di dalam Vim merupakan sebuah perintah untuk memindahkan posisi kursor. Perintah `hjkl` ini termasuk ke dalam *left-right* dan *up-down motion.*
+
+Mungkin kamu bertanya-tanya mengapa Vim menggunakan `hjkl`. Selain karena tombol tersebut berada pada *home row keyboard,* juga karena *layout keyboard* jaman dahulu yang di mana tombol-tombol tersebut berfungsi sebagai tombol arah panah.
+
+<Image src="/vim/image129.jpg" alt="Sumber: https://catonmat.net/why-vim-uses-hjkl-as-arrow-keys" />
+
+Selain *motion* `hjkl`, kamu juga dapat menggunakan angka `0` untuk pergi ke awal baris; tanda `$` untuk pergi ke akhir baris.
+
+Vim memiliki jenis *motion* yang lain dan yang umumnya sering –setidaknya oleh saya– gunakan adalah:
+
+- *word motion*
+- *text object motion*
+- *text object selection*
+- *jumps motion*
+
+Pada kasus yang lebih konkret, kamu jarang sekali memindahkan kursor per karakter, melainkan per kata, per baris, atau sepanjang jangkauan yang kamu tentukan seperti mulai dari tanda `{` hingga tanda `}`.
+
+### Word Motion
+
+Kamu dapat menggunakan *word motion* untuk memindahkan kursor per kata. Sebagai contoh, bila kamu memiliki baris kode seperti di bawah dan posisi kursor kamu saat ini berada di karakter `f`:
+
+```vi /f /1
+f unction welcome() {
+  //
+}
+```
+
+Kamu dapat menggunakan perintah `w` untuk memindahkan kursor satu "kata" ke depan. Maka posisi kursor kamu sekarang berada di huruf `w`:
+
+```vi /w /1
+function w elcome() {
+  //
+}
+```
+
+Sebuah *word* atau kata di Vim terdiri dari urutan huruf, angka dan garis bawah, atau urutan karakter *non-blank* lainnya, dipisahkan dengan spasi (spasi, tab, *end-of-line*).
+
+Kebalikannya, kamu dapat menggunakan `b` untuk pidah satu "kata" ke belakang. Selain menggunakan `w` dan `b`, kamu juga dapat menggunakan `e` dan `ge`. Bedanya, kamu bisa lihat kode sebelumnya:
+
+```vi /f /1
+f unction welcome() {
+  //
+}
+```
+
+Bila kursor kamu saat ini berada di karakter `f`, bila kamu menggunakan perintah `e`, maka kursor akan pindah ke karakter `n`.
+
+```vi /n /1
+function  welcome() {
+  //
+}
+```
+
+Karena perintah `e` untuk memindahkan kursor ke akhir kata.
+
+### Text Object Motion
+
+Vim juga memungkinkan kamu memindahkan posisi kursor per kalimat dan juga per paragraf. Kamu membutuhkan *text object motion* untuk melakukannya. Sebagai contoh, kamu memiliki teks seperti ini:
+
+```vi /L /1
+L orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy  text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+ 
+It has survived not  only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+```
+
+Bila kursor kamu saat ini berada di huruf *L* pada kata "Lorem", kamu dapat menggunakan tanda kurung `)` untuk melompat satu kalimat ke depan. Maka saat ini kursor kamu akan berada di huruf *L* pada kata "Lorem" di kalimat kedua.
+
+```vi /L /1
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. L orem Ipsum has been the industry's standard dummy  text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+ 
+It has survived not  only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+```
+
+Kamu dapat menggunakan tanda kurung `(` untuk kembali satu kalimat ke belakang. Maka posisi kursor saat ini berada di posisi awal kalimat.
+
+Sebuah kalimat didefinisikan sebagai diakhiri dengan titik, tanda seru atau tanda tanya, diikuti oleh *end-of-line*, spasi, atau tab.
+
+Selain itu, kamu juga dapat menggunakan tanda kurung kurawal `{` dan `}` untuk memindahkan kursor per paragraf. Kita bisa lihat lagi teks yang kita miliki seperti ini:
+
+```vi /L /1
+L orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy  text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+ 
+It has survived not  only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+```
+
+Apabila menggunakan tanda kurung kurawal `}`, maka posisi kursor saat ini berada di bawah paragraf pertama.
+
+```vi /  /2
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy  text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+  
+It has survived not  only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+```
+
+Paragraf bukan hanya pada teks biasa saja, "paragraf" di Vim diawali setelah setiap baris kosong. Kode definisi fungsi di bawah dianggap "paragraf" oleh Vim:
+
+```vi
+function foo() {
+ 
+}
+```
+
+Kamu dapat menggunakan tanda kurung kurawal `{` untuk kembali satu paragraf ke belakang.
+
+### Text Object Selection
+
+Berbeda dengan *motion* sebelumnya, *text object selection* hanya dapat digunakan pada mode visual atau setelah perintah *operator.* Di awal tulisan ini saya memberi contoh kasus mengubah teks di dalam tag HTML dengan menggunakan perintah `cit` di *keyboard.*
+
+Perintah `cit` tersebut sebetulnya merupakan sebuah kombinasi antara *operator* dan *text object selection.*
+
+- `c` adalah *operator*
+
+- `it` adalah *text object selection*
+
+Perintah `c` adalah *operator* yang memberitahu Vim untuk menghapus teks dan masuk ke dalam mode *insert.* Sedangkan perintah `it` adalah *text object selection* yang memberitahu jangkauan teks yang harus dihapus, dalam konteks ini jangkaunnya adalah teks yang ada di dalam *tag.*
+
+Itu kenapa ketika kita memasukkan perintah `cit` akan menghapus teks di dalam *tag* dan langsung masuk ke dalam mode *insert*. Kita akan membahas *operator* lebih jauh di bagian berikutnya.
+
+Seperti yang saya katakan di awal, *text object selection* hanya dapat digunakan pada mode visual dan setelah perintah *operator.* Kamu tidak dapat menggunakan *text object selection* pada mode normal.
+
+Selain `it`, terdapat beberapa *text object selection* lainnya yang dapat digunakan: `iw`, `aw`, `at`, `ab`, `ip`, dan yang lainnya. Untuk saat ini mungkin kamu tidak perlu memahami semua itu, kamu hanya perlu tahu eksistensi dan kegunaan *text object selection* di Vim.
+
+### Jump Motion
+
+Semakin besar aplikasi yang kita buat, semakin besar juga basis kodenya. Katakanlah kamu memiliki kode JavaScript yang di dalamnya terdapat sebuah fungsi dan beberapa baris *statement* sehingga *keyword* `return` terlalu jauh untuk dijangkau.
+
+```vi
+function findMyLover() {
+  // kode 
+  // yang
+  // sangat
+  // panjang
+  
+  return null;
+}
+```
+
+Seandainya kursor kamu saat ini berada di tanda kurung kurawal `{` dan ingin mengganti nilai `return`, tentu kamu dapat menggunakan tombol `j` untuk terus ke bawah hingga mencapai posisi yang diinginkan. Tapi itu bukan cara menggunakan Vim yang efisien.
+
+```vi /\{ /1
+function findMyLover() { 
+  // kode 
+  // yang
+  // sangat
+  // panjang
+   
+  return null;
+}
+```
+
+Kamu dapat menggunakan tombol `%` untuk langsung melompat ke tanda kurung kurawal `}`.
+
+```vi /\} /1
+function findMyLover() {
+  // kode 
+  // yang
+  // sangat
+  // panjang
+ 
+  return null;
+} 
+```
+
+Ini tidak terbatas pada tanda kurung kurawal saja, kamu dapat melakukan hal yang sama pada tanda kurung `()`, tanda kurung siku `[]`, juga C-*style* *comment* *`/* ... */`*.
+
+Sebelumnya kita sudah membahas cara memindahkan kursor per paragraf dan per kalimat. Faktanya, perintah tersebut juga termasuk ke dalam *jump motion* pada Vim. Perintah yang termasuk ke dalam *jump* adalah "‘"‘, "`", "G", "/", "?", "n", "N", "%", "(", ")", "[[", "]]", "{", "}", ":s", ":tag", "L", "M", "H".
+
+Pada bagian *motion* ini kita sudah belajar bagaimana memindahkan kursor di Vim. Pada dasarnya kita dapat menggunakan tombol arah panah, namun kita juga dapat menggunakan beberapa *motion* di atas untuk mempercepatnya. Hal ini tentu akan membuat repot bila belum terbiasa, maka biasakanlah!
+
+Kamu tidak perlu memaksakan menggunakan semua *motion* di atas, bila belum terbiasa tidak apa-apa menggunakan tombol arah panah untuk memindahkan kursor. Kamu dapat mencobanya secara bertahap, itu yang saya lakukan juga ketika saya belajar Vim. Tidak usah minder!

@@ -1,0 +1,149 @@
+import { Image } from '@/components/image'
+
+# Buffer
+
+Saat kita membuka fail di Vim, isi fail tersebut dibaca ke dalam sebuah *buffer*. Di Vim, *buffer* adalah sebuah area memori yang digunakan untuk menyimpan sementara isi fail. Penyuntingan di Vim akan membuat perubahan pada *buffer*, bukan pada fail.
+
+Sebagai contoh, kita buka sebuah fail ke dalam Vim:
+
+```vi
+vim welcome.js
+```
+
+Kemudian kita lakukan penyuntingan di dalamnya, entah itu menghapus, atau menambah teks ke dalamnya. Proses penyuntingan tersebut hanya akan memengaruhi *buffer*, tidak pada fail aslinya.
+
+Pada editor teks semacam VS Code, ketika kita menyunting sebuah fail, tidak akan terjadi apa-apa pada fail aslinya sampai kita simpan perubahan tersebut, *‘kan*?
+
+Begitu juga dengan Vim, perubahan yang kita buat pada fail yang sedang dibuka, hanya akan membuat perubahan pada *buffer*, sampai kita simpan perubahan tersebut dengan perintah `:w`, misalnya. Saat perubahan disimpan, fail aslinya akan digantikan oleh isi *buffer*.
+
+Kita dapat melihat daftar *buffer* yang ada di Vim dengan perintah `:ls`, `:files`, atau `:buffers`.
+
+<Image src="/vim/image162.png" alt="Daftar buffer saat ini" />
+
+Ketiga perintah tersebut akan melakukan hal yang sama. Setiap *buffer* dapat diidentifikasi dengan nama dan nomor.
+
+Nama *buffer* adalah nama fail yang terkait dengan *buffer* tersebut. Sedangkan nomor *buffer* adalah nomor urut dan unik yang diberikan oleh Vim. Nomor tersebut tidak akan berubah selama satu sesi Vim.
+
+Sejauh ini saya memiliki dua buah fail: *welcome.js* dan *add.js* dengan masing-masing isi seperti ini:
+
+```vi filename="welcome.js"
+const userName = "Nauval";
+
+function welcome(name) {
+  return `Welcome, ${name}`;
+}
+
+console.log(welcome(userName));
+```
+
+```vi filename="add.js"
+function add(a, b) {
+  return a + b;
+}
+console.log(add(1, 2));
+```
+
+Untuk membuka kedua fail tersebut, kita dapat menggunakan perintah yang sama seperti sebelumnya, hanya saja kita tambahkan nama fail yang lain sebagai argumen kedua.
+
+```vi
+vim welcome.js add.js
+```
+
+Dengan seperti ini, Vim akan membuka kedua fail dan membacanya ke dalam 2 *buffer* yang berbeda. Gunakan perintah `:ls` untuk mengetahuinya.
+
+<Image src="/vim/image164.png" alt="Daftar buffer saat ini" />
+
+Terdapat nomor dan juga tanda `%a`. Nomor dapat kita gunakan sebagai referensi untuk berpindah *buffer*. Sedangkan tanda `%a` sederhananya adalah indikator untuk memberitahu kita bahwa *buffer* tersebut yang sedang dilihat.
+
+Dengan adanya *buffer*, Vim memungkinkan kita untuk melakukan penyuntingan beberapa fail sekaligus dalam satu *instance* Vim yang sama. Kita tidak perlu keluar-masuk Vim untuk menyunting satu per satu fail.
+
+Kita bisa beralih ke *buffer* yang lain dengan beberapa perintah sebagai berikut:
+
+- `:bn` untuk *buffer next*
+
+- `:bp` untuk *buffer previous*
+
+- `:b` namafail untuk membuka *buffer* berdasarkan nama fail (contoh: `:buffer welcome.js`)
+
+- `:bN` untuk membuka *buffer* berdasarkan nomor (contoh: `:buffer2`)
+
+Tentu kamu sedikit repot untuk berpindah *buffer* dengan mengetik perintah-perintah tersebut, kendati perintahnya cukup ringkas. Tapi, akan lebih cepat bila dilakukan dengan menekan tombol kombinasi.
+
+Saya me-*remap* tombol `CTRL-h` untuk `:bp`, dan tombol `CTRL-l` untuk `:bn`.
+
+```vi
+nmap <C-h> :bp<CR>
+nmap <C-l> :bn<CR>
+```
+
+Perintah nmap akan membuat pemetaan pada mode normal; `<C-h>` dan `<C-l>` maksudnya tombol `CTRL-h` dan `CTRL-l`; `:bp<CR>` dan `:bn<CR>` maksudnya jalankan perintah `bp` dan `bn`.
+
+Kamu dapat menambahkan konfigurasi tersebut ke fail *vimrc*. Setiap kali melakukan perubahaan pada fail *vimrc*, kamu perlu memuat ulang konfigurasi tersebut ke Vim.
+
+Seperti sebelumnya, setidaknya ada dua cara untuk melakukannya, kamu bisa menutup dan membuka kembali program Vim; atau menggunakan perintah `:source` tanpa harus menutup program Vim.
+
+<Image src="/vim/image166.png" alt="Konfigurasi vimrc saat ini" />
+
+Sekarang kamu dapat beralih antar *buffer* dengan kombinasi tombol `CTRL-h` dan juga `CTRL-l`.
+
+Saat *buffer* tidak digunakan lagi, misal kamu merasa telah selesai melakukan penyuntingan pada sebuah fail, kamu dapat menghapus *buffer* dari daftar. Gunakan perintah `:bd` untuk menghapus *buffer* yang sedang dibuka, atau `:bdN` di mana `N` adalah nomor *buffer*.
+
+Untuk perintah `:bd`, saya melakukan *mapping* pada kombinasi tombol `CTRL-c`. Jadi, untuk menutup *buffer*, saya hanya perlu menekan tombol `CTRL-c` pada *keyboard*.
+
+```vi
+nmap <C-c> :bd<CR>
+```
+
+Selain perintah untuk bernavigasi dan menghapus *buffer*, tentu saja Vim memiliki perintah untuk membuat *buffer*. Hal ini yang kita akan gunakan ketika hendak membuat fail atau membuka fail yang ada ke dalam Vim yang sedang dibuka.
+
+Untuk membuat *buffer*, kita dapat menggunakan perintah `:e namafail`. Sebagai contoh seperti ini:
+
+```vi
+:e hello.py
+```
+
+Perintah tersebut akan membuat *buffer* baru. Bila kamu memiliki sebuah fail dengan nama *hello.py* di dalam direktori yang sama dengan fail sebelumnya, maka Vim akan membuka dan membaca isi fail tersebut ke dalam *buffer* baru. Bila Vim tidak menemukannya, maka Vim akan membuat *buffer* kosong.
+
+Setelah menjalankan perintah tersebut, Vim akan menunculkan pesan:
+
+```vi
+"hello.py" [New]
+```
+
+Seandainya Vim menemukan fail yang sudah ada dengan nama *hello.py*, kira-kira Vim akan memunculkan pesan seperti ini:
+
+```vi
+"hello.py" nL, xB
+```
+
+Di mana `nL` adalah total baris dari isi fail, contoh `10L` untuk 10 baris. Sedangkan `xB` adalah ukuran fail dalam *byte*, contoh `30B`.
+
+Kamu akan melihat sebuah *buffer* baru pada daftar ketika menggunakan perintah `:ls`.
+
+<Image src="/vim/image168.png" alt="Daftar buffer saat ini" />
+
+Perlu diingat kembali, *buffer* adalah area memori Vim yang digunakan untuk menyimpan sementara isi fail. Setiap perubahan yang kita lakukan di Vim itu akan diterapkan ke *buffer*, bukan fail aslinya.
+
+Perintah di atas bukan untuk membuat fail, melainkan membuat *buffer* baru. Jadi, untuk menyimpan *buffer* menjadi fail. Kita masih perlu menggunakan perintah lain, seperti `:w`.
+
+Kita tidak perlu memberi nama fail lagi pada perintah `:w` seperti sebelumnya, karena kita sudah memberikan nama *buffer* sebelumnya, nama *buffer* tersebut akan digunakan sebagai nama fail saat *buffer* tersebut disimpan.
+
+Misal kita tulis kode berikut di *buffer hello.py*:
+
+```vi
+print("Hello, world!")
+```
+
+Simpan *buffer* tersebut dengan perintah `:w`.
+
+<Image src="/vim/image170.png" alt="Menyimpan buffer hello.py menjadi fail" />
+
+Kamu dapat berpikir bahwa sebuah fail diwakili oleh *buffer* di Vim, tapi tidak semua *buffer* mewakili fail. Faktanya, ketika kita membuka Vim pertama kali, Vim akan membuat sebuah *buffer* kosong tanpa nama.
+
+<Image src="/vim/image172.png" alt="Sebuah buffer kosong saat memulai Vim" />
+
+Itu artinya *buffer* tersebut tidak mewakiliki fail apapun, sampai *buffer* tersebut kamu simpan menjadi sebuah fail.
+
+Mungkin sampai sini kamu berpikir bahwa *buffer* ini setara dengan fitur *tab* yang ada di editor teks semacam VS Code. Secara teknis mungkin iya. Tapi, Vim memiliki definisi lain mengenai *tab*, dan itu fitur yang sangat berbeda.
+
+Kita akan membahas *tab* di Vim, tapi sebelum itu kita akan membahas fitur *windows* terlebih dahulu.

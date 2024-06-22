@@ -1,0 +1,23 @@
+import { Image } from '@/components/image'
+
+# Menyimpan Fail
+
+Kode yang kita tulis sebelumnya itu belum disimpan ke dalam fail apapun, itu kenapa Vim tidak dapat mengenalinya. Kita dapat menyimpan kode tersebut dengan perintah `:w namefail`*.* Saya akan menggunakan *add.js* sebagai nama fail untuk kode sebelumnya. Perintahnya akan menjadi `:w add.js`.
+
+<Image src="/vim/image115.png" alt="Menyimpan fail di Vim" />
+
+Ketika fail berhasil disimpan akan terlihat indikator di kiri-bawah bertuliskan seperti ini:
+
+```
+"add.js" [New] 5L, 63B written
+```
+
+Setelah itu kita dapat memeriksa jenis sintaksis yang sedang digunakan saat ini dengan perintah `:set filetype?`.
+
+<Image src="/vim/image117.png" alt="Hasil dari perintah :set filetype?" />
+
+Kamu dapat mengecoh Vim dengan memberikan ekstensi yang tidak sesuai dengan kode di dalam fail tersebut. Misal, kamu menulis kode JavaScript dan berikan ekstensi *.py* pada nama failnya. Maka Vim akan menganggap kode JavaScript kamu sebagai kode Python.
+
+<Image src="/vim/image119.png" alt="Kode JavaScript dengan jenis sintaksis Python" />
+
+Bila kamu menemui kasus asing seperti Vim salah menganggap kode yang kamu tulis, kamu dapat memberitahu Vim secara eksplisit jenis sintaksis apa yang kamu inginkan seperti yang telah dijelaskan di awal.

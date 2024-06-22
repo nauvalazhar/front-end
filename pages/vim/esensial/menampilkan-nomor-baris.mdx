@@ -1,0 +1,30 @@
+import { Image } from '@/components/image'
+
+# Menampilkan Nomor Baris
+
+Sangat sulit bila kita menulis kode tanpa dibantu dengan adanya nomor baris. Kita tidak tahu sudah berapa baris kode yang kita tulis dan nomor baris juga berguna sebagai referensi agar kita dapat melompat ke baris kode tertentu.
+
+Sejauh ini kita hanya memberikan warna sintaksis pada kode yang kita tulis, dan belum ada nomor baris sama sekali.
+
+Untuk menampilkan nomor baris di Vim kita dapat menggunakan perintah `:set number`.
+
+<Image src="/vim/image121.png" alt="Menampilkan nomor baris" />
+
+Atau juga bisa menggunakan perintah `:set nu` untuk perintah yang lebih ringkas.
+
+Apabila kamu memiliki alasan tertentu untuk menghilangkan nomor baris, kamu dapat menggunakan perintah: 
+
+- `:set nonu`
+- `:set nonumber`
+- `:set nu!`
+- `:set number!`
+
+Semua perintah tersebut akan mencapai tujuan yang sama.
+
+Mungkin kamu akan berpikir bahwa untuk menggunakan fitur dasar editor teks saja harus menghidupkannya secara manual di Vim. Maka akan sangat merepotkan ketika hendak menggunakan Vim harus diawali dengan mengaktifkan fitur-fitur dasar ini.
+
+Pada dasarnya, pemikiran seperti itu adalah benar. Namun, umumnya pengguna Vim menuliskan beberapa konfigurasi untuk menyalakan beberapa fitur yang diinginkan, termasuk *syntax highlighter*, dan *line numbers*. Setiap kali Vim dibuka, maka fitur-fitur tersebut tidak perlu diaktifkan secara manual lagi.
+
+Tidak perlu heran bila kamu sudah mengatur beberapa konfigurasi seperti mengaktifkan nomor baris, fitur *syntax highlighter,* atau fitur-fitur lainnya yang akan ditemui di bagian-bagian berikutnya akan hilang atau kembali ke pengaturan bawaan ketika *program* Vim ditutup. Karena konfigurasi yang dilakukan dengan perintah-perintah tersebut tidak persisten.
+
+Kita akan membahas perihal konfigurasi pada bagian lain, untuk saat ini kita hanya perlu memahami cara mengoperasikan Vim terlebih dahulu. Supaya paham dasar-dasar Vim dan paham cara berkomunikasi dengannya.

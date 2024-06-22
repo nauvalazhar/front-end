@@ -1,0 +1,33 @@
+import { Callout } from 'nextra/components'
+import { Image } from '@/components/image'
+
+# Membuka dan Keluar Dari Vim
+
+Untuk membuka Vim, kita perlu membuka aplikasi *terminal emulator* terlebih dahulu. Setelah aplikasi terminal terbuka, maka kita bisa mengetik perintah `vim` di dalamnya dan tekan tombol `ENTER` untuk memulai menggunakan Vim.
+
+Setelah Vim terbuka, seharusnya kamu akan melihat tampilan "*welcome screen*" dari Vim.
+
+<Image src="/vim/image089.png" alt="Tampilan awal Vim" />
+
+Pada tampilan tersebut kita bisa melihat terdapat beberapa informasi yang tersedia. Mulai dari nama program, yaitu Vim; versi Vim yang kita gunakan; sampai beberapa informasi perintah yang kita bisa gunakan.
+
+Mungkin kamu menyadari perbedaan Vim yang saat ini kita buka dengan Vim hasil tangkapan layar saya pada awal materi belajar ini.
+
+<div className="grid grid-cols-2">
+    <Image src="/vim/image091.png" alt="Vim belum dikonfigurasi" />
+    <Image src="/vim/image092.png" alt="Neovim sudah dikonfigurasi" />
+</div>
+
+Seperti yang sudah kita bahas pada bagian awal materi belajar prihal konfigurasi, ini bukan masalah karena saya menggunakan Neovim, ini murni karena Vim yang saat ini kita buka adalah Vim bawaan dan belum dikustomisasi sama sekali. Sedangkan pada tangkapan layar sebelum-sebelumnya itu adalah Vim yang saya sudah konfigurasi.
+
+<Callout type="info" emoji="💡">
+Jangan sungkan untuk kembali membaca bagian awal materi belajar ini prihal konfigurasi untuk mengingatnya kembali.
+</Callout>
+
+Saat ini Vim masih dalam keadaan terbuka. Kamu tidak perlu panik. Karena untuk keluar dari Vim itu sudah diberi tahu caranya di layar tersebut. Cukup gunakan perintah `:q` dan tekan `ENTER` maka kamu akan keluar dari Vim.
+
+<Image src="/vim/image095.png" alt="Mengetik perintah :q pada Vim" />
+
+Ketika mengetik tanda titik dua, kursor akan otomatis pindah ke bawah bagian Vim atau disebut juga dengan *command-line mode.* Apabila kamu tidak sengaja menekan perintah yang membuat kursor berada di *command-line*, tekan `ESC` atau `CTRL-c` untuk mengembalikan ke tempat semula.
+
+Sejauh ini kita sudah belajar cara membuka Vim dan keluar dari Vim. Ini terlihat sederhana, tapi kamu perlu berbangga diri karena ada [sekitar 2 juta orang yang kebingungan hanya untuk keluar dari Vim](https://stackoverflow.com/questions/11828270/how-do-i-exit-vim).

@@ -1,0 +1,25 @@
+# Command-line Mode
+
+Sejauh ini kita sudah belajar banyak hal pada Vim, mencari teks dengan perintah `/` atau `?`, melihat daftar *buffer* dengan `:ls`, atau menyalakan fitur *syntax* pada Vim. Hal-hal tersebut termasuk ke dalam mode *command-line* di Vim.
+
+Mode *command-line* juga termasuk ke dalam mode, sama seperti mode normal, mode *insert*, atau mode *visual*. Ketika kamu berada di mode ini, posisi kursor akan pindah ke bawah layar di mana kamu dapat menulis perintah-perintah Vim.
+
+Kamu dapat masuk ke mode ini pada saat menggunakan perintah pencarian seperti `?` atau `/`; tanda titik dua `:`; atau tanda seru `!`. Kamu dapat masuk ke mode ini hanya pada mode *visual* atau mode normal. Gunakan tombol `ESC`, `CTRL-c`, atau `CTRL-[` untuk keluar dari mode *command-line*.
+
+Vim juga memungkinkan kamu untuk mengulang perintah terakhir yang dieksekusi di mode *command-line*. Misal, terakhir kamu menjalankan perintah `:ls`, kamu dapat menggunakan perintah `@:` untuk menjalankan perintah itu lagi, tanpa harus mengulang mengetik `:ls` kembali.
+
+Selain itu, kamu juga dapat mengakses *registers* dan menggunakan *autocomplete* pada mode ini. Seandainya kamu sudah menyalin teks dan menaruhnya pada *registers* `a`, lalu kamu ingin mem-*paste*-nya di dalam mode *command-line*, kamu dapat menggunakan perintah `CTRL-r a`.
+
+Tombol kombinasi `CTRL-a` memungkinkan kamu untuk mengakses *registers*, sedangkan `a` adalah *identifier* dari *registers* yang ingin diakses. Artinya, kamu dapat mengakses *registers* lain, misal the *unnamed registers* atau *registers* bawaan, kamu dapat menggunakan perintah `CTRL-r "`.
+
+Sedangkan untuk menggunakan *autocomplete* di mode *command-line*, kamu cukup tekan tombol `TAB` di *keyboard*. Untuk melakukan *autocomplete* pada perintah *colorscheme*, kita dapat mengetik perintah `col` dan tekan `TAB`. Kamu akan memiliki dua opsi, karena terdapat dua perintah dengan awalan `col`: `colder`, dan `colorscheme`.
+
+Kamu dapat menggunakan tombol `TAB` atau tombol kombinasi `CTRL-n` untuk mencari opsi berikutnya; juga dapat menggunakan `SHIFT-TAB` atau `CTRL-p` untuk mencari opsi sebelumnya.
+
+Terakhir, tekan tombol arah atas atau arah bawah pada mode *command-line* untuk menjelajahi daftar riwayat perintah-perintah yang sebelumnya pernah digunakan. Untuk melihat daftar yang lebih jelas, gunakan perintah `:his`.
+
+Vim merekam 50 perintah terakhir, kamu dapat mengubah opsi ini dengan perintah `:set history=100` untuk merekam 100 perintah terakhir.
+
+Selain perintah `:his`, kamu juga dapat menggunakan perintah `q:` untuk membuka daftar riwayat perintah yang dapat dicari dan disunting di *window* yang terpisah.
+
+Pada *window* tersebut kamu dapat menggunakan perintah `/` atau `?` untuk mencari perintah yang sebelumnya kamu gunakan. Gunakan `:q` untuk keluar dari *window* tersebut.

@@ -1,0 +1,193 @@
+import { Image } from '@/components/image'
+
+# Plugin
+
+Vim memiliki ekosistem *plugin* yang memungkinkan kamu memperluas fungsionalitas Vim. Di Vim, *plugin* tidak lebih dari sekadar sebuah Vimscript yang diproses secara otomatis pada saat Vim dimulai.
+
+Kamu dapat menggunakan perintah `:scriptnames` untuk melihat daftar *script* yang dieksekusi oleh Vim saat ini. Umumnya, Vim akan membaca terlebih dahulu konfigurasi yang kita tulis (di `~/.vimrc` atau `~/_vimrc`), dan berikutnya memproses beberapa *plugin-plugin* bawaan Vim.
+
+Pada versi 8 atau lebih tinggi, Vim memiliki *plugin manager* bawaan bernama packages. Sederhananya ini hanyalah sebuah direktori yang dapat kita gunakan menaruh *plugin-plugin* yang kita inginkan. Semua *plugin* tersebut akan diproses otomatis saat Vim dimulai.
+
+Jadi selain memproses fail konfigurasi *vimrc*, dan *plugin-plugin* bawaan, Vim juga akan memproses *script* atau *plugin-plugin* yang berada di dalam direktori `~/.vim/pack/*/start` pada Unix atau Unix-*like* (`~/vimfiles/pack/*/start` untuk Windows) secara otomatis pada saat Vim dimulai.
+
+Buatlah direktori dengan nama *pack* pada lokasi seperti ini:
+
+```vi
+~/.vim/pack
+```
+
+Untuk Windows:
+
+```vi
+~/vimfiles/pack
+```
+
+Struktur direktori untuk *plugin* yang direkomendasikan oleh Vim adalah seperti ini: 
+
+```vi
+~/.vim/pack/namaplugin/start/namaplugin
+```
+
+Untuk Windows:
+
+```vi
+~/vimfiles/pack/namaplugin/start/namaplugin
+```
+
+Sebagai contoh, sekarang kita akan mencoba untuk memasang *plugin* bernama *emmet-vim* (*https://github.com/mattn/emmet-vim*).
+
+Dengan *plugin* tersebut, kita dapat menulis kode HTML dengan sintaksis yang terinspirasi dari CSS.
+
+Misal, kamu menulis singkatan kode berikut:
+
+```vi
+ul>li*5
+```
+
+Dengan Emmet, kamu dapat mengkonversi kode tersebut menjadi:
+
+```vi
+<ul>
+  <li></li>
+  <li></li>
+  <li></li>
+  <li></li>
+  <li></li>
+</ul>
+```
+
+VS Code secara bawaan sudah memiliki *plugin* ini terpasang, apabila kamu belum tahu.
+
+Untuk memasang *plugin* Emmet di Vim, kita perlu mengunduh *repository* dari *plugin* tersebut. Untuk itu, kita dapat menggunakan Git atau mengunduh fail Zip-nya. Sebelum, melakukan kloning, kita perlu membuat direktori untuk menaruh *plugin* Emmet.
+
+Buatlah direktori baru bernama *start* di dalam direktori baru bernama *emmet*, seperti ini:
+
+```vi
+~/.vim/pack/emmet/start 
+```
+
+Untuk Windows:
+
+```vi
+~/vimfiles/pack/emmet/start
+```
+
+Sekarang saatnya *clone repository* *dengan Git*:
+
+```vi
+git clone --depth 1 https://github.com/mattn/emmet-vim
+~/.vim/pack/emmet/start/emmet
+```
+
+Atau unduh fail Zip-nya di Github:
+
+*https://github.com/mattn/emmet-vim*
+
+Lalu ekstrak fail tersebut dan akan ada direktori benama *emmet-vim-master*, pindahkan direktori tersebut ke dalam direktori `~/.vim/pack/emmet/start (~/vimfiles/pack/emmet/start` untuk Windows) dan ubah nama direktori tersebut dari *emmet-vim-master* menjadi *emmet*, seharusnya seperti ini:
+
+```vi
+~/.vim/pack/emmet/start/emmet
+```
+
+Atau untuk Windows:
+
+```vi
+~/vimfiles/pack/emmet/start/emmet
+```
+
+Di dalam direktori tersebut terdapat banyak fail dan direktori.
+
+<Image src="/vim/image160.png" alt="Isi direktori ~/.vim/pack/emmet/start/emmet" />
+
+Sekarang kita dapat membuka Vim, apabila kamu sedang membukanya, lebih baik menutup dan membuka Vim kembali.
+
+Untuk mencobanya, kita dapat menggunakan kode singkatan berikut:
+
+```vi
+html:5
+```
+
+Pastikan posisi kursor kamu berada di akhir singkatan, dalam contoh ini adalah angka `5`. Kemudian gunakan tombol kombinasi `CTRL-y` dan disambung dengan tombol `,`.
+
+Hasilnya akan seperti ini:
+
+```vi
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+
+</body>
+</html>
+```
+
+Kamu dapat memeriksa [dokumentasi Emmet](https://docs.emmet.io) untuk mengeksplor singkatan-singkatan yang lain.
+
+Kembali lagi ke konsep *plugin* di Vim.
+
+Sekarang kita sudah berhasil memasang satu *plugin* di Vim dan menggunakan struktur direktori yang direkomendasikan oleh Vim. Sebenarnya kita bisa menyederhanakan struktur direktori untuk menaruh *plugin-plugin* pihak ketiga yang kita pasang. Seperti ini misalnya:
+
+```vi
+~/.vim/pack/vendor/start
+```
+
+Untuk Windows:
+
+```vi
+~/vimfiles/pack/vendor/start
+```
+
+Kita dapat menaruh *plugin-plugin* di dalam direktori tersebut. Istilah "vendor" digunakan sebagai indikator bahwa direktori tersebut berisi *plugin-plugin* pihak ketiga yang bukan ditulis olehmu.
+
+Selain itu, seandainya kita tidak ingin sebuah *plugin* diproses secara otomatis oleh Vim saat Vim dibuka, kita dapat mengubah nama direktori *start* menjadi *opt*. Untuk mengaktifkannya, kita dapat menggunakan perintah `:packadd`.
+
+Misal, sebelumnya kita memiliki direktori untuk *plugin* Emmet seperti ini:
+
+```vi
+~/.vim/pack/emmet/start/emmet 
+```
+
+Untuk Windows:
+
+```vi
+~/vimfiles/pack/emmet/start/emmet 
+```
+
+Kita dapat mengubah namanya menjadi:
+
+```vi
+~/.vim/pack/emmet/opt/emmet 
+```
+
+Untuk Windows:
+
+```vi
+~/vimfiles/pack/emmet/opt/emmet
+```
+
+Sekarang *plugin* tersebut tidak diproses oleh Vim secara otomatis. Kita dapat menggunakan perintah `:packadd emmet` untuk mengaktifkannya.
+
+Begitulah cara yang paling dasar mengelola *plugin* di Vim. Umumnya pengguna Vim menggunakan *package manager* pihak ketiga untuk mengelola *plugin* yang lebih mudah, seperti:
+
+- vim-plug (https://github.com/junegunn/vim-plug)
+
+- pathogen.vim (https://github.com/tpope/vim-pathogen)
+
+- vundle.vim (https://github.com/VundleVim/Vundle.vim)
+
+Setidaknya ketiga itu yang sering kedengaran namanya. Selain itu, mungkin kamu dapat bereksplorasi lagi.
+
+Selain *plugin* Emmet yang kita pasang tadi, terdapat banyak sekali *plugin-plugin* Vim yang dapat kita pasang. Mulai yang memiliki fungsionalitas, atau hanya sebagai estetika saja.
+
+- fzf.vim: sebuah wrapper Vim untuk command-line fuzzy finder
+
+- NERDTree: sebuah plugin untuk tree eksplorer
+
+- vim-airline: sebuah plugin untuk menampilkan baris status dan baris tab
+
+- coc.nvim: sebuah autocompletion dan language server untuk Vim dan Neovim
+
+Kamu dapat mengunjungi [Vim Awesome](https://vimawesome.com/) untuk mendapatkan daftar yang lebih lengkap.

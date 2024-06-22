@@ -1,0 +1,104 @@
+# Macros
+
+Bayangkan kamu dapat merekam beberapa urutan perintah dan mengulangnya terus-menerus dalam beberapa waktu yang berbeda. Selamat datang di *macros*, karena fitur ini memungkinkan melakukan hal tersebut.
+
+*Macros* adalah fitur di Vim yang memungkinkan kita untuk merekam beberapa urutan perintah, lalu kita dapat mengaplikasikannya dalam waktu yang berbeda. Fitur ini sangat membantu ketika kita ingin me-*refactor* kode.
+
+Setiap *macros* memiliki *identifier* yang dapat kita gunakan sebagai referensi untuk mengaplikasikan *macros* tersebut di waktu yang lain. Kita dapat memulai merekam *macros* dengan perintah `q`, dibarengi dengan *identifier*, misal `a`. Jadi, dengan perintah `qa`, kita akan merekam *macros* dengan *identifier* `a`.
+
+Untuk mengaplikasikannya, kita dapat menggunakan perintah `@`, dibarengi dengan *identifier* yang kita atur sebelumnya, misal `a`, jadi kita dapat menggunakan perintah `@a`.
+
+Sekarang kita akan mencobanya, pastikan kamu berada di dalam mode normal. Tekan perintah `qa`, maka kamu akan melihat indikator berikut di bawah-kiri layar Vim:
+
+```vi
+recording @a
+```
+
+Pada saat ini, Vim sedang menunggu perintah-perintah yang kamu masukkan. Sekarang, kita bisa masuk ke mode *insert* dengan perintah `i`, dan mulai menulis teks misal seperti ini:
+
+```vi
+halo nauval
+```
+
+Tekan `ENTER` untuk membuat baris baru, lalu kembali ke mode normal dengan menekan tombol `ESC` atau `jj` bila kamu mengikuti konfigurasi yang saya tulis sebelumnya. Masukkan perintah `q` untuk membuat *macros* berhenti merekam.
+
+Sekarang kamu berada pada mode normal dan memiliki teks seperti di atas. Untuk mengaplikasikan *macros*, kamu dapat menggunakan perintah `@a`, karena `a` adalah nama *identifier* yang kita berikan sebelumnya.
+
+Perintah tersebut akan membuat teks yang sama, hasilnya maka akan seperti ini:
+
+```vi
+halo nauval
+halo nauval
+```
+
+Kamu dapat mengaplikasikan *macros* sebanyak yang kamu inginkan. Misal, kamu dapat menggunakan perintah `10@a`, untuk mengulang perintah `@a` sebanyak 10 kali.
+
+Setiap *macros* yang direkam, Vim akan menaruhnya ke dalam *registers*. Ya, "*registers*" yang sama yang kita bahas sebelum ini. Karena kita memberikan `a` sebagai *identifier*, maka kamu seharusnya sudah dapat menebak. Ya, *macros* tersebut ditaruh di dalam *registers* `a`.
+
+Bila kamu melihat daftar *registers* saat ini dengan perintah `:reg`, maka kamu akan melihat *registers* `a` berisikan teks kira-kira seperti ini:
+
+```vi
+ihalo nauval^Mjj
+```
+
+Vim menaruh perintah-perintah yang kita masukkan saat merekam *macros* sebagai teks biasa atau *plain text* saja. Tidak ada yang spesial. Itu artinya kita dapat menyalin isi *registers* tersebut untuk digunakan di mana saja, termasuk di sesi Vim yang berbeda!
+
+Sekarang kita akan coba me-*refactor* teks sebelumnya, katakanlah kita memiliki teks seperti ini:
+
+```vi
+halo nauval
+```
+
+Lalu kita ingin memperbaikinya menjadi seperti ini:
+
+```vi
+Halo, Nauval!
+```
+
+Pertama yang kita perlu lakukan adalah posisikan kursor pada huruf "h", lalu mulai merekam *macros* dan menaruhnya ke dalam *registers* yang lain, misal `s`. Maka kita dapat menggunakan perintah `qs`.
+
+Saat *macros* sedang direkam, kita dapat memasukkan perintah-perintah berikut:
+
+- `~` untuk membuat huruf "h" menjadi kapital
+
+- `e` untuk memindahkan posisi kursos ke huruf "o"
+
+- `a` untuk masuk ke mode *insert* dengan posisi kursor berada di depan huruf "o"
+
+- `,` untuk memberikan tanda koma setelah kata "Halo"
+
+- `jj` atau ESC untuk beralih ke mode normal
+
+- `w` untuk memindahkan posisi kursor ke huruf "n"
+
+- `~` untuk membuat huruf "n" menjadi kapital
+
+- `A` untuk masuk ke mode *insert* dengan posisi kursor berada di akhir baris
+
+- `!` untuk memberikan tanda seru
+
+- `jj` atau `ESC` untuk beralih ke mode normal
+
+- `q` untuk menghentikan merekam *macros*
+
+Sekarang kamu dapat membuat teks serupa lagi pada baris baru, seperti ini:
+
+```vi
+halo nauval
+```
+
+Kemudian pindahkan posisi kursor ke awal baris atau pada huruf "h", lalu gunakan perintah `@s` untuk mengaplikasikan *macros*. Saat ini seharusnya teks sudah berubah menjadi seperti ini:
+
+```vi
+Halo, Nauval!
+```
+
+Bila kita melihat ke daftar *registers* saat ini, maka *registers* `s` akan berisi kira-kira seperti ini:
+
+```vi
+~ea,jjw~A!jj
+```
+
+Itulah sekumpulan perintah-perintah yang kita rekam sebelumnya, ketika kita gunakan perintah `@s`, maka sama saja Vim akan mengulang sekumpulan perintah-perintah itu lagi pada waktu tersebut.
+
+*Macros* pada dasarnya mirip seperti perintah `.`, bedanya dengan perintah `.` kita hanya dapat mengulang satu perintah terakhir saja, sedangkan dengan *macros* kita dapat mengulang sekumpulan urutan perintah. Tentu kamu dapat menggunakan *macros* pada contoh kasus yang lebih kreatif lagi ketimbang ini.

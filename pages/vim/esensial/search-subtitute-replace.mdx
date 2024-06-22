@@ -1,0 +1,173 @@
+import { Callout } from 'nextra/components'
+
+# Search, Subtitute, dan Replace
+
+Melakukan pencarian teks pada Vim begitu sederhana, kamu hanya perlu menggunakan tanda miring garis `/` dan disertai dengan *pattern* atau kata kunci yang kamu ingin cari.
+
+```vi
+/pattern
+```
+
+Misal, kamu ingin mencari bagian kode `userName`, kamu dapat menggunakan perintah `/userName` pada Vim.
+
+Bila Vim sudah menemukan teks dengan *pattern* atau kata kunci yang kamu cari, kamu dapat menggunakan perintah `n` yang berarti *n*ext untuk melanjutkan pencarian dengan kata kunci yang sama. Sebaliknya, bila kamu ingin kembali ke teks yang ditemukan sebelumnya, kamu dapat menggunakan perintah `N` (*ya, "N" kapital*) untuk kembali.
+
+Seandainya Vim tidak menemukan teks dengan *pattern* atau kata kunci yang kamu sesuaikan, Vim akan mengeluh seperti ini:
+
+```vi
+E486: Pattern not found: pattern
+```
+
+Perintah `/` membuat Vim mencari ke bawah dari posisi kursor saat ini. Bila sampai bawah tidak ditemukan, maka Vim akan mengulang pencarian kembali dari atas. Hal seperti ini ditandai dengan komentar dari Vim yang secara tekstual seperti ini:
+
+```vi
+search hit BOTTOM, continuing at TOP
+```
+
+Sekiranya kamu merasa kata kunci yang kamu cari berada di atas kursor saat ini, maka alih-alih menggunakan tanda garis miring `/`, kamu dapat menggunakan tanda tanya `?` dan disertai dengan kata kunci yang kamu ingin cari.
+
+Bila awalnya `/userName`, maka menjadi `?userName`. Kebalikan dari tanda garis miring, dengan tanda tanya maka Vim akan mencari ke atas dari posisi kursor saat ini. Bila tidak ditemukan, maka akan mengulang pencarian dari bawah. Hal ini ditandai dengan komentar dari Vim yang secara tekstual seperti ini:
+
+```vi
+search hit TOP, continuing at BOTTOM
+```
+
+<Callout type="info" emoji="💡">
+Sebagai tambahan, kamu dapat memindahkan posisi kursor ke kata manapun, lalu tekan perintah `*` untuk mencari kata tersebut ke depan, atau perintah `#` untuk mencarinya ke belakang.
+</Callout>
+
+Perlu diingat, pencarian di Vim pada dasarnya menggunakan *case-sensitive**,* jadi kamu perlu memperhatikan huruf kapital dan bukan. Seandainya kamu ingin menghindari *case-sensitive*, kamu dapat menggunakan perintah `:set ignorecase` atau `:set ic` versi yang lebih ringkas.
+
+Kamu juga dapat mengembalikan fitur *case-sensitive* tersebut dengan perintah `:set noignorecase` atau `:set noic`.
+
+Cara lain untuk menghindari *case-sensitive* pada saat pencarian di Vim adalah dengan menambahkan `\c` pada akhir perintah pencarian. Merujuk ke perintah pencarian sebelumnya, maka akan menjadi `/username\c`.
+
+Kamu juga dapat menggunakan *regular expression* untuk kata kunci pencarian. Sebagai contoh, kamu ingin mencari tanda titik koma pada setiap akhir baris, kamu dapat menggunakan `/;$`; ingin mencari teks yang mengandung `.com`, kamu dapat menggunakan `/.\.com`.
+
+Tentu kamu dapat menemukan referensi mengenai pencarian *regular expression* yang lebih lengkap pada sumber daya lain. Saya hanya memberikan beberapa contoh saja *barusan*.
+
+Kita sudah belajar mencari teks di Vim, saatnya belajar mengganti kata kunci yang ditemukan dengan teks lain atau di Vim disebut juga dengan *subtitute*.
+
+Untuk melakukan *search and replace* di Vim, kamu dapat menggunakan perintah `:s` yang berarti *subtitute* dan lebih lengkapnya seperti ini:
+
+```vi
+:s/keyword/replaceKeyword
+```
+
+Pada dasarnya seperti itu saja. `keyword` adalah *pattern* atau kata kunci yang hendak kamu cari, sedangkan `replaceKeyword` adalah teks yang menggantikannya bila *pattern* atau kata kunci ditemukan.
+
+Seandainya kamu memiliki teks seperti di bawah dan dengan kondisi posisi kursor berada di huruf "k" baris pertama:
+
+```vi /k /1
+k eyword keyword
+keyword keyword
+keyword keyword
+```
+
+Maka dengan perintah sebelumnya, teks yang kamu miliki akan menjadi seperti ini:
+
+```vi
+replaceKeyword keyword
+keyword keyword
+keyword keyword
+```
+
+Ya, hanya satu yang diganti, tahu kenapa? Karena Vim hanya akan men-*subtitue* atau me-*replace* teks yang pertama kali ditemui saja dan pada baris di mana posisi kursor saat itu berada.
+
+Seandainya posisi kursor berada di baris kedua seperti ini:
+
+```vi /k /1
+keyword keyword
+k eyword keyword
+keyword keyword
+```
+
+Maka dengan perintah yang sama, hasilnya akan seperti ini:
+
+```vi
+keyword keyword
+replaceKeyword keyword
+keyword keyword
+```
+
+Kamu dapat menambahkan `/g` diakhir perintah sebelumnya untuk melakukan *subtitue* secara global. Perintah sebelumnya menjadi seperti ini:
+
+```vi
+:s/keyword/replaceKeyword/g
+```
+
+Dengan perintah tersebut, semua *pattern* atau kata kunci yang ditemukan akan di-*subtitue* oleh Vim, tidak hanya satu.
+
+```vi /k /1
+k eyword keyword
+keyword keyword
+keyword keyword
+```
+
+Dengan perintah sebelumnya, maka hasilnya akan seperti ini:
+
+```vi
+replaceKeyword replaceKeyword
+keyword keyword
+keyword keyword
+```
+
+Kamu juga dapat menentukan jangkauan *subtitue.* Misal, kamu ingin melakukan *subtitute* dari baris pertama hingga baris kedua, maka perintah ini dapat digunakan:
+
+```vi
+:1,2s/keyword/replaceKeyword/g
+```
+
+Tidak peduli di mana posisi kursor kamu berada, Vim tetap akan melakukan *subtitute* hanya pada baris nomor 1 hingga baris nomor 2. Kira-kira seperti ini hasilnya:
+
+```vi
+replaceKeyword replaceKeyword
+replaceKeyword replaceKeyword
+keyword keyword
+```
+
+Umumnya, pada editor teks konvensional, kamu melakukan *find and replace* di seluruh dokumen — dari baris 1 hingga baris terakhir. Pada Vim, hal ini dapat dilakukan dengan perintah yang mirip seperti sebelumnya. Hanya saja, angka 2 diganti dengan tanda dolar `$` sebagai intepretasi baris akhir pada dokumen yang sedang dibuka.
+
+```vi
+:1,$s/keyword/replaceKeyword/g
+```
+
+Dengan perintah di atas, maka kamu sudah dapat menebak hasilnya. Ya, semua *pattern* di semua baris akan di-*subtitute*.
+
+Perintah `1,$` dapat disingkat dengan tanda persen `%`. Menjadi seperti ini:
+
+```vi
+:%s/keyword/replaceKeyword/g
+```
+
+Sama seperti fitur pencarian Vim sebelumnya, *subtitute* juga menggunakan *case-sensitive*. Kamu dapat menggunakan cara yang sama seperti di fitur pencarian untuk mengabaikan *case-sensitive*. Tambahan, kamu dapat menggunakan perintah `i` di akhir perintah untuk mengabaikan *case-sensitive* pada fitur *subtitute*.
+
+```vi
+:%s/keyword/replaceKeyword/gi
+```
+
+Selain itu, pada bagian *pattern* juga kamu dapat menulis *regular expression* untuk pencarian yang lebih lanjut.
+
+Sejujurnya, *subtitute* adalah fitur yang jarang sekali saya gunakan. Saya lebih memilih menggunakan fitur pencarian menggunakan perintah `/` atau `?`. Lalu saya menggantinya secara manual dengan menggunakan perintah `c` atau `d` bila saya ingin menghapusnya.
+
+Alasan saya melakukan ini karena saya ingin meninjau satu per satu teks atau kode yang hendak saya ganti atau hapus. Agak berisiko bagi saya menggunakan *subtitute* pada basis kode yang sudah besar. Tentu saja hal ini tergantung pada kasus~
+
+Terakhir, sebaiknya kita perlu memulai membiasakan istilah *subtitute* pada fitur ini. Karena istilah *replace* seringkali merujuk pada fitur Vim yang lain dengan perintah yang berbeda juga. Kamu dapat menggunakan perintah `r{char}` untuk me-*replace* satu karakter yang sedang berada di bawah kursor.
+
+Sebagai contoh kamu memiliki teks seperti ini:
+
+```vi /A /1
+A ku
+```
+
+Kemudian kamu gunakan perintah `rs`. Maka hasilnya seperti ini:
+
+```vi
+sku
+```
+
+Karakter `A` di-*replace* dengan `s`.
+
+Kamu juga dapat me-*replace* lebih dari satu karakter dengan perintah `R` . Perintah tersebut akan membawa kamu ke mode *replace*. Pada mode tersebut, setiap karakter yang kamu ketik akan menggantikan karakter yang berada di bawah posisi kursor saat itu sampai kamu kembali lagi ke mode normal dengan tombol `ESC`.
+
+Mode ini yang hampir tidak pernah saya gunakan. Namun perintah `r` sangat sering saya gunakan.

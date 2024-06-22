@@ -1,0 +1,27 @@
+import { Image } from '@/components/image'
+
+# Undo, Redo, dan Repeat
+
+Kita tidak mungkin tidak membuat kesalahan dalam menulis kode. Sama seperti editor teks lainnya, Vim juga pemaaf dan memberikanmu kesempatan untuk memperbaikinya.
+
+Untuk meng-*undo* di Vim, kamu dapat menggunakan `u`. Kontras, untuk me-*redo* di Vim, kamu dapat menggunakan `ctrl-r`.
+
+Bila kamu menjalankan Vim di *terminal emulator*, dan kamu mencoba menekan `ctrl+z` dengan harapan untuk meng-*undo*, maka yang terjadi adalah *shell* akan men-*suspend* program Vim yang sedang berjalan dan menaruhnya di *background process.*
+
+<Image src="/vim/image130.png" alt="Vim ter-suspend" />
+
+Kamu dapat menggunakan perintah `fg` untuk mengembalikannya. Perintah tersebut akan membawa *background process* terakhir ke *foreground* sehingga kamu dapat menggunakan Vim kembali.
+
+Apabila tidak berhasil, kamu dapat menggunakan perintah `jobs` untuk mengetahui *program* yang ada di *background*.
+
+<Image src="/vim/image132.png" alt="Memeriksa program yang berjalan di background" />
+
+Seandainya kamu memiliki beberapa daftar dan kamu menemukan *program* Vim yang tidak sengaja kamu *suspend*. Kamu dapat menggunakan nomor di dalam tanda kurung siku `[]` sebagai referensi perintah `fg`. Sebagai contoh, jadinya seperti ini: `fg %1`.
+
+Balik lagi ke Vim.
+
+Vim memiliki perintah yang --menurut saya-- canggih, yaitu perintah *dot* atau titik: `.`. Perintah `.` akan mengulang perintah terakhir yang kamu gunakan. Apabila perintah terakhir yang kamu gunakan adalah `dd` maka perintah `.` akan melakukan peran yang sama.
+
+Perintah ini sungguh *powerful*! Sebagai contoh, saya ingin mengganti nama fungsi dari `add` menjadi `tambah`. Saya dapat menggunakan `ciw` pada kata "add" sekali, dan tekan `.` di kata "add" yang lain.
+
+Itu hanya salah satu contoh dari sekian banyak contoh *repeatable command* yang kamu akan temui nanti.
