@@ -1,0 +1,37 @@
+import { Image } from '@/components/image';
+
+# Responsive Design
+
+Sudah sangat umum melihat web yang biasanya kita kunjungi memiliki antarmuka yang *responsive*. Antarmuka *responsive* akan membuat web tetap terlihat cantik saat diakses pada ukuran layar perangkat yang berbeda. Tailwind memiliki fitur *responsive design* yang memungkinkan kita untuk menerapkan *style* untuk ukuran layar perangkat yang berbeda.
+
+## Breakpoints
+
+Sebelum membahas pokok materi soal *responsive design*, mari kita bahas terlebih dahulu konsep fundamentalnya, yaitu *breakpoints*. Pada penjelasan yang paling sederhana, *breakpoints* dalam *responsive design* adalah rentang ukuran layar yang dijadikan kondisi untuk menerapkan *style*. Misal, *breakpoint* untuk *desktop* bisa berkisar antara 1024px sampai 1280px.
+
+Tidak ada aturan baku dalah menetukan *breakpoints*, setiap UI *designer* biasanya memiliki aturannya sendiri atau mengikuti aturan umum. Begitu juga dengan *framework* CSS, biasanya mereka memiliki *breakpoints* yang berbeda, namun, tidak berbeda jauh.
+
+Sebagai contoh, berikut ini tabel *breakpoints* milik Bootstrap:
+
+<Image src="/antarmuka-dengan-tailwind-responsive-design/wy0E0DMd0GruodKQ2K2V3w.webp" alt="Tabel breakpoints milik Bootstrap" />
+
+Sementara di sisi lain, Tailwind memiliki *breakpoints* seperti ini:
+
+<Image src="/antarmuka-dengan-tailwind-responsive-design/m05BZ9bn9Qzf10-0EaEbeg.webp" alt="Tabel breakpoints milik Tailwind" />
+
+Kedua *framework* tersebut memiliki jumlah *breakpoints* yang sama, hanya saja ukuran layarnya yang berbeda. Ukuran layar pada *breakpoint* tidak melulu harus menggunakan rentang antara minimal dan maksimal, seperti dua contoh di atas, keduanya hanya mengatur minimal ukuran layar saja.
+
+## Mobile-first
+
+Seperti yang sudah pernah kita bahas sebelumnya bahwa Tailwind menerapkan prinsip *mobile-first,* ini berarti semua *class* secara bawaan akan diterapkan untuk semua *breakpoint* dan untuk mengubahnya secara kondisional maka dibutuhkan *prefix* tertentu*.*
+
+Sebagai contoh, di Tailwind, *class* `text-white` akan bekerja untuk semua ukuran layar (termasuk *mobile*). Sementara apabila kita hendak mengubah warna teks menjadi `text-red-500` pada layar *desktop*, kita perlu memberikan *prefix* `lg:` , menjadi `lg:text-red-500` . Itulah yang dimaksud dengan prinsip *mobile-first*.
+
+Kesalahpahaman mengenai konsep ini sering terjadi, misal pada contoh sebelumnya, seringkali orang menggunakan *class* `sm:text-white` untuk menarget layar dengan ukuran kecil (*mobile*), padahal `sm` merupakan *breakpoint* untuk ukuran layar dengan minimal *640px* . Ini berarti pendekatan tersebut tidak akan menarget ukuran layar yang lebih kecil dari *640px* .
+
+Dengan demikian, untuk menarget ukuran layar *mobile*, alih-alih menggunakan `sm:text-white` , gunakan `text-white` saja. Sementara untuk mengubahnya pada ukuran layar lain yang lebih besar, gunakan *prefix* seperti `lg:text-red-500` . Ini akan mengubah warna teks yang awalnya putih untuk ukuran layar lebih kecil, menjadi warna merah pada ukuran layar *desktop* dengan minimal lebar *1024px*.
+
+Sebuah *class* akan terus diterapkan pada *breakpoint* tertentu dan tetap diterapkan pada *breakpoint* lebih besar. Misal, *class* `md:text-white` akan menerapkan *class* `text-white` mulai dari *breakpoint* `md` dan tetap diterapkan pada *breakpoint* lebih besar sampai ada *class* lain yang mengubahnya, misal, `lg:text-red-500` .
+
+## Menarget Rentang Ukuran Layar
+
+Tailwind memungkinkan kita untuk menarget ukuran layar berdasarkan rentang tertentu. Sebagai contoh, kita hendak memberikan warna teks dengan `text-blue-500` untuk *breakpoint* `md` hingga `xl` , hal itu dapat dicapai dengan `md:max-xl:text-blue-500` . Ini akan membuat teks berwarna biru pada rentang *breakpoint* `md` hingga `xl` .

@@ -1,0 +1,62 @@
+import { Image } from '@/components/image';
+
+# Komponen Pertama
+
+Tailwind tidak memiliki pradesain komponen apapun, sehingga kita perlu membuatnya secara mandiri. Sekarang kita akan beralatih membuat sebuah komponen *button* dengan Tailwind untuk memperdalam pemahaman kita terhadap konsep *utility-first* pada Tailwind.
+
+## Membuat Button
+
+Hal pertama yang perlu kita pikirkan saat membangun komponen dengan Tailwind adalah visualnya. Apabila kita hendak membangun sebuah komponen *button,* kita perlu memiliki gambaran seperti apa visual dari *button* tersebut.
+
+Misal, kita hendak membuat *button* dengan visual seperti ini:
+
+<Image src="/antarmuka-dengan-tailwind-komponen-pertama/H55pvdkPjkQA8KkmDBGKpQ.webp" alt="Visual komponen button" />
+
+Secara dangkal, visual tersebut dapat dideskripsikan seperti ini:
+
+-   Memiliki warna latar belakang biru
+-   Memiliki elemen teks berwarna putih
+-   Memiliki *padding* secara vertikal dan horisontal
+-   Memiliki sudut yang agak bulat
+
+Deskripsi tersebut cukup sebagai dasar implementasi dengan Tailwind, namun, untuk implementasi yang *perfect-pixel*, kita butuh deskripsi yang lebih terperinci. Kita tahu visual tersebut memiliki latar belakang berwarna biru, namun, apa kode warnanya? Kita tahu visual tersebut memiliki *padding* secara vertikal dan horisontal, namun, berapa *pixel*? Begitu juga untuk deskripsi yang lain.
+
+Pada kasus nyata, deskripsi semacam itu dapat kita tanyakan pada UI *designer* yang merancang antarmuka tersebut, namun, apabila kita merancang antarmuka sendiri kita dapat langsung mengetahui deskripsi tersebut pada perangkat lunak yang digunakan.
+
+Untuk visual komponen *button* sebelumnya, memiliki deskripsi seperti ini:
+
+<Image src="/antarmuka-dengan-tailwind-komponen-pertama/QtrX_EykKdUG08fgWQPQDQ.webp" alt="Deskripsi dari visual komponen button" />
+
+Deskripsi tersebut membantu kita untuk melakukan implementasi visual komponen tersebut menjadi kode. Setelah memahami deskripsinya dengan jelas, kita dapat mencari representasi *utility-class* di Tailwind untuk setiap deskripsi visualnya. Misal, *class* `text-white` untuk mewarnai elemen teks berwarna putih. Lebih lengkapnya seperti ini:
+
+-   Warna latar belakang biru dapat diwakili dengan *class* `bg-[#0069ff]`
+-   Warna teks putih dapat diwakili dengan *class* `text-white`
+-   Radius sudut `12px` dapat diwakili dengan `rounded-xl`
+-   *Padding* horisontal `24px` dapat diwakili dengan `px-6`
+-   *Padding* vertikal `14px` dapat diwakili dengan `py-3`
+
+Saat kita sudah tahu semua *class-class* yang diperlukan, kita sudah dapat membangun visual untuk komponen *button* dengan Tailwind:
+
+```html
+<button class="bg-[#0069ff] text-white rounded-xl px-6 py-3">  
+  Button  
+</button>
+```
+
+Hasilnya akan sama persis seperti pada gambar sebelumnya:
+
+<Image src="/antarmuka-dengan-tailwind-komponen-pertama/O0ytD12PqfeQQMXh2U56KA.webp" alt="Hasil implementasi komponen button" />
+
+Mari kita perhatikan kembali kode untuk implementasi komponen *button* tersebut:
+
+```html
+<button class="bg-[#0069ff] text-white rounded-xl px-6 py-3">  
+  Button  
+</button>
+```
+
+Seperti yang dapat dilihat, terdapat *utility-class* `bg-[#0069ff]` . Di Tailwind, *class* tersebut dengan *arbitrary values*. Itu merupakan fitur baru dan dengan fitur tersebut kita dapat memberikan nilai *semaunya* pada suatu *class*. Dalam konteks ini, kita memberikan nilai `#0069ff` untuk *class* `bg-` . Kita juga dapat memberikan *arbitrary values* pada *class* lain, misal, `p-[29px]` untuk memberikan *padding* sebesar *29px*.
+
+Menggunakan *arbitrary values* di Tailwind dapat memudahkan kita untuk melakukan implementasi desain yang *perfect-pixel*, namun, di sisi lain seringkali dianggap *anti-pattern*. Pada banyak kasus, seperti warna, memang lebih baik ditulis dalam fail konfigurasi, alih-alih *arbitrary values*. Soal ini kita akan bahas pada bab terkait.
+
+Sampai sini kita sudah belajar membuat komponen *button* pertama kita dengan Tailwind. Pada dasarnya, proses implementasi desain dengan Tailwind sama saja seperti dengan *framework* yang lain atau bahkan tanpa *framework* apapun. Poinnya adalah kita harus paham deskripsi visual yang hendak kita implementasikan menjadi kode.

@@ -1,0 +1,84 @@
+# Dark Mode
+
+Hari ini mungkin kita sering mengunjungi sebuah web yang memiliki dua mode, yaitu *light mode* dan *dark mode*. Pada *light mode*, suatu web biasanya menggunakan warna-warna terang seperti putih dengan akses warna *brand* seperti biru. Sementara pada *dark mode*, biasanya menggunakan warna hitam dan ungu (ditambah efek *glowing* sedikit).
+
+Tailwind sendiri mendukung fitur *dark mode* melalui *modifier* secara bawaan. Tentu, ini akan memudahkan kita dalam merancang sebuah web yang memiliki desain untuk dua mode sekaligus.
+
+## Dark Mode
+
+Pada dasarnya setiap *class* Tailwind berlaku untuk *light mode* maupun *dark mode*, hanya saja Tailwind memiliki *modifier* khusus untuk menerapkan *style* secara spesifik untuk *dark mode*, yaitu `dark:` . Dengan memberikan *prefix* `dark:` pada suatu *class*, itu akan membuat *class* tersebut hanya akan diterapkan pada *dark mode* saja — *duh*.
+
+Sebagai contoh, *class* `text-slate-900` berlaku untuk kedua mode. Sementara apabila hendak mengubahnya menjadi `text-slate-100` pada *dark mode*, gunakan `dark:text-slate-100` .
+
+```html
+<p class="text-slate-900 dark:text-slate-100">Hello world</p>
+```
+
+Ini akan membuat teks menjadi berwarna `text-slate-900` pada *light mode* dan akan berubah menjadi `text-slate-100` pada *dark mode*.
+
+Kita juga dapat menyesuaikan warna latar elemen `body` sesuai mode:
+
+```html
+<body class="bg-gray-50 dark:bg-gray-900">  
+  <p class="text-slate-900 dark:text-slate-100">Hello world</p>  
+</body>
+```
+
+Kini warna latar elemen `body` akan berwarna `bg-gray-50` pada *light mode* dan berubah menjadi `bg-gray-900` pada *dark mode*.
+
+Secara bawaan, Tailwind mengandalkan `prefers-color-scheme` untuk menentukan antara *light mode* atau *dark mode*. Dalam kata lain, ini akan mendeteksi pengaturan pengguna pada sistem operasi atau *user-agent* (misal: *browser*).
+
+## Beralih Mode Secara Manual
+
+Tailwind memiliki opsi untuk beralih ke *dark mode* secara manual, alih-alih mendeteksi pengaturan sistem operasi secara otomatis. Hal ini dapat dicapai dengan mengubah konfigurasi `darkMode` di dalam fail *tailwind.config.js* menjadi `selector` :
+
+```js filename="tailwind.config.js"
+/** @type {import('tailwindcss').Config} */  
+module.exports = {  
+  darkMode: 'selector',  
+  ...  
+};
+```
+
+Dengan demikian, *dark mode* dapat diaktifkan dengan memberikan *class* `dark` pada elemen `html` :
+
+```html
+<html class="dark">  
+<body class="bg-gray-50 dark:bg-gray-900">  
+  <p class="text-slate-900 dark:text-slate-100">Hello world</p>  
+</body>  
+</html>
+```
+
+Tentu, kita dapat melibatkan JavaScript untuk menambahkan atau menghapus *class* `dark` tersebut. Sebagai contoh:
+
+```html
+<button onclick="document.documentElement.classList.toggle('dark')">  
+  Toggle Mode  
+</button>
+```
+
+Ketika tombol tersebut diklik, ia akan menambah atau menghapus *class* `dark` pada elemen `<html>` .
+
+## Mengubah Selector
+
+Kadangkala terdapat situasi yang mengharuskan kita untuk menggunakan *selector* lain, alih-alih menggunakan *class* `dark` untuk mengaktifkan *dark mode*. Untuk kasus semacam ini, gunakan nilai berikut pada opsi `darkMode` di fail konfigurasi *tailwind.config.js*:
+
+```js filename="tailwind.config.js"
+/** @type {import('tailwindcss').Config} */  
+module.exports = {  
+  darkMode: ['selector', '[data-theme="dark"]'],  
+}
+```
+
+Kini untuk mengaktifkan *dark mode*, gunakan `data-theme="dark”` pada elemen `html` , alih-alih *class* `dark` :
+
+```html
+<html data-theme="dark">  
+<body class="bg-gray-50 dark:bg-gray-900">  
+  <p class="text-slate-900 dark:text-slate-100">Hello world</p>  
+</body>  
+</html>
+```
+
+Sebagai informasi, Tailwind menerima nilai lain yang dapat dijadikan sebagai *selector* pada opsi `darkMode`, misal, `['selector', '.gelap']` . Ini berarti untuk mengaktifkan *dark mode*, perlu menggunakan *class* `.gelap` .
