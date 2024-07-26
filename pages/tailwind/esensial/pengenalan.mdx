@@ -1,0 +1,164 @@
+# Pengenalan
+
+Bila *framework* pada umumnya yang kita jumpai terdiri dari banyak pradesain komponen, di Tailwind ini kita tidak akan menemukan pradesain komponen seperti *button*, *card*, *alert*, *carousel* atau yang lainnya. Karena Tailwind bukan merupakan sebuah *UI kit*, melainkan sebuah *utility-first framework* untuk membangun antarmuka kustom dengan cepat.
+
+Sederhananya, di dalam Tailwind terdapat banyak *class-class* kecil yang merepresentasikan CSS *declaration*. Sehingga, ketika kita ingin membuat sebuah komponen, maka kita perlu menggunakan beberapa *class-class kecil* tersebut hingga tercipta komponen yang kita maksud. Misal, kita ingin membuat sebuah komponen *button*. Pada *framework* Bootstrap atau *framework* lain yang memiliki pra-desain komponen, kurang lebih kita melakukannya seperti ini:
+
+```tsx
+<button class="btn">Button</button>  
+<button class="button">Button</button>
+```
+
+Sedangkan, pada Tailwind kita perlu melakukannya seperti ini:
+
+```tsx
+<button class="bg-blue-500 text-white font-bold py-2 px-4 rounded">  
+  Button  
+</button>
+```
+
+Sekumpulan *class-class* di atas mewakili *property* dan *value* (CSS *declaration*) sendiri, diantaranya:
+
+-   `bg-blue-500` merepresentasikan deklarasi `background-color: #4299e1;`
+-   `text-white` merepresentasikan deklarasi`color: #fff;`
+-   `font-bold` merepresentasikan deklarasi `font-weight: 700;`
+-   `py-2` maksudnya *padding-y* atau *padding-vertical* merepresentasikan deklarasi `padding-bottom: 0.5rem;` dan `padding-bottom: 0.5rem;`
+-   `px-4` maksudnya *padding-x* atau *padding-horizontal* merepresentasikan deklarasi `padding-left: 1rem;` dan `padding-right: 1rem;`
+-   `rounded` merepresentasikan `border-radius: .25rem;`
+
+Sehingga dari semua *utility class* yang digunakan di atas, ketika di-*compute* oleh *browser* akan menghasilkan sebuah visual *button* yang kita inginkan. *Browser* akan membaca semua *utility class* yang digunakan seperti ini:
+
+```tsx
+background-color: #4299e1;  
+color: #fff;  
+font-weight: 700;  
+padding-top: 0.5rem;  
+padding-bottom: 0.5rem;  
+padding-left: 1rem;  
+padding-right: 1rem;  
+border-radius: .25rem;
+```
+
+***Kelihatannya ribet, ya?***
+
+Tapi, dengan seperti ini, UI yang kita buat akan lebih unik kendati menggunakan *framework* yang sama. Berbeda halnya bila menggunakan *UI kit*, UI yang dibuat akan cenderung sama, karena di dalam *UI kit* sudah tersedia pra-desain komponen, kendati *style*-nya dapat di-*override*, tetapi hasilnya mungkin tidak berbeda jauh.
+
+Tailwind tidak dapat dibandingkan dengan *framework* *UI kit* — seperti Bootstrap, Bulma atau Spectre — karena pada dasarnya, mereka memiliki konsep yang berbeda. Bila pada *framework UI kit* kita perlu membuat beberapa *custom class* untuk mengkostumisasi pra-desain komponen yang digunakan, sedangkan di Tailwind kita akan dapat mereduksi penggunaan *custom class*. Karena, untuk membuat komponen kita perlu membuatnya dari awal, dengan cara menyusun *utility class*.
+
+## Mirip Seperti Inline Style
+
+Bila kamu menyadari bahwa Tailwind ini mirip seperti menulis CSS dengan teknik “*inline style*“, berarti kamu sudah cukup paham dengan konsep Tailwind. Secara teknik memang sama seperti kita menulis *inline style* pada sebuah elemen. Tapi, perlu diingat bila kita menulisnya dengan teknik *inline style*, maka kita akan menulisnya seperti ini:
+
+```tsx
+<button style="background-color: #4299e1; color: #fff;  
+font-weight: 700; padding-top: 0.5rem; padding-bottom:  
+0.5rem; padding-left: 1rem; padding-right: 1rem; borderradius: .25rem;">  
+Aku Adalah Button  
+</button>
+```
+
+Sedangkan bila dengan *utility class*, kita melakukannya seperti ini:
+
+```tsx
+<button class="bg-blue-500 text-white font-bold py-2 px-4 rounded">  
+  Button  
+</button>
+```
+
+Bila menggunakan *inline style*, kita benar benar menulis CSS *declaration* secara langsung ke elemen tersebut. Sedangkan pada Tailwind, kita menulis *class* atau meng-*assign utility class* ke elemen tersebut. Sudah terlihat bedanya, *kan*?
+
+Dengan seperti ini, desain kita akan lebih konsisten karena kita menggunakan *class* bukan menulis CSS *declaration* secara langsung, sehingga elemen lain yang menggunakan *class* yang sama akan memiliki visual yang sama.
+
+Perlu diingat, Tailwind juga mendukung *responsive design* dan *pseudo-classes*. Pernah tidak terpikir oleh kamu untuk memberikan *style* yang berbeda ketika elemen tersebut dalam *state* tertentu, ketika di-*hover* misalnya. Dengan Tailwind kita dapat melakukan ini menggunakan *state variant* atau *modifier*:
+
+```tsx
+<span class="text-indigo-500 hover:text-black">  
+  Saya Text  
+</span>
+```
+
+Elemen di atas hanyalah sebuah teks, teks tersebut memiliki warna dalam keadaan normal. Sedangkan ketika *cusror* menyentuh elemen teks tersebut, maka warnanya berubah menjadi `text-black`.
+
+Jika dalam CSS murni, kita menuliskannya seperti ini:
+
+```tsx
+<span>Saya Text</span>  
+  
+<style>  
+span {  
+  color: indigo;  
+}  
+  
+span:hover {  
+  color: black;  
+}  
+</style>
+```
+
+Jadi, di Tailwind kita hanya perlu menambahkan *prefix* `hover:` sebelum *utility class* yang kita gunakan. Selain warna teks, kita juga dapat menggunakan yang lain, misal: `hover:bg-indigo-500`, `hover:opacity-50`, dan yang lainnya.
+
+Selain `hover:` , kita juga dapat menggunakan *pseudo-classes* yang lain:
+
+-   `focus:`
+-   `active:`
+-   `disabled:`
+-   `visited:`
+-   `active:`
+-   `first:`
+-   `last:`
+-   `odd:`
+-   `even:`
+-   `group-hover:`
+-   `group-focus:`
+-   `focus-within:`
+-   *masih banyak lagi!*
+
+Seperti yang disebutkan sebelumnya, Tailwind juga sudah memiliki fitur *responsive design*. Cara menggunakan *responsive design* di Tailwind juga menggunakan *prefix,* sebab termasuk ke dalam *modifier*. Namun, nama *prefix*-nya yang berbeda.
+
+Secara bawaan, Tailwind memiliki 5 *breakpoints*:
+
+-   `sm:` mewakili`@media (min-width: 640px) { … }`
+-   `md:` mewakili `@media (min-width: 768px) { … }`
+-   `lg:` mewakili `@media (min-width: 1024px) { … }`
+-   `xl:` mewakili `@media (min-width: 1280px) { … }`
+-   `2xl:` mewakili `@media (min-width: 1536px) { ... }`
+
+Misal, kita ingin membuat elemen teks berwarna `text-black` untuk semua perangkat, namun pada parangkat dengan lebar `>= 1024` akan berubah warnanya menjadi `text-blue-500` . Maka menuliskannya seperti ini:
+
+```tsx
+<span class="text-black lg:text-blue-500">Saya teks</span>
+```
+
+Ya, menulis *responsive design* di Tailwind formatnya seperti ini:
+
+```tsx
+{breakpoint}:{utility-class}
+```
+
+Sebagai contoh:
+
+```tsx
+md:bg-blue-500  
+sm:opacity-50
+```
+
+Kita akan membahas lebih lengkap terkait *responsive design* pada bab yang lain.
+
+## TailwindCSS bukan satu-satunya utility-first framework
+
+Tailwind dirilis pertama kali pada tahun 2017, tepatnya tanggal 2 November Oleh Adam Wathan. Sebelum itu, ada beberapa *framework* yang memiliki konsep serupa seperti Tailwind, beberapa diantaranya:
+
+-   Shed.CSS ([https://tedconf.github.io/shed-css](https://tedconf.github.io/shed-css))
+-   Tachyons ([http://tachyons.io](http://tachyons.io))
+-   Beard ([http://buildwithbeard.com](http://buildwithbeard.com))
+-   Turret ([https://turretcss.com](https://turretcss.com))
+
+Beberapa *framework* di atas lahir kurang-lebih 10–11 tahun kebelakang. Jadi, sebelum adanya Tailwind, konsep *utility-first* *framework* sudah pernah diterapkan. Dalam kata lain, Tailwind bukan satu-satunya *utility-first framework*.
+
+Selain framework di atas, Bootstrap juga memiliki utility classes yang baru saja ditambahkan pada versi 4. Sebelumnya juga sudah ditambahkan, tapi, saat versi 3 diberi nama helper classes.
+
+Kendati belum lama, Tailwind begitu menarik perhatian, karena kurang dari 2 tahun sudah mendapat 10,000+ *star* di GitHub dan sekarang sudah mencapai 80,000+ *star*!
+
+Kita tidak dapat menyimpulkan bahwa Tailwind lebih bagus dari *utility-first* *framework* yang lain, karena untuk menyimpulkan itu, kita perlu menguji beberapa *framework* serupa yang lainnya. Belum tentu juga satu *framework* cocok untuk segala kasus.
+
+Dengan demikian, bila kita mencari *framework* yang terdiri dari sekumpulan pradesain komponen, mungkin, Tailwind *tidak cocok* untuk kita. Namun, bila kita ingin membangun antarmuka yang memiliki identitas dan unik, *mungkin* Tailwind cocok untuk kita.

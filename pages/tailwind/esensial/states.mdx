@@ -1,0 +1,111 @@
+# States
+
+Secara mendasar, CSS memiliki kemampuan untuk memberikan *style* pada *state* yang berbeda melalui *pseudo-classes*. Hanya saja kemampuan tersebut tidak dapat dilakukan pada metode *inline style*. Di sisi lain, Tailwind memiliki kemampuan yang sama seperti CSS murni melalui fitur *states* atau *modifier*, ini yang membedakan antara Tailwind dengan *inline style*.
+
+## Pseudo-classes
+
+Fitur *states* pada Tailwind dapat diimplementasikan dengan memberikan sebuah *prefix* sebelum *utility-class*. Sebagai contoh, untuk memberikan *utility-class* `bg-blue-600` pada saat *hover*, tambahkan `hover:` pada awal *class*, sehingga menjadi `hover:bg-blue-600` .
+
+Sebagai contoh yang paling dasar, mari perhatikan kembali kode untuk komponen *button* sebelumnya:
+
+```html
+<button class="bg-[#0069ff] text-white rounded-xl px-6 py-3">  
+  Button  
+</button>
+```
+
+Anggaplah *button* tersebut berubah warna latarnya menjadi `bg-blue-700` saat *hover*:
+
+```html
+<button class="bg-[#0069ff] text-white rounded-xl px-6 py-3 hover:bg-blue-700">  
+  Button  
+</button>
+```
+
+Sebagai pemanis, tambahkan *class* `transition-all` untuk mendapatkan efek transisi yang lebih halus saat warna latar berubah.
+
+Bukan hanya *hover*, Tailwind juga mendukung *pseudo-class* yang lain seperti `first:` atau `last:` untuk memberikan *style* pada elemen anak pertama dan anak terakhir. Bahkan Tailwind juga memiliki *modifier* lebih canggih untuk memberikan *style* pada *direct children* melalui `*:` . Sebagai contoh:
+
+```html
+<ul class="*:p-4 *:bg-blue-500 *:text-white *:rounded-full mt-4">  
+  <li>Apel</li>  
+  <li>Jeruk</li>  
+  <li>Semangka</li>  
+  <li>Kursi</li>  
+</ul>
+```
+
+Pada kode di atas, setiap *utility-class* yang diberi *prefix* `*:` akan diterapkan pada elemen *direct children*, dalam hal ini adalah semua elemen `<li>` di dalam elemen `<ul>` tersebut.
+
+## Pseudo-elements
+
+Fitur *modifier* pada Tailwind tidak hanya untuk *pseudo-classes* saja, itu juga dapat digunakan untuk menerapkan *style* pada *pseudo-elements*, seperti `before:` , `after:` , atau bahkan `placeholder:` .
+
+Sebagai contoh paling dasar, anggaplah kita hendak memberikan tanda “*” pada label *input* sebagai indikator bahwa *input* tersebut *required*:
+
+```html
+<label for="name" class="after:content-['*'] after:ml-0.5 after:text-red-500">  
+  Name  
+</label>  
+<input type="text" id="name">
+```
+
+Kode tersebut akan memberikan tanda “*” berwarna merah pada label *name*.
+
+Tailwind juga memungkinkan kita untuk menerapkan *style* pada *pseudo-elements placeholder*:
+
+```html
+<input type="text" id="name" placeholder="Your name" class="placeholder:text-gray-600">
+```
+
+Kini elemen *input* tersebut akan memiliki *placeholder* dengan warna `text-gray-600` atau `#4b5563` .
+
+## Media Queries
+
+Fitur *media queries* pada CSS umumnya digunakan untuk kebutuhan *responsive web design*, pemeriksaan fitur di *browser*, atau bisa juga untuk kebutuhan aksesibilitas. Di sisi lain, Tailwind juga mendukung fitur-fitur tersebut yang dapat diterapkan melalui *prefix* seperti `lg:` , `dark:` , `motion-reduce:` atau `print:` .
+
+Dari beberapa *modifier media queries* yang tersedia, *responsive breakpoints* yang umumnya sering digunakan. *Modifier* tersebut dapat membantu kita untuk merancang antarmuka yang *responsive.* Sebagai contoh:
+
+```html
+<p class="text-red-500 lg:text-blue-500">Hello world</p>
+```
+
+Elemen teks tersebut akan berwarna `text-red-500` dan pada ukuran layar dengan minimal lebar 1024px, warnanya berubah menjadi `text-blue-500` . Tailwind menggunakan prinsip *mobile-first.* Ini berarti untuk menarget ukuran layar paling kecil, tidak perlu *prefix* apapun.
+
+Selain *responsive modifier*, *modifier* `dark:` juga sering digunakan. *Modifier* ini memungkinkan kita untuk menerapkan *style* untuk *dark mode*. Sebagai contoh:
+
+```html
+<p class="text-gray-600 dark:text-gray-400">Hello world</p>
+```
+
+Elemen teks tersebut akan berwarna `text-gray-600` pada saat *light mode* dan `text-gray-400` pada saat *dark mode*. Seperti yang dapat dilihat, hanya *modifier* `dark:` dibutuhkan untuk menerapkan *style* pada *dark mode*, sedangkan tidak diperlukan awalan apapun untuk *light mode*.
+
+Kita juga akan membahas kedua konsep menarik ini lebih terperinci pada bab-bab terkait.
+
+## Attributes
+
+Tailwind juga memungkinkan kita untuk menerapkan *style* berdasarkan *attribute* pada elemen, seperti berdasarkan *aria, data, right-to-left,* atau *attribute* `open`.
+
+Misal, sebagai contoh yang dibuat-buat, kita hendak menerapkan *style* berdasarkan nilai *attribute* seperti ini:
+
+```html
+<p data-size="large" class="data-[size=large]:text-lg">  
+  Hello world  
+</p>
+```
+
+Elemen teks tersebut akan berukuran `text-lg` ketika nilai *attribute* `data-size` adalah `large` .
+
+Pada kasus nyata, fitur ini sangat bekerja dengan baik dengan *library* JavaScript seperti Radix, sebab Radix memakai *attribute data* sebagai indikator bahwa suatu komponen dalam keadaan terbuka atau tertutup. Sebagai contoh komponen *accordion*:
+
+```jsx
+<Accordion.Content  
+  className="data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp]"  
+>  
+  Hello World  
+</Accordion.Content>
+```
+
+Sangat menarik melihat Tailwind memahami kebutuhan kita dengan menyediakan beberapa *modifier* yang sangat berguna untuk kasus nyata.
+
+Sebenarnya, Tailwind memiliki banyak sekali *modifier* yang lebih canggih lagi, namun, yang dibahas di sini adalah yang umumnya digunakan saja. Beberapa yang lain kita dapat pelajari pada bab-bab praktik.

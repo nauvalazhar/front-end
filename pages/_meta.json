@@ -17,6 +17,11 @@
     "display": "hidden",
     "title": "Vim Esensial"
   },
+  "tailwind": {
+    "type": "page",
+    "display": "hidden",
+    "title": "Tailwind Esensial"
+  },
   "pelajaran": {
     "title": "Pelajaran",
     "type": "menu",
@@ -28,6 +33,10 @@
       "nextjs": {
         "title": "Next.js Esensial",
         "href": "/nextjs"
+      },
+      "tailwind": {
+        "title": "Tailwind Esensial",
+        "href": "/tailwind"
       }
     }
   },

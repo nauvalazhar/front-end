@@ -1,0 +1,120 @@
+# Instalasi
+
+Terdapat beberapa cara untuk menginstal Tailwind ke dalam proyek web sesuai dengan *framework* yang kita gunakan. Namun, anggap saja sekarang kita menggunakan HTML polos tanpa menggunakan *framework* apapun. Untuk menginstalnya, kita dapat menggunakan Tailwind CLI, PostCSS, atau melalui CDN. Perbedaannya sebagai berikut:
+
+-   **Tailwind CLI**: sebuah program *standalone* yang memungkinkan kita untuk menggunakan Tailwind tanpa perlu menginstal Node.js.
+-   **PostCSS**: kita dapat menginstal Tailwind sebagai *plugin* PostCSS dan mengintegrasikannya dengan alat-alat seperti Webpack, misalnya.
+-   **CDN**: bila kita hendak melakukan *prototyping* atau sekadar mencoba-coba Tailwind saja, CDN cocok untuk digunakan.
+
+Kita dapat memilih satu dari ketiga opsi tersebut sesuai dengan kebutuhan. Untuk materi belajar ini, kita akan menggunakan Tailwind CLI. Sebab itu merupakan opsi yang paling mudah dan cepat untuk memulai menggunakan Tailwind.
+
+## Syarat-Syarat
+
+Sebelum menginstal Tailwind, kita memerlukan Node.js untuk membuatnya berjalan. Dokumentasi Tailwind tidak memberikan informasi terkait versi spesifiknya, namun, saya menggunakan Node.js versi 18.
+
+## Instalasi
+
+Pertama-tama, mari buat sebuah direktori baru kosong dengan nama, misal, *tutorial-tailwind*:
+
+```bash filename="terminal"
+mkdir tutorial-tailwind
+```
+
+Sekarang kita dapat masuk ke direktori tersebut:
+
+```bash filename="terminal"
+cd tutorial-tailwind
+```
+
+Saatnya menginisiasi npm di dalam direktori tersebut:
+
+```bash filename="terminal"
+npm init -y
+```
+
+Kita sudah dapat menginstal beberapa *dependencies* yang dibutuhkan Tailwind:
+
+```bash filename="terminal"
+npm install -D tailwindcss
+```
+
+Apabila semuanya sudah selesai terinstal, saatnya membuat fail konfigurasi Tailwind:
+
+```bash filename="terminal"
+npx tailwindcss init
+```
+
+Perintah tersebut akan membuat sebuah fail dengan nama *tailwind.config.js* yang merupakan fail konfigurasi Tailwind. Buka fail tersebut untuk melakukan suatu penyesuaian konfigurasi. Ubah bagian `content` menjadi seperti ini:
+
+```js filename="tailwind.config.js" {3}
+/** @type {import('tailwindcss').Config} */  
+module.exports = {  
+  content: ['./dist/**/*.{html}'],  
+  theme: {  
+    extend: {},  
+  },  
+  plugins: [],  
+};
+```
+
+Konfigurasi tersebut dibutuhkan agar *compiler* Tailwind dapat memindai semua fail dengan ekstensi *.html* di dalam direktori *dist* untuk mengetahui *class-class* Tailwind apa yang kita gunakan. Dengan demikian, *compiler* Tailwind dapat menggenerasi *class-class* tersebut.
+
+Berikutnya buat sebuah direktori baru dengan nama *src* dan sebuah fail CSS baru dengan nama *style.css* di dalamnya:
+
+```less filename="src/style.css"
+@tailwind base;  
+@tailwind components;  
+@tailwind utilities;
+```
+
+Ketiga baris tersebut merupakan sintaksis Tailwind untuk mengimpor masing-masing fail:
+
+-   **base**: merupakan fail *preflight* atau kita mungkin lebih mengenalnya dengan istilah seperti Normalize atau *reset* CSS.
+-   **components**: fail ini berisi *class-class component* yang biasanya berasal dari *plugin-plugin* Tailwind yang kita gunakan.
+-   **utilities**: fail ini nantinya berisi *class-class* Tailwind yang kita gunakan, seperti `m-0` , `bg-blue-500` , atau `px-10` .
+
+Kini kita dapat menjalankan perintah Tailwind CLI untuk menggenerasi sebuah fail CSS baru yang nantinya dapat kita impor ke dalam fail HTML:
+
+```bash filename="terminal"
+npx tailwindcss -i ./src/style.css -o ./dist/style.css --watch
+```
+
+Perintah tersebut akan menggenerasi sebuah fail baru dengan nama *style.css* di dalam sebuah direktori baru bernama *dist*. Perintah tersebut juga akan terus berjalan, ini karena kita menambahkan *flag* `--watch` yang membuat Tailwind CLI akan terus menggenerasi fail *style.css* versi baru di ke dalam direktori *dist* setiap kali ada perubahan terjadi.
+
+Sekarang saatnya kita membuat sebuah fail HTML baru di dalam direktori *dist* dengan nama *index.html*:
+
+```html filename="dist/index.html"
+<!doctype html>  
+<html>  
+<head>  
+  <meta charset="UTF-8">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+  <link href="/style.css" rel="stylesheet">  
+</head>  
+<body>  
+  <h1 class="text-4xl font-bold">  
+    Hello world!  
+  </h1>  
+</body>  
+</html>
+```
+
+Karena kita tidak menggunakan *build tools* apapun, kita dapat membuka fail HTML tersbut di *browser* dengan menggunakan alat seperti *lite-server.* Pertama, kita perlu membuat sebuah fail konfigurasi *server*-nya dahulu seperti ini:
+
+```json filename="server.json"
+{  
+  "port": 8000,  
+  "files": ["./src/**/*.{html,htm,css,js}", "./dist/**/*.{html,htm,css,js}"],  
+  "server": {"baseDir": ["./dist"]}  
+}
+```
+
+Kini kita dapat menjalankan *lite-server* pada sesi terminal baru dengan perintah:
+
+```bash filename="terminal"
+npx lite-server -c server.json
+```
+
+Perintah tersebut akan membuka alamat [*http://localhost:8000*](http://localhost:8000) di *browser* secara otomatis. Cobalah buat perubahan pada fail *dist/index.html,* itu akan membuat *browser* me-*refresh* alamat [*http://localhost:8000*](http://localhost:8000) secara otomatis!
+
+Sampai sejauh ini kita sudah berhasil menyiapkan lingkungan sebagai wadah untuk kita belajar Tailwind lebih jauh lagi.
