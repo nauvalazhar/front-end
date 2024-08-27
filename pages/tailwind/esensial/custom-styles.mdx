@@ -1,0 +1,99 @@
+# Custom Styles
+
+Sebenarnya, secara tidak langsung kita sudah membahas soal *custom style* saat hendak menambahkan *class* baru dengan `@apply` . Namun, sekarang kita akan membahasnya lebih khusus.
+
+Secara mendasar, untuk menambahkan *style baru* atau *custom style* pada Tailwind hanya perlu menambahkannya di dalam fail CSS, seperti yang sudah dilakukan sebelumnya. Cara tersebut akan bekerja dengan baik dan tidak ada masalah.
+
+Untuk mengelompokannya dengan lebih rapih dalam hal struktur dan *specificity*, Tailwind menawarkan pendekatan lain, yaitu dengan menggunakan `@layer` :
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .button {
+    /* ... */
+  }
+}
+```
+
+Dengan demikian, *class* yang ditambahkan ke dalam *layer* akan direlokasi ke *direvtive* `@tailwind` yang sesuai. Setiap *class* yang berada di dalam `@layer` hanya akan digenerasi ke dalam fail CSS akhir apabila *class* tersebut digunakan di dalam HTML (ini sama seperti *utility class* Tailwind umumnya).
+
+Selain itu, pada contoh di atas, komponen dengan *class* `.button` masih dapat ditimpa oleh *utility class* lain, seperti ini:
+
+```html
+<button class="button bg-yellow-500">Button</button>
+```
+
+Hal ini dikarenakan *utility class* yang berada di `@layer` *utilities* lebih diprioritaskan.
+
+Secara fundamental, Tailwind memiliki tiga *layer* yang sah:
+
+## Base Layer
+
+Semua aturan-aturan *default* untuk setiap elemen HTML berada di dalam *layer* ini. Kita mungkin lebih mengenalnya dengan istilah *normalize* atau *reset*, sedangkan Tailwind menggunakan istilah *preflight* atau *base*. Namun, faktanya, aturan-aturan bawaan yang digunakan oleh Tailwind berbasis dari [*modern-normalize*](https://github.com/sindresorhus/modern-normalize), hanya saja disesuaikan lagi.
+
+Sebagai contoh, kita hendak memberikan setiap elemen `a` berwarna biru dan *underline*:
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  a {
+    @apply text-blue-500 underline;
+  }
+}
+```
+
+Fungsi `theme` dapat digunakan untuk mereferensikan nilai pada fail konfigurasi, misal, `background-color: theme(colors.blue.500);` .
+
+## Components Layer
+
+Bagian *layer* ini berguna ketika kita hendak menambahkan *class* untuk komponen atau *class* yang sekiranya kita masih ingin menimpanya dengan *utility class*. Seperti pada contoh awal bab ini, *class* seperti komponen *button* dapat ditambahkan di dalam *layer* ini, sebab kita ingin *utility class* masih dapat mengubah, misal, warnanya.
+
+Pada contoh di bab sebelumnya, kita dapat menaruh komponen *button* di dalam *layer components* seperti ini:
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .button {
+    @apply text-white rounded-xl px-6 py-3;
+  }
+
+  .button-brand {
+    @apply bg-blue-500;
+  }
+
+  .button-danger {
+    @apply bg-red-500;
+  }
+}
+```
+
+Dengan demikian, *class* tersebut masih dapat ditimpa dengan *utility class* seperti `bg-yellow-500` .
+
+## Utilities Layer
+
+Seperti namanya, *layer* ini dapat kita taruh *utility class custom* yang hendak kita tambahkan, misal:
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@tailwind utilities {
+  .padding-23px {
+    padding: 23px;
+  }
+}
+```
+
+Tentu, itu hanya contoh yang dibuat-buat. Kita dapat menambahkan *utility class* apapun ke dalamnya.
+
+Setiap *class* yang ditambahkan dengan `@layer` akan dapat digunakan bersamaan dengan *modifier* seperti `hover:` . Pada contoh di atas, berarti kita dapat menggunakan *class* seperti `hover:padding-23px` atau bahkan `hover:button-danger` .
