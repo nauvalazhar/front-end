@@ -1,0 +1,135 @@
+# Reusing Styles
+
+Komponen yang dibangun dengan Tailwind sudah pasti terdiri dari beberapa *utility class*. Banyaknya *utility class* bergantung pada seberapa kompleks visual dari komponen tersebut. Apabila kita hendak menggunakan komponen yang sama di beberapa lokasi yang berbeda, pertanyaan yang sering muncul adalah “apakah kita menduplikasi komponen beserta semua *utility class* di dalamnya?”.
+
+Tailwind, tentu saja, menawarkan beberapa pendekatan untuk masalah ini. Pendekatan yang paling umum adalah dengan mengabstrak komponen menjadi komponen yang dapat digunakan kembali (*reusable components*). Pendekatan ini sangat cocok apabila kita menggunakan *library* seperti React atau *framework* seperti Laravel yang keduanya mendukung prinsip *composition*.
+
+Namun, apabila kita bekerja menggunakan alat lain yang tidak mendukung prinsip tersebut, atau bahkan menggunakan HTML standar saja, Tailwind juga menawarkan pendekatan lain dan tentu saja pendekatan tersebut membutuhkan sedikit pengorbanan.
+
+## Reusable Components
+
+Pada pengembangan web modern, sudah sangat umum para pengembang menggunakan *library* seperti React atau Vue yang memiliki prinsip *composition*. Dengan prinsip tersebut, berarti pengembang dapat membuat komponen-komponen yang nantinya dapat digunakan kembali. Contoh komponen yang paling umum adalah *button*. Komponen biasanya digunakan di banyak tempat, namun, memiliki visual yang berbeda pada setiap tempatnya.
+
+Sekarang, anggap saja kita hendak membuat sebuah *button* dengan Tailwind:
+
+```html
+<button class="bg-blue-500 text-white rounded-xl px-6 py-3">
+  Button
+</button>
+```
+
+Visual *button* tersebut memiliki warna latar belakang biru. Untuk membuat varian lain, misal, *danger*, kita dapat menggunakan warna merah:
+
+```html
+<button class="bg-red-500 text-white rounded-xl px-6 py-3">
+  Button
+</button>
+```
+
+Kita sudah memiliki satu komponen *button* dengan dua varian. Saatnya kita mengabstrasksi komponen tersebut menjadi *reusable components* dengan, misal, React:
+
+```tsx
+export function Button({ variant = 'brand' }) {
+  const variants = {
+    brand: 'bg-blue-500',
+    danger: 'bg-red-500',
+  };
+
+  const variantClass = variants[variant];
+
+  return (
+    <button class={`${variantClass} text-white rounded-xl px-6 py-3`}>
+      Button
+    </button>
+  );
+}
+```
+
+Kini, komponen tersebut dapat digunakan seperti ini:
+
+```tsx
+<Button variant="brand">Button Variant Brand</Button>
+<Button variant="danger">Button Variant Danger</Button>
+```
+
+Dengan seperti ini, tidak ada kode yang diduplikasi untuk setiap kali komponen *button* digunakan di beberapa tempat yang berbeda. Untuk *library* atau *framework* yang mirip seperti React, pendekatannya sama saja, yang berbeda hanyalah sintaksisnya.
+
+Sayangnya, pendekatan ini hanya dapat digunakan untuk *library* atau *framework* yang mendukung *composition* saja. Apabila kita menggunakan alat-alat yang tidak mendukung *composition*, kita perlu pendekatan yang lain. Untuk itu, pendekatan kedua dapat digunakan.
+
+## Menggunakan @apply
+
+Pendekatan ini lebih universal, sebab bukan merupakan fitur dari *framework* atau *library* secara spesifik. Alih-alih, menggunakan fail CSS untuk membuatnya bekerja.
+
+Mari lihat kembali kode komponen *button* kita sebelumnya:
+
+```tsx
+<button class="bg-blue-500 text-white rounded-xl px-6 py-3">
+  Button
+</button>
+```
+
+Apabila menggunakan HTML standar, ketika hendak menggunakan komponen tersebut di tempat lain, artinya kita perlu menduplikasi keseluruhan kode tersebut, termasuk dengan *utility class* di dalamnya. Masalahnya, ketika visual dari komponen tersebut hendak diubah, misal, mengubah warna atau *padding*, ini berarti perubahan tersebut harus dilakukan di beberapa tempat berbeda.
+
+Di sinilah *directive* `@apply` berperan. Dengan pendekatan ini, kita dapat membuatnya menjadi sebuah *rule* CSS reguler:
+
+```css
+.button {
+  @apply bg-blue-500 text-white rounded-xl px-6 py-3;
+}
+```
+
+Dengan demikian, kita hanya perlu menggunakan *class* tunggal `.button` untuk menerapkan visual komponen *button*:
+
+```html
+<button class="button">Button</button>
+```
+
+Sedangkan untuk dua varian yang lain, kita dapat menggunakan struktur CSS seperti berikut:
+
+```css
+.button {
+  @apply text-white rounded-xl px-6 py-3;
+}
+
+.button-brand {
+  @apply bg-blue-500;
+}
+
+.button-danger {
+  @apply bg-red-500;
+}
+```
+
+Kini, kita dapat menggunakannya seperti berikut:
+
+```html
+<button class="button button-brand">Button Variant Brand</button>
+<button class="button button-danger">Button Variant Danger</button>
+```
+
+Sementara pendekatan ini dapat diterapkan secara universal, namun, terdapat *cost* yang perlu kita bayar, yaitu ukuran fail CSS lebih besar. Sebab, apabila kita menggunakan *class* `bg-blue-500` di tempat lain, dan kita menggunakannya juga di dalam `@apply` , artinya Tailwind akan menggenerasi dua hal:
+
+1.  *Rule* untuk `.bg-blue-500`
+2.  Deklarasi dari `.bg-blue-500` untuk digunakan di dalam `@apply`
+
+Gambarannya kira-kira seperti ini:
+
+```css
+/* file CSS yang digenerasi oleh Tailwind */
+
+...
+
+.bg-blue-500 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(59 130 246 / var(--tw-bg-opacity));
+}
+
+.button-brand {
+    --tw-bg-opacity: 1;
+    background-color: rgb(59 130 246 / var(--tw-bg-opacity));
+}
+```
+
+Tentu, ini hanya contoh kecil saja, namun, ini berarti setiap *utility class* yang digunakan di dalam `@apply` akan digenerasi secara terpisah. Semakin banyak *utility class* yang digunakan, semakin besar juga ukuran fail CSS yang akan digenerasi oleh Tailwind.
+
+Ini berbeda dengan kita menggunakannya dalam atribut *class*, tidak peduli seberapa banyak suatu *utility class* digunakan, Tailwind hanya akan menggenerasinya sekali saja. Oleh karena itu, mungkin saja Tailwind tidak akan menjadi solusi dalam beberapa kasus tertentu.

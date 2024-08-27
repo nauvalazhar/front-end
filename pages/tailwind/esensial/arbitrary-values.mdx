@@ -1,0 +1,91 @@
+# Arbitrary Values
+
+Tailwind memiliki banyak *utilities class* secara bawaan, namun, seringkali terdapat kasus yang mengharuskan kita membuat suatu *class* baru. Hal ini dapat diselesaikan dengan membuat *class* CSS reguler baru sesuai kebutuhan kita. Sebagai contoh:
+
+```css
+.padding-23px {
+  padding: 23px;
+}
+```
+
+Tentu, contohnya bisa lebih kreatif dari ini, tapi, poinnya tetap sampai.
+
+Tailwind sendiri memiliki beberapa opsi untuk menambahkan *style custom* seperti contoh di atas: melalui fail CSS, melalui fail konfigurasi, atau dengan *arbitrary* *values*.
+
+Kita tidak akan membahas dua opsi pertama, alih-alih kita akan membahas *arbitrary values*. Fitur ini cenderung masih muda, namun, sangat *powerful*. Semenjak adanya fitur *arbitrary values*, sudah jarang pengguna Tailwind menggunakan dua opsi pertama. Sebab opsi ini memiliki pendekatan yang lebih pragmatis.
+
+## Arbitrary Values
+
+Anggaplah kita sedang mengimplementasikan desain antarmuka menjadi kode, dalam desain tersebut terdapat gaya yang tidak diakomodasi oleh *utility class* Tailwind, misal, kode warna yang lebih spesifik seperti `#0069FF`. Alih-alih membuat *class* baru, kita dapat menggunakan pendekatan seperti berikut:
+
+```html
+<div class="bg-[#0069FF]">Element</div>
+```
+
+Simbol `[]` merupakan sintaksis untuk menulis *arbitrary values*. Dengan *class* `bg-[#0069FF]` , artinya kita memberi tahu Tailwind bahwa kita ingin memberi elemen tersebut warna latar belakang `#0069FF` .
+
+Fitur *arbitrary values* tidak hanya berlaku untuk *background* saja, bisa juga untuk yang lain, misal, *padding*:
+
+```html
+<div class="p-[23px]">Element</div>
+```
+
+Seandainya kita hendak mereferensikan nama *variable*, kita dapat melakukannya seperti ini:
+
+```html
+<div class="p-[--nama-var]">Element</div>
+```
+
+Ya, tidak perlu menggunakan `var()` lagi.
+
+Dengan *arbitary values,* kita dapat menciptakan desain dengan lebih *perfect-pixel*.
+
+## Arbitrary Properties
+
+Bukan hanya *arbitrary values,* Tailwind juga memungkinkan kita untuk menulis CSS *property* yang tidak Tailwind tawarkan secara bawaan:
+
+```html
+<div class="[clip-path:circle(40%)]">Element</div>
+```
+
+Mungkin terlihat seperti *inline-style,* namun, kita dapat memanfaatkan *modifier* seperti `hover:` :
+
+```html
+<div class="[clip-path:circle(40%)] hover:[clip-path:circle(50%)]">
+  Element
+</div>
+```
+
+Selain itu, kita juga dapat menulis CSS *variable*:
+
+```html
+<div class="[--primary:#0069FF]">Element</div>
+```
+
+Tentu, tidak terbatas hanya pada contoh-contoh di atas. Kita dapat menggunakan *property* CSS yang lainnya.
+
+## Arbitrary Variants
+
+Fitur ini tidak kalah menarik dari dua sebelumnya. Dengan *arbitrary variants,* kita dapat menulis *custom selector* di dalam atribut *class*. Ini yang tidak bisa dilakukan oleh *inline-style* juga.
+
+Sebagai contoh, kita hendak memberikan gaya untuk semua elemen `p` di dalam elemen `div` :
+
+```html
+<div class="[&_p]:mb-4">
+  <p>Hello, world!</p>
+</div>
+```
+
+Semua elemen `p` akan mendapatkan *class* `mb-4` .
+
+Dengan demikian, kita juga dapat memberikan *custom selector* yang lebih spesifik seperti ini:
+
+```tsx
+<ul>
+  {items.map((item) => (
+    <li class="[&:nth-child(3)]:text-red">{item}</li>
+  ))}
+</ul>
+```
+
+Menggunakan *arbitrary values* memang lebih mudah dan pragmatis, namun, pendekatan ini seringkali tidak direkomendasikan dengan alasan inkonsistensi. Untuk beberapa kasus mungkin tidak masalah menggunakan *arbitrary values*, seperti mengatur *padding* untuk nilai yang lebih spesifik. Namun, untuk kasus lain seperti warna, ada baiknya menggunakan opsi konfigurasi yang akan kita bahas di bab terkait.

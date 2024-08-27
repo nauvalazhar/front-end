@@ -1,0 +1,190 @@
+# Konfigurasi
+
+Tidak ada konfigurasi yang rumit untuk memulai menggunakan Tailwind, hanya perlu memberitahu Tailwind jalur fail HTML yang kita gunakan. Dengan demikian, Tailwind dapat mengetahui *utility class* apa saja yang perlu digenerasi.
+
+Selain konfigurasi tersebut, tentu saja, Tailwind memiliki banyak konfigurasi lain yang dapat disesuaikan. Misal, kita hendak menambah warna baru ke dalam sistem warna Tailwind atau mungkin hendak mengubah ukuran *spacing* yang digunakan Tailwind. Semuanya dapat dilakukan melalui fail konfigurasi.
+
+KIta sudah membahas konfigurasi `content` sebelumnya, konfigurasi yang menjadi alat komunikasi pengembang dengan Tailwind untuk mengetahui *class* apa saja yang digunakan. Oleh karena itu, kita akan alihkan fokus pada konfigurasi yang lain dan umum digunakan saja.
+
+## Overriding dan Extending
+
+Secara mendasar, Tailwind memiliki dua teknik yang dapat digunakan untuk mengkustomisasi konfigurasinya, yaitu *overriding* dan *extending*.
+
+Sebagai contoh, apabila kita hendak menambah warna pada konfigurasi dengan pendekatan seperti ini:
+
+```js
+module.exports = {
+  theme: {
+    colors: {
+      brand: '#0069FF',
+    }
+  }
+}
+```
+
+Maka seluruh warna bawaan Tailwind yang lain akan hilang, karena pendekatan ini akan menimpa seluruh konfigurasi bawaan dengan konfigurasi yang kita tulis — *overriding*.
+
+Alih-alih, apabila kita hendak mempertahankan konfigurasi bawaan Tailwind dan menambahkan konfigurasi kita sendiri (*extending*), pendekatannya seperti ini:
+
+```js
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        brand: '#0069FF',
+      }
+    }
+  }
+}
+```
+
+Dengan menggunakan `extend` , kita memberitahu Tailwind untuk mempertahankan konfigurasi bawaan yang lainnya. Tidak ada yang buruk dari kedua pendekatan ini, hanya saja masalah kebutuhan.
+
+## Colors
+
+Sangat umum untuk mengkonfigurasi Tailwind agar memiliki warna yang kita gunakan, seperti warna *brand* contohnya. Untuk melakukannya, kita dapat menulis konfigurasinya seperti ini:
+
+```js
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        brand: '#0069FF',
+      }
+    }
+  }
+}
+```
+
+Apabila hendak memberikan daftar *shades* dari warna tersebut, nilai *object* dapat diberikan, alih-alih *string* reguler:
+
+```js
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        brand: {
+          50: '#edf9ff',
+          100: '#d6efff',
+          200: '#b5e5ff',
+          300: '#83d7ff',
+          400: '#48beff',
+          500: '#1e9dff',
+          600: '#067dff',
+          700: '#0069ff',
+          800: '#0850c5',
+          900: '#0d479b',
+          950: '#0e2c5d',
+        },
+      },
+    },
+  },
+}
+```
+
+Untuk menggenerasi warna, terdapat beberapa alat di internet yang dapat digunakan, seperti [*https://uicolors.app/*](https://uicolors.app/) salah satunya.
+
+Selain itu, kita juga dapat menggunakan `DEFAULT` untuk menggunakan warna tanpa *suffix*:
+
+```js
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        brand: {
+          DEFAULT: '#0069FF',
+          50: '#edf9ff',
+          100: '#d6efff',
+          200: '#b5e5ff',
+          300: '#83d7ff',
+          400: '#48beff',
+          500: '#1e9dff',
+          600: '#067dff',
+          700: '#0069ff',
+          800: '#0850c5',
+          900: '#0d479b',
+          950: '#0e2c5d',
+        },
+      },
+    },
+  },
+}
+```
+
+Dengan demikian, untuk menggunakan warna `brand` , bisa dengan `text-brand` atau `bg-brand` saja. Sedangkan untuk menggunakan *shade* yang lain, bisa seperti ini `bg-brand-500` atau `text-brand-100` .
+
+## Breakpoints
+
+Pada kasus tertentu, mungkin kita perlu menambahkan *breakpoint* baru untuk membuat desain responsif yang lebih sempurna. Untuk melakukannya, konfigurasi `screens` dapat digunakan:
+
+```js
+module.exports = {
+  theme: {
+    extend: {
+      screens: {
+        '3xl': '1600px',
+      },
+    },
+  }
+}
+```
+
+Konfigurasi di atas akan menambahkan *modifier responsive* baru, yaitu `3xl:` .
+
+## Spacing
+
+Secara bawaan, Tailwind memiliki skala *spacing* yang baik. Skala *spacing* ini digunakan oleh beberapa *utility class* seperti *padding, margin, width,* dan yang lainnya. Anggap saja kita hendak menambahkan sebuah skala baru, misal `3px` :
+
+```js
+module.exports = {
+  theme: {
+    extend: {
+      spacing: {
+        '3px': '3px',
+      }
+    }
+  }
+}
+```
+
+Saya pribadi jarang mengubah konfigurasi ini, apabila hendak membutuhkan skala *spacing* baru, biasanya saya menggunakan *arbitrary values*. Sebab seringkali skala tersebut hanya dibutuhkan sekali saja untuk kasus spesifik.
+
+## Plugins
+
+Selain konfigurasi-konfigurasi yang telah dibahas sebelumnya, Tailwind memiliki beberapa *plugin* resmi yang terpisah dari basis kode utama. Sehingga kita perlu memasangnya dan mengimpornya di fail konfigurasi untuk menggunakannya.
+
+Tailwind memiliki beberapa *plugin* resmi dan masing-masing memiliki masalah yang diselesaikan. Anggap saja kita hendak menggunakan *plugin typography* untuk memberikan gaya pada elemen seperti *paragraph, heading, list,* dan sebagainya.
+
+Untuk memasangnya, kita perlu menggunakan *package manager* seperti npm:
+
+```bash
+npm install -D @tailwindcss/typography
+```
+
+Setelah itu, impor *plugin* tersebut di fail konfigurasi:
+
+```js
+module.exports = {
+  theme: {
+    // ...
+  },
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
+}
+```
+
+Dengan demikian, *plugin* tersebut sudah dapat digunakan:
+
+```html
+<article class="prose">
+  <h1>Heading</h1>
+  <p>
+    Hello, world.
+  </p>
+</article>
+```
+
+*Class* `prose` tersebut berasal dari *plugin typography* yang memungkinkan elemen-elemen di dalam `article` tersebut memiliki gaya.
+
+Secara bawaan, Tailwind mengatur ulang gaya pada elemen-elemen seperti *heading, paragraph,* atau *list*. Sehingga elemen-elemen tersebut memiliki gaya yang tidak berbeda, untuk itu *plugin typography* dapat digunakan agar elemen-elemen tersebut memiliki gaya semestinya. *Plugin* ini sangat berguna ketika kita sedang membangun web seperti *blog*.
