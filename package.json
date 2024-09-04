@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@docsearch/css": "3",
+    "@docsearch/react": "3",
     "cheerio": "1.0.0-rc.12",
     "next": "14.3.0-canary.59",
     "nextra": "^2.13.4",
