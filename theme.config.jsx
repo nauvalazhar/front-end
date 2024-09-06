@@ -39,7 +39,4 @@ export default {
       <meta name="shortcut icon" content="/favicon.ico" />
     </>
   ),
-  nextThemes: {
-    forceTheme: 'dark',
-  },
 };
