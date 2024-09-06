@@ -8,6 +8,9 @@ dependencies:
   '@docsearch/css':
     specifier: '3'
     version: 3.6.1
+  '@docsearch/js':
+    specifier: ^3.6.1
+    version: 3.6.1(@algolia/client-search@5.2.5)(react-dom@18.3.1)(react@18.3.1)(search-insights@2.17.1)
   '@docsearch/react':
     specifier: '3'
     version: 3.6.1(@algolia/client-search@5.2.5)(react-dom@18.3.1)(react@18.3.1)(search-insights@2.17.1)
@@ -266,6 +269,19 @@ packages:
 
   /@docsearch/css@3.6.1:
     resolution: {integrity: sha512-VtVb5DS+0hRIprU2CO6ZQjK2Zg4QU5HrDM1+ix6rT0umsYvFvatMAnf97NHZlVWDaaLlx7GRfR/7FikANiM2Fg==}
+    dev: false
+
+  /@docsearch/js@3.6.1(@algolia/client-search@5.2.5)(react-dom@18.3.1)(react@18.3.1)(search-insights@2.17.1):
+    resolution: {integrity: sha512-erI3RRZurDr1xES5hvYJ3Imp7jtrXj6f1xYIzDzxiS7nNBufYWPbJwrmMqWC5g9y165PmxEmN9pklGCdLi0Iqg==}
+    dependencies:
+      '@docsearch/react': 3.6.1(@algolia/client-search@5.2.5)(react-dom@18.3.1)(react@18.3.1)(search-insights@2.17.1)
+      preact: 10.23.2
+    transitivePeerDependencies:
+      - '@algolia/client-search'
+      - '@types/react'
+      - react
+      - react-dom
+      - search-insights
     dev: false
 
   /@docsearch/react@3.6.1(@algolia/client-search@5.2.5)(react-dom@18.3.1)(react@18.3.1)(search-insights@2.17.1):
@@ -3717,6 +3733,10 @@ packages:
       picocolors: 1.1.0
       source-map-js: 1.2.0
     dev: true
+
+  /preact@10.23.2:
+    resolution: {integrity: sha512-kKYfePf9rzKnxOAKDpsWhg/ysrHPqT+yQ7UW4JjdnqjFIeNUnNcEJvhuA8fDenxAGWzUqtd51DfVg7xp/8T9NA==}
+    dev: false
 
   /property-information@6.5.0:
     resolution: {integrity: sha512-PgTgs/BlvHxOu8QuEN7wi5A0OmXaBcHpmCSTehcs6Uuu9IkDIEo13Hy7n898RHfrQ49vKCoGeWZSaAK01nwVig==}
