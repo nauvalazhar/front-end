@@ -128,7 +128,7 @@ article figure {
       }
     }
     .DocSearch-Hits mark {
-      color: theme(colors.brand.DEFAULT);
+      color: theme(colors.blue.400);
     }
     .DocSearch-Hit-source {
       color: hsla(0, 0%, 100%, 0.6);
