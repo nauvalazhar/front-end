@@ -1,5 +1,17 @@
 import '../styles.css'
+import { useEffect } from 'react';
 
 export default function app({ Component, pageprops }) {
+  useEffect(() => {
+    var _mtm = (window._mtm = window._mtm || []);
+      _mtm.push({ 'mtm.startTime': new Date().getTime(), event: 'mtm.Start' });
+      var d = document,
+        g = d.createElement('script'),
+        s = d.getElementsByTagName('script')[0];
+      g.async = true;
+      g.src = 'https://mat.nauv.al/js/container_tAw2OnsY.js';
+      s.parentNode.insertBefore(g, s);
+  }, []);
+
   return <Component {...pageprops} />
 }
