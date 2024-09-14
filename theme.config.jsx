@@ -1,9 +1,27 @@
+import { useRouter } from 'next/router';
 import Docsearch from './components/docsearch';
 
 export default {
   useNextSeoProps() {
+    const { asPath } = useRouter();
+    const appName = 'belajarfrontend.org';
+
+    if (asPath.startsWith('/vim')) {
+      return {
+        titleTemplate: `%s – Vim Esensial – ${appName}`,
+      };
+    } else if (asPath.startsWith('/nextjs')) {
+      return {
+        titleTemplate: `%s – Next.js Esensial – ${appName}`,
+      };
+    } else if (asPath.startsWith('/tailwind')) {
+      return {
+        titleTemplate: `%s – Tailwind Esensial – ${appName}`,
+      };
+    }
+
     return {
-      titleTemplate: '%s – belajarfrontend.org',
+      titleTemplate: `%s – ${appName}`,
     };
   },
   logo: (
