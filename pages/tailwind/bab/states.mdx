@@ -9,16 +9,16 @@ Fitur *states* pada Tailwind dapat diimplementasikan dengan memberikan sebuah *p
 Sebagai contoh yang paling dasar, mari perhatikan kembali kode untuk komponen *button* sebelumnya:
 
 ```html
-<button class="bg-[#0069ff] text-white rounded-xl px-6 py-3">  
-  Button  
+<button class="bg-[#0069ff] text-white rounded-xl px-6 py-3">
+  Button
 </button>
 ```
 
 Anggaplah *button* tersebut berubah warna latarnya menjadi `bg-blue-700` saat *hover*:
 
 ```html
-<button class="bg-[#0069ff] text-white rounded-xl px-6 py-3 hover:bg-blue-700">  
-  Button  
+<button class="bg-[#0069ff] text-white rounded-xl px-6 py-3 hover:bg-blue-700">
+  Button
 </button>
 ```
 
@@ -27,11 +27,11 @@ Sebagai pemanis, tambahkan *class* `transition-all` untuk mendapatkan efek trans
 Bukan hanya *hover*, Tailwind juga mendukung *pseudo-class* yang lain seperti `first:` atau `last:` untuk memberikan *style* pada elemen anak pertama dan anak terakhir. Bahkan Tailwind juga memiliki *modifier* lebih canggih untuk memberikan *style* pada *direct children* melalui `*:` . Sebagai contoh:
 
 ```html
-<ul class="*:p-4 *:bg-blue-500 *:text-white *:rounded-full mt-4">  
-  <li>Apel</li>  
-  <li>Jeruk</li>  
-  <li>Semangka</li>  
-  <li>Kursi</li>  
+<ul class="*:p-4 *:bg-blue-500 *:text-white *:rounded-full mt-4">
+  <li>Apel</li>
+  <li>Jeruk</li>
+  <li>Semangka</li>
+  <li>Kursi</li>
 </ul>
 ```
 
@@ -44,9 +44,9 @@ Fitur *modifier* pada Tailwind tidak hanya untuk *pseudo-classes* saja, itu juga
 Sebagai contoh paling dasar, anggaplah kita hendak memberikan tanda “*” pada label *input* sebagai indikator bahwa *input* tersebut *required*:
 
 ```html
-<label for="name" class="after:content-['*'] after:ml-0.5 after:text-red-500">  
-  Name  
-</label>  
+<label for="name" class="after:content-['*'] after:ml-0.5 after:text-red-500">
+  Name
+</label>
 <input type="text" id="name">
 ```
 
@@ -89,8 +89,8 @@ Tailwind juga memungkinkan kita untuk menerapkan *style* berdasarkan *attribute*
 Misal, sebagai contoh yang dibuat-buat, kita hendak menerapkan *style* berdasarkan nilai *attribute* seperti ini:
 
 ```html
-<p data-size="large" class="data-[size=large]:text-lg">  
-  Hello world  
+<p data-size="large" class="data-[size=large]:text-lg">
+  Hello world
 </p>
 ```
 
@@ -99,12 +99,25 @@ Elemen teks tersebut akan berukuran `text-lg` ketika nilai *attribute* `data-siz
 Pada kasus nyata, fitur ini sangat bekerja dengan baik dengan *library* JavaScript seperti Radix, sebab Radix memakai *attribute data* sebagai indikator bahwa suatu komponen dalam keadaan terbuka atau tertutup. Sebagai contoh komponen *accordion*:
 
 ```jsx
-<Accordion.Content  
-  className="data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp]"  
->  
-  Hello World  
+<Accordion.Content
+  className="data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp]"
+>
+  Hello World
 </Accordion.Content>
 ```
+
+## Menumpuk Modifier
+
+Penggunaan *modifier* dapat ditumpuk dengan *modifier* yang lain. Misal, kita hendak memberi warna *hover* berbeda pada saat *dark mode*:
+
+```html
+<button class="bg-blue-500 hover:bg-blue-600 dark:hover:bg-orange-500">
+  Button
+</button>
+```
+
+Ini berarti pada saat *light mode*, *class* `bg-blue-600` akan diterapkan ketika tombol di-*hover*. Sementara *class* `bg-orange-500` akan diterapkan
+pada saat *dark mode*.
 
 Sangat menarik melihat Tailwind memahami kebutuhan kita dengan menyediakan beberapa *modifier* yang sangat berguna untuk kasus nyata.
 
