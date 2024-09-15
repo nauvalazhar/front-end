@@ -6,27 +6,55 @@ export default {
     const { asPath } = useRouter();
     const appName = 'belajarfrontend.org';
 
+    const seo = {
+      titleTemplate: `%s – ${appName}`,
+      openGraph: {
+        type: 'website',
+        url: 'https://belajarfrontend.org',
+        site_name: appName,
+        description: 'Belajar pengembangan front-end dengan penuh kebebasan.',
+        images: [
+          {
+            url: 'https://belajarfrontend.org/belajarfrontend-og.png',
+          },
+        ],
+      },
+    };
+
+    let seoPage = {};
+
     if (asPath.startsWith('/vim')) {
-      return {
+      seoPage = {
         titleTemplate: `%s – Vim Esensial – ${appName}`,
       };
     } else if (asPath.startsWith('/nextjs')) {
-      return {
+      seoPage = {
         titleTemplate: `%s – Next.js Esensial – ${appName}`,
       };
     } else if (asPath.startsWith('/tailwind')) {
-      return {
+      seoPage = {
         titleTemplate: `%s – Tailwind Esensial – ${appName}`,
       };
     }
 
+    if (asPath !== '/') {
+      seoPage = {
+        ...seoPage,
+        openGraph: {
+          ...seo.openGraph,
+          url: `https://belajarfrontend.org${asPath}`,
+        },
+      };
+    }
+
     return {
-      titleTemplate: `%s – ${appName}`,
+      ...seo,
+      ...seoPage,
     };
   },
   logo: (
     <div style={{ display: 'flex', alignItems: 'center' }}>
-      <img src="/logo.png" width="35" />
+      <img src="/logo.png" width="35" alt="belajarfrontend.org" />
       <span style={{ marginLeft: 10, fontWeight: 600 }}>
         belajarfrontend.org
       </span>
@@ -55,6 +83,10 @@ export default {
   head: (
     <>
       <meta name="shortcut icon" content="/favicon.ico" />
+      <meta
+        name="description"
+        content="Belajar pengembangan front-end dengan penuh kebebasan."
+      />
     </>
   ),
 };
