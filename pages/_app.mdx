@@ -1,5 +1,6 @@
 import '../styles.css'
 import { useEffect } from 'react';
+import Head from "next/head";
 
 export default function app({ Component, pageprops }) {
   useEffect(() => {
@@ -13,5 +14,23 @@ export default function app({ Component, pageprops }) {
       s.parentNode.insertBefore(g, s);
   }, []);
 
-  return <Component {...pageprops} />
+  return (
+    <>
+      <Head>
+        <meta name="application-name" content="Belajar Front-end" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Belajar Front-end" />
+        <meta name="description" content="Belajar pengembangan front-end dengan penuh kebebasan." />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="theme-color" content="#FFFFFF" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.png" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+      </Head>
+      <Component {...pageprops} />
+    </>
+  );
 }
