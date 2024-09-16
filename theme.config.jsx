@@ -54,8 +54,10 @@ export default {
   },
   logo: (
     <div style={{ display: 'flex', alignItems: 'center' }}>
-      <img src="/logo.png" width="35" alt="belajarfrontend.org" />
-      <span style={{ marginLeft: 10, fontWeight: 600 }}>
+      <img src="/logo.png" width="35" alt="logo belajarfrontend.org" />
+      <span
+        style={{ marginLeft: 10, fontWeight: 600 }}
+        className="hidden md:block">
         belajarfrontend.org
       </span>
     </div>
