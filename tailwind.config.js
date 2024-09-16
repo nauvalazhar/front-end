@@ -6,6 +6,7 @@ module.exports = {
     './pages/**/*.{js,jsx,ts,tsx,md,mdx}',
     './components/**/*.{js,jsx,ts,tsx,md,mdx}',
   ],
+  safelist: ['hidden', 'md:block'],
   theme: {
     extend: {
       colors: {
